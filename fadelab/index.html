@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FadeLab · Barbería premium en Bayamón</title>
+<style>
+@font-face{font-family:Sora;font-weight:400;src:url(assets/fonts/sora-400.ttf)}
+@font-face{font-family:Sora;font-weight:600;src:url(assets/fonts/sora-600.ttf)}
+@font-face{font-family:Sora;font-weight:800;src:url(assets/fonts/sora-800.ttf)}
+:root{--bg:#050d20;--bg2:#081a3a;--card:#0a1d44;--ink:#0b1f44;--accent:#3aaeef;--text:#fff;--mute:#8da2c4;--p:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{background:var(--bg);color:var(--text);font-family:Sora,system-ui,sans-serif;overflow-x:hidden}
+.wrap{padding:0 90px}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:0}
+h1,h2{font-weight:800;letter-spacing:-.045em;line-height:1.02}
+h2{font-size:64px}
+.sub{color:var(--mute);font-size:20px;margin-top:18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:50px;padding:0 28px;border-radius:999px;font-weight:600;font-size:17px}
+.btn-primary{background:var(--accent);color:var(--ink)}
+.btn-ghost{background:transparent;border:2px solid rgba(255,255,255,.35);color:#fff}
+.btn-ghost:hover{border-color:#fff}
+
+nav{position:fixed;inset:0 0 auto 0;height:82px;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:0 90px;background:rgba(5,13,32,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{font-weight:800;font-size:27px;letter-spacing:-.03em}
+.logo b{color:var(--accent)}
+.links{display:flex;gap:44px;font-size:17px;color:#d6e2f5}
+.links a{padding:8px 2px;border-bottom:2px solid transparent}
+.links a:hover,.links a.on{color:#fff;border-bottom-color:var(--accent)}
+nav .btn{height:49px}
+
+.hero{min-height:1080px;position:relative;display:flex;align-items:center;padding-top:60px;overflow:hidden}
+.hero .bg{position:absolute;inset:0;background:url(assets/img/estudio.jpg) center/cover;filter:blur(3px) brightness(.35) saturate(1.1);transform:scale(1.06)}
+.hero .shade{position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 8%,rgba(5,13,32,.55) 55%,rgba(5,13,32,.85)),linear-gradient(0deg,var(--bg),transparent 40%)}
+.hero .in{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center;width:100%}
+.hero h1{font-size:104px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{font-size:22px;color:#c3d1ea;margin:34px 0 40px;max-width:640px;line-height:1.5}
+.hero .cta{display:flex;gap:16px}
+.slotcard{background:rgba(10,29,68,.7);border:1px solid rgba(255,255,255,.12);border-radius:32px;padding:22px;transform:rotate(-3deg);box-shadow:0 40px 90px rgba(0,0,0,.5);backdrop-filter:blur(8px)}
+.slotcard .ph{height:300px;border-radius:22px;background:url(assets/img/lowfade.jpg) center/cover;position:relative}
+.badge{position:absolute;left:14px;top:14px;background:rgba(5,13,32,.8);border-radius:999px;padding:8px 14px;font-size:14px;display:flex;gap:8px;align-items:center}
+.badge i{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.slotcard h3{font-size:30px;letter-spacing:-.03em;margin:20px 6px 14px}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.slots span{background:rgba(255,255,255,.08);border-radius:14px;padding:15px;text-align:center;font-weight:600;font-size:17px}
+.slots span.on{background:var(--accent);color:var(--ink)}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:46px 90px;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);background:var(--bg)}
+.stats b{display:block;font-size:44px;letter-spacing:-.04em}
+.stats span{color:var(--mute);font-size:16px}
+
+section{padding:130px 90px 120px;position:relative}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:62px}
+.svc{background:linear-gradient(180deg,var(--card),#081634);border:1px solid rgba(255,255,255,.08);border-radius:30px;padding:28px;cursor:pointer;position:relative}
+.svc:hover{border-color:rgba(58,174,239,.55);transform:translateY(-6px)}
+.svc.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent),0 24px 60px rgba(58,174,239,.25)}
+.svc .im{height:210px;border-radius:18px;background-size:cover;background-position:center}
+.svc h3{font-size:31px;letter-spacing:-.03em;margin:26px 0 10px}
+.svc p{color:var(--mute);font-size:17px;line-height:1.5;min-height:52px}
+.svc .price{font-size:44px;font-weight:800;color:var(--accent);letter-spacing:-.04em;margin-top:28px}
+.svc .tag{position:absolute;right:30px;bottom:34px;background:var(--accent);color:var(--ink);font-weight:600;font-size:15px;padding:9px 16px;border-radius:999px;display:none}
+.svc.sel .tag{display:block}
+
+.gal{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:340px;gap:22px;margin-top:62px}
+.tile{border-radius:26px;background-size:cover;background-position:center;position:relative;overflow:hidden}
+.tile span{position:absolute;left:22px;bottom:18px;font-weight:600;font-size:17px;z-index:2}
+.tile:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.65),transparent 45%)}
+.tile:hover{outline:3px solid var(--accent);outline-offset:-3px;filter:brightness(1.12)}
+.t1{grid-column:span 6}.t2{grid-column:span 3}.t3{grid-column:span 3}
+.t4{grid-column:span 3}.t5{grid-column:span 6}.t6{grid-column:span 3}
+
+.rev{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:62px}
+.rv{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:26px;padding:34px}
+.rv .st{color:#ffbf3c;letter-spacing:6px;font-size:20px}
+.rv p{font-size:20px;line-height:1.55;margin:20px 0 28px;color:#e7eefb}
+.rv .who{display:flex;gap:14px;align-items:center;color:var(--mute);font-size:17px}
+.rv .av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#3aaeef,#0b4f9c)}
+
+#reserva{min-height:1000px}
+.book{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;margin-top:20px}
+.book .photo{height:460px;border-radius:26px;background:url(assets/img/reserva.jpg) center/cover;margin-top:50px;border:1px solid rgba(255,255,255,.1)}
+.form{background:#fff;color:var(--ink);border-radius:36px;padding:48px;box-shadow:0 50px 100px rgba(0,0,0,.45)}
+.form h3{font-size:36px;letter-spacing:-.04em;margin-bottom:28px}
+.form input{width:100%;height:68px;border:2px solid #d9e1ee;border-radius:20px;padding:0 24px;font:600 20px Sora,sans-serif;color:var(--ink);outline:0;caret-color:var(--accent)}
+.form input.focus{border-color:var(--accent);box-shadow:0 0 0 5px rgba(58,174,239,.2)}
+.chips{display:flex;gap:14px;margin:22px 0}
+.chip{height:56px;padding:0 24px;border-radius:16px;border:2px solid #d9e1ee;background:#fff;font:600 18px Sora,sans-serif;color:var(--ink)}
+.chip:hover{border-color:var(--accent)}
+.chip.sel{background:var(--accent);border-color:var(--accent)}
+.summary{display:flex;justify-content:space-between;color:#5b6d8d;font-size:17px;margin:4px 4px 22px}
+.summary b{color:var(--ink)}
+.confirm{width:100%;height:72px;border-radius:22px;background:var(--ink);color:#fff;font-weight:600;font-size:22px}
+.confirm:hover{background:#12306a}
+
+#contacto{padding-bottom:140px;border-top:1px solid rgba(255,255,255,.07)}
+.contact{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:50px}
+.ct{background:var(--card);border-radius:26px;padding:34px;border:1px solid rgba(255,255,255,.08)}
+.ct small{color:var(--accent);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:13px}
+.ct p{font-size:22px;margin-top:12px;line-height:1.45}
+footer{display:flex;justify-content:space-between;align-items:center;padding:44px 90px;color:var(--mute);font-size:17px;border-top:1px solid rgba(255,255,255,.07)}
+footer .by{display:flex;align-items:center;gap:14px}
+footer img{height:36px}
+footer .by b{font-size:26px;color:#fff;letter-spacing:-.03em}
+footer .by small{font-size:12px;color:var(--mute)}
+
+/* confirmation */
+#modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(3,8,20,calc(.72*var(--p)));backdrop-filter:blur(calc(8px*var(--p)))}
+body.done #modal{display:flex}
+#modal .box{background:#fff;color:var(--ink);width:620px;border-radius:40px;padding:56px 48px 48px;text-align:center;transform:translateY(calc((1 - var(--p))*60px)) scale(calc(.86 + .14*var(--p)));opacity:var(--p);box-shadow:0 60px 120px rgba(0,0,0,.5)}
+#modal .ck{width:112px;height:112px;margin:0 auto 26px;border-radius:50%;background:var(--accent);display:grid;place-items:center}
+#modal svg{width:62px;height:62px}
+#modal svg path{stroke:#fff;stroke-width:7;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:calc(60*(1 - var(--ck,0)))}
+#modal h3{font-size:42px;letter-spacing:-.04em}
+#modal .d{font-size:22px;margin-top:20px;font-weight:600}
+#modal .m{color:#5b6d8d;margin-top:12px;font-size:18px}
+#confetti{position:fixed;inset:0;z-index:60;pointer-events:none}
+
+/* demo cursor */
+#cur{position:fixed;left:0;top:0;z-index:100;pointer-events:none;width:34px;height:34px;display:none}
+#rip{position:fixed;left:0;top:0;z-index:99;pointer-events:none;width:80px;height:80px;border-radius:50%;border:4px solid var(--accent);opacity:0;margin:-40px 0 0 -40px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="#top">FADE<b>LAB</b></a>
+  <div class="links">
+    <a href="#servicios" data-t="servicios">Servicios</a>
+    <a href="#galeria" data-t="galeria">Galería</a>
+    <a href="#reserva" data-t="reserva">Reservas</a>
+    <a href="#contacto" data-t="contacto">Contacto</a>
+  </div>
+  <a class="btn btn-primary" href="#reserva" data-t="reserva">Reservar cita</a>
+</nav>
+
+<header class="hero" id="top">
+  <div class="bg"></div><div class="shade"></div>
+  <div class="wrap in">
+    <div>
+      <h1>Tu mejor corte, a un <em>clic</em> de distancia.</h1>
+      <p>Barbería premium en Bayamón. Reserva en segundos, sin llamadas ni esperas.</p>
+      <div class="cta"><a class="btn btn-primary" href="#reserva" data-t="reserva">Reservar ahora</a><a class="btn btn-ghost" href="#servicios" data-t="servicios">Ver servicios</a></div>
+    </div>
+    <div class="slotcard">
+      <div class="ph"><div class="badge"><i></i>Disponible hoy</div></div>
+      <h3>Elige tu hora</h3>
+      <div class="slots"><span>2:00 PM</span><span>3:00 PM</span><span class="on">4:30 PM</span><span>5:00 PM</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div><b>4.9 ★</b><span>Calificación promedio</span></div>
+  <div><b>12K+</b><span>Cortes realizados</span></div>
+  <div><b>6</b><span>Barberos expertos</span></div>
+  <div><b>30 s</b><span>Para reservar tu cita</span></div>
+</div>
+
+<section id="servicios">
+  <h2>Servicios</h2>
+  <p class="sub">Todo lo que necesitas para verte impecable.</p>
+  <div class="cards">
+    <div class="svc sel" data-name="Corte clásico" data-price="$15"><div class="im" style="background-image:url(assets/img/svc1.jpg)"></div><h3>Corte clásico</h3><p>Fade, tijera o a tu estilo, con acabado de navaja.</p><div class="price">$15</div><span class="tag">Seleccionado</span></div>
+    <div class="svc" data-name="Corte + barba" data-price="$25"><div class="im" style="background-image:url(assets/img/svc2.jpg)"></div><h3>Corte + barba</h3><p>El combo completo con toalla caliente y perfilado.</p><div class="price">$25</div><span class="tag">Seleccionado</span></div>
+    <div class="svc" data-name="Experiencia VIP" data-price="$40"><div class="im" style="background-image:url(assets/img/svc3.jpg)"></div><h3>Experiencia VIP</h3><p>Corte, barba, cejas y tratamiento facial.</p><div class="price">$40</div><span class="tag">Seleccionado</span></div>
+  </div>
+</section>
+
+<section id="galeria">
+  <h2>Trabajos recientes</h2>
+  <p class="sub">Estilo que habla por ti.</p>
+  <div class="gal">
+    <div class="tile t1" style="background-image:url(assets/img/estudio.jpg)"><span>El estudio</span></div>
+    <div class="tile t2" style="background-image:url(assets/img/navaja.jpg)"><span>Afeitado con navaja</span></div>
+    <div class="tile t3" style="background-image:url(assets/img/lowfade.jpg)"><span>Low fade</span></div>
+    <div class="tile t4" style="background-image:url(assets/img/taper.jpg)"><span>Taper clásico</span></div>
+    <div class="tile t5" style="background-image:url(assets/img/perfilado.jpg)"><span>Perfilado de barba</span></div>
+    <div class="tile t6" style="background-image:url(assets/img/espacio.jpg)"><span>Nuestro espacio</span></div>
+  </div>
+</section>
+
+<section id="opiniones">
+  <h2>Lo que dicen</h2>
+  <p class="sub">Clientes que ya reservaron en línea.</p>
+  <div class="rev">
+    <div class="rv"><div class="st">★★★★★</div><p>“Reservé en 30 segundos y llegué sin esperar. El mejor fade de Bayamón.”</p><div class="who"><div class="av"></div>Luis M.</div></div>
+    <div class="rv"><div class="st">★★★★★</div><p>“La barba quedó perfecta y el ambiente es otro nivel. Vuelvo cada semana.”</p><div class="who"><div class="av"></div>Carlos R.</div></div>
+    <div class="rv"><div class="st">★★★★★</div><p>“Todo desde el celular, sin llamadas. Súper profesional.”</p><div class="who"><div class="av"></div>Andrés T.</div></div>
+  </div>
+</section>
+
+<section id="reserva">
+  <div class="book">
+    <div>
+      <h2>Reserva tu cita</h2>
+      <p class="sub">Elige tu día, tu hora y listo. Te llega la confirmación al instante.</p>
+      <div class="photo"></div>
+    </div>
+    <div class="form">
+      <h3>Agenda en 30 segundos</h3>
+      <input id="name" placeholder="Tu nombre" autocomplete="off">
+      <div class="chips">
+        <button class="chip">Hoy 2:00 PM</button><button class="chip">Hoy 4:30 PM</button><button class="chip">Mañana 10:00 AM</button>
+      </div>
+      <div class="summary"><span id="sumsvc"><b>Corte clásico</b></span><span id="sumprice"><b>$15</b></span></div>
+      <button class="confirm" id="confirm">Confirmar cita</button>
+    </div>
+  </div>
+</section>
+
+<section id="contacto">
+  <h2>Contacto</h2>
+  <div class="contact">
+    <div class="ct"><small>Dirección</small><p>Av. Main #214<br>Bayamón, Puerto Rico</p></div>
+    <div class="ct"><small>Horario</small><p>Lun – Sáb · 9:00 AM – 7:00 PM<br>Dom · Cerrado</p></div>
+    <div class="ct"><small>WhatsApp</small><p>(787) 555-0142<br>@fadelab.pr</p></div>
+  </div>
+</section>
+
+<footer>
+  <span>© Fade Lab PR</span>
+  <span class="by">Sitio creado por <img src="assets/img/ascent-light.png" alt=""><b>scent</b><small>Co.</small></span>
+</footer>
+
+<div id="modal"><div class="box">
+  <div class="ck"><svg viewBox="0 0 64 64"><path d="M14 34 L27 47 L50 18"/></svg></div>
+  <h3>¡Cita confirmada!</h3>
+  <p class="d" id="mdetail"></p>
+  <p class="m">Te enviamos la confirmación al instante. ¡Te esperamos!</p>
+</div></div>
+<canvas id="confetti" width="1920" height="1080"></canvas>
+<svg id="cur" viewBox="0 0 24 24"><path d="M3 2 L3 19 L7.6 14.8 L10.6 21.5 L13.4 20.3 L10.5 13.8 L16.8 13.8 Z" fill="#fff" stroke="#0b1f44" stroke-width="1.5" stroke-linejoin="round"/></svg>
+<div id="rip"></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let sel={name:'Corte clásico',price:'$15'},slot='';
+$$('[data-t]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();window.__nav&&window.__nav(a.dataset.t)}));
+function go(id){const el=document.getElementById(id);scrollTo({top:el.offsetTop-(id==='reserva'?20:0),behavior:'smooth'})}
+window.__nav=go;
+$$('.svc').forEach(c=>c.addEventListener('click',()=>{$$('.svc').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');sel={name:c.dataset.name,price:c.dataset.price};
+  $('#sumsvc').innerHTML='<b>'+sel.name+'</b>';$('#sumprice').innerHTML='<b>'+sel.price+'</b>'}));
+$$('.chip').forEach(c=>c.addEventListener('click',()=>{$$('.chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');slot=c.textContent}));
+$('#name').addEventListener('focus',e=>e.target.classList.add('focus'));
+$('#name').addEventListener('blur',e=>e.target.classList.remove('focus'));
+$('#confirm').addEventListener('click',()=>{
+  $('#mdetail').textContent=sel.name+' · '+(slot||'Hoy 4:30 PM');
+  document.body.classList.add('done')});
+function onScroll(){const y=scrollY+300;let cur='';
+  for(const id of ['servicios','galeria','reserva','contacto']){if(y>=document.getElementById(id).offsetTop)cur=id}
+  $$('.links a').forEach(a=>a.classList.toggle('on',a.dataset.t===cur))}
+addEventListener('scroll',onScroll);
+
+/* confetti (deterministic so it can be scrubbed frame by frame) */
+const cv=$('#confetti'),cx=cv.getContext('2d');
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const parts=Array.from({length:150},()=>({x:960+(rnd()-.5)*300,y:520,vx:(rnd()-.5)*1500,vy:-500-rnd()*900,r:rnd()*6.28,vr:(rnd()-.5)*14,
+  w:10+rnd()*10,h:6+rnd()*8,c:['#3aaeef','#ffffff','#ffbf3c','#7fd1ff','#0b4f9c'][Math.floor(rnd()*5)]}));
+function confetti(t){cx.clearRect(0,0,1920,1080);if(t<=0)return;
+  for(const p of parts){const x=p.x+p.vx*t*.6,y=p.y+p.vy*t+1500*t*t,a=Math.max(0,1-t/2.2);if(a<=0)continue;
+    cx.save();cx.globalAlpha=a;cx.translate(x,y);cx.rotate(p.r+p.vr*t);cx.fillStyle=p.c;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore()}}
+
+/* demo hooks: the screen recording drives cursor / scroll / animation clocks frame by frame */
+window.F=o=>{
+  const c=$('#cur');c.style.display=o.cv?'block':'none';c.style.transform=`translate(${o.x-4}px,${o.y-3}px) scale(${o.press?.88:1})`;
+  const r=$('#rip');r.style.opacity=o.rip>0?(1-o.rip)*.9:0;r.style.transform=`translate(${o.x}px,${o.y}px) scale(${.3+o.rip*1.1})`;
+  if(o.scroll!==undefined)scrollTo(0,o.scroll);
+  document.documentElement.style.setProperty('--p',o.p);
+  document.documentElement.style.setProperty('--ck',o.ck);
+  confetti(o.cf);
+};
+</script>
+</body>
+</html>
