@@ -1,0 +1,26 @@
+import { Nav } from '@/components/Nav'
+import { Closing } from '@/sections/Closing'
+import { Extras } from '@/sections/Extras'
+import { Hero } from '@/sections/Hero'
+import { Process } from '@/sections/Process'
+import { Services } from '@/sections/Services'
+import { Showcase } from '@/sections/Showcase'
+
+export default function App() {
+  return (
+    <>
+      <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-sky focus:px-5 focus:py-3 focus:font-bold focus:text-navy">
+        Saltar al contenido
+      </a>
+      <Nav />
+      <main id="contenido">
+        <Hero />
+        <Showcase />
+        <Services />
+        <Extras />
+        <Process />
+        <Closing />
+      </main>
+    </>
+  )
+}
