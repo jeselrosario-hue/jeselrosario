@@ -8,7 +8,7 @@ export const COPY = {
     { id: 'contacto', label: 'Contacto' },
   ],
   marquee: ['Presentación', 'Sitio web', 'Tarjeta QR', 'Agenda', 'Recibos', 'Dominio propio'],
-  eyebrows: { ejemplos: '01 — Ejemplos', servicios: '02 — Paquetes', extras: '03 — Extras', proceso: '04 — Proceso', contacto: '05 — Contacto' },
+  eyebrows: { ejemplos: '01', servicios: '02', extras: '03', galeria: '04', proceso: '05', contacto: '06' },
   hero: {
     line1: 'Que te encuentren.',
     line2: 'Que te elijan.',
@@ -23,11 +23,11 @@ export const COPY = {
     title: 'Paquetes.',
     sub: 'Precios de lanzamiento',
     featured: 'Más completo',
-    bio: { name: 'Página de presentación', price: '$35–50', line: 'Tu link en la bio.', chips: ['WhatsApp', 'Instagram', 'Fotos'] },
-    site: { name: 'Sitio web de tu servicio', price: '$50–70', line: 'Te escriben directo, con mensaje listo.', chips: ['WhatsApp', 'Instagram', 'Mensaje listo'] },
+    bio: { name: 'Presentación', price: '$35–50', line: 'Tu link en la bio.', chips: ['WhatsApp', 'Instagram', 'Fotos'] },
+    site: { name: 'Sitio web', price: '$50–70', line: 'Te escriben directo.', chips: ['WhatsApp', 'Instagram', 'Mensaje listo'] },
     qr: {
-      name: 'Tarjeta con QR',
-      line: 'Escanea y te encuentran.',
+      name: 'Tarjeta QR',
+      line: 'Escanea y listo.',
       tiers: [
         { price: '$20', label: 'Sola' },
         { price: '$15', label: '+ Presentación' },
@@ -40,14 +40,17 @@ export const COPY = {
   extras: {
     title: 'Extras.',
     items: [
-      { id: 'agenda', title: 'Agenda con confirmación por WhatsApp', price: 'desde $85' },
-      { id: 'dominio', title: 'Dominio propio y envíos automáticos', price: 'desde $100' },
+      { id: 'agenda', title: 'Agenda y citas', price: 'desde $85' },
+      { id: 'dominio', title: 'Dominio propio', price: 'desde $100' },
       { id: 'recibos', title: 'Cotizaciones y recibos', price: 'precio aparte' },
     ],
   },
+  gallery: { title: 'Galería.' },
+  /** Reseñas reales de clientes. Vacío = la galería muestra solo trabajos (no se inventan reseñas). */
+  testimonials: [] as ReadonlyArray<{ name: string; role: string; quote: string }>,
   process: {
     title: '3 pasos.',
-    steps: ['Nos escribes', 'Lo diseñamos', 'Lo publicamos'],
+    steps: ['Escríbenos', 'Diseñamos', 'Publicamos'],
     terms: [
       { big: '50%', small: 'al comenzar' },
       { big: '50%', small: 'al entregar' },

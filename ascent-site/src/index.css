@@ -86,3 +86,11 @@ body::after {
 .ascent-hero .sh-accent { text-shadow: 0 0 50px rgb(74 189 240 / 0.5); letter-spacing: -0.02em; }
 .ascent-hero .sh-btn { background: var(--color-sky); color: var(--color-navy); font-weight: 600; height: 54px; padding: 0 28px; font-size: 16px; box-shadow: 0 0 44px -8px var(--color-sky); }
 .ascent-hero .sh-txt { font-size: 16px; font-weight: 500; }
+
+/* Botón con brillo que recorre el borde (shimmer) */
+.shimmer { position: relative; isolation: isolate; overflow: hidden; }
+.shimmer::before { content: ''; position: absolute; inset: -150%; z-index: -2; background: conic-gradient(from 0deg, transparent 0 295deg, rgb(255 255 255 / 0.95) 360deg); animation: spin-slow 3.2s linear infinite; }
+.shimmer::after { content: ''; position: absolute; inset: 2px; z-index: -1; border-radius: inherit; background: var(--color-sky); }
+.ascent-hero .sh-btn { position: relative; isolation: isolate; overflow: hidden; }
+.ascent-hero .sh-btn::before { content: ''; position: absolute; inset: -150%; z-index: -2; background: conic-gradient(from 0deg, transparent 0 295deg, rgb(255 255 255 / 0.95) 360deg); animation: spin-slow 3.2s linear infinite; }
+.ascent-hero .sh-btn::after { content: ''; position: absolute; inset: 2px; z-index: -1; border-radius: inherit; background: var(--color-sky); }

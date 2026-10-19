@@ -3,6 +3,7 @@ import { Cursor } from '@/components/motion/Cursor'
 import { Intro } from '@/components/motion/Intro'
 import { ScrollProgress } from '@/components/motion/ScrollProgress'
 import { SmoothScroll } from '@/components/motion/SmoothScroll'
+import { Gallery } from '@/sections/Gallery'
 import { Closing } from '@/sections/Closing'
 import { Extras } from '@/sections/Extras'
 import { Hero } from '@/sections/Hero'
@@ -28,6 +29,7 @@ export default function App() {
         <Showcase />
         <Services />
         <Extras />
+        <Gallery />
         <Process />
         <Closing />
       </main>
