@@ -58,3 +58,10 @@
   0% { transform: scale(0.35); opacity: 0.9; }
   100% { transform: scale(1); opacity: 0; }
 }
+
+/* Portada (21st.dev Liquid Sculpture Hero) con la marca de Ascent */
+.ascent-hero .sh-root { background: radial-gradient(60% 50% at 50% 40%, rgb(74 189 240 / 0.16), transparent 70%), var(--color-navy) !important; }
+.ascent-hero .sh-h1 { font-weight: 800; letter-spacing: -0.045em; }
+.ascent-hero .sh-accent { font-style: normal; font-weight: 800; letter-spacing: -0.045em; text-shadow: 0 0 40px rgb(74 189 240 / 0.45); }
+.ascent-hero .sh-btn { background: var(--color-sky); color: var(--color-navy); font-weight: 700; height: 52px; padding: 0 26px; font-size: 16px; box-shadow: 0 0 40px -8px var(--color-sky); }
+.ascent-hero .sh-txt { font-size: 16px; font-weight: 600; }

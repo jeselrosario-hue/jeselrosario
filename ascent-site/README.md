@@ -40,4 +40,6 @@ npm run build      # genera dist/
 
 - Portada WebGL2 (`src/components/LiquidHero.tsx`). Si no hay WebGL2, o el usuario tiene "reducir movimiento", se ve el logo estático con brillo. Se pausa fuera de pantalla y usa menos partículas en móvil.
 - Accesibilidad: contraste AA, foco visible, objetivos táctiles de 44 px, carpetas operables con teclado (`aria-expanded`), enlace para saltar al contenido y `prefers-reduced-motion` respetado.
-- Componentes estilo shadcn (`components.json`, `cn`, `Button`). `src/components/GlassFolder.tsx` es la carpeta de vidrio y `LiquidHero.tsx` la portada, hechos a mano porque 21st.dev no estaba accesible al construirlos: se pueden reemplazar por las versiones de 21st.dev cuando haya acceso.
+- Portada y carpetas son componentes de **21st.dev**: *Liquid Sculpture Hero* (`src/components/ui/liquid-sculpture-hero.tsx`, autor gughigug) y *Glassmorphism Folder Cards* (`src/components/ui/glass-folder-cards.tsx`, autor kedhareswer). Se usan con el logo de Ascent y la paleta de la marca (`src/sections/Hero.tsx` y `src/sections/Services.tsx`).
+- Las imágenes de la portada están en `public/hero/` (logo sobre transparente: `logo-wide.webp` escritorio, `logo-tall.webp` móvil) y las de las hojas de cada carpeta en `public/mockups/`. Para regenerar estas últimas: `npm run dev`, abre `/shots.html?s=phone` (también `links`, `fotos`, `site`, `chat`, `qr20`, `qr15`, `qr10`) y captura la escena. `shots.html` no se incluye en el build.
+- Capa estilo shadcn (`components.json`, `cn`, `Button`).
