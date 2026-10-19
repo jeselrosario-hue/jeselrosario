@@ -1,5 +1,8 @@
 /** Solo para desarrollo: genera las imágenes que van dentro de las carpetas (npm run dev → /shots.html?s=phone). */
-import '@fontsource-variable/sora'
+import '@fontsource-variable/geist'
+import '@fontsource-variable/geist-mono'
+import '@fontsource/instrument-serif/latin-400.css'
+import '@fontsource/instrument-serif/latin-400-italic.css'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { BrowserSite } from '@/components/mockups/BrowserSite'
@@ -11,7 +14,7 @@ import { Camera, Check } from 'lucide-react'
 const bg = 'radial-gradient(70% 90% at 70% 20%, rgb(74 189 240 / 0.38), transparent 70%), linear-gradient(160deg, #17407a, #0B1E3C 70%)'
 
 function Scene({ children }: { children: React.ReactNode }) {
-  return <div id="scene" style={{ width: 544, height: 368, background: bg, position: 'relative', overflow: 'hidden', fontFamily: 'Sora Variable, Sora, sans-serif' }}>{children}</div>
+  return <div id="scene" style={{ width: 544, height: 368, background: bg, position: 'relative', overflow: 'hidden', fontFamily: 'Geist Variable, Geist, sans-serif' }}>{children}</div>
 }
 
 const photo = (n: string) => ({ backgroundImage: `url(/examples/${n}.webp)` })
@@ -20,7 +23,7 @@ const SCENES: Record<string, React.ReactNode> = {
   phone: (
     <Scene>
       <div style={{ position: 'absolute', left: 214, top: -48, width: 190 }}><PhoneBio /></div>
-      <div style={{ position: 'absolute', left: 36, top: 96, color: '#fff', fontWeight: 800, fontSize: 34, letterSpacing: '-0.04em', lineHeight: 1 }}>Tu link<br />en la bio</div>
+      <div style={{ position: 'absolute', left: 36, top: 96, color: '#fff', fontFamily: 'Instrument Serif, serif', fontSize: 44, letterSpacing: '-0.02em', lineHeight: 0.95 }}>Tu link<br /><i style={{ color: '#4ABDF0' }}>en la bio</i></div>
     </Scene>
   ),
   links: (
@@ -64,7 +67,7 @@ for (const price of ['$20', '$15', '$10']) {
   SCENES['qr' + price.slice(1)] = (
     <Scene>
       <div style={{ position: 'absolute', left: 26, top: 54, width: 300, transform: 'perspective(900px) rotateY(-16deg) rotateX(8deg) rotate(-3deg)' }}><QrCard interactive={false} /></div>
-      <div style={{ position: 'absolute', right: 26, top: 56, color: '#4ABDF0', fontWeight: 800, fontSize: 84, letterSpacing: '-0.06em', textShadow: '0 0 40px rgb(74 189 240 / .6)' }}>{price}</div>
+      <div style={{ position: 'absolute', right: 26, top: 56, color: '#4ABDF0', fontFamily: 'Instrument Serif, serif', fontSize: 104, letterSpacing: '-0.02em', lineHeight: 0.9, textShadow: '0 0 40px rgb(74 189 240 / .6)' }}>{price}</div>
     </Scene>
   )
 }

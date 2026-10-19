@@ -2,6 +2,8 @@ import { useInView } from 'motion/react'
 import { Globe, QrCode, Smartphone, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Reveal } from '@/components/Reveal'
+import { CountUp } from '@/components/motion/CountUp'
+import { SplitText } from '@/components/motion/SplitText'
 import GlassFolder, { type ArtRecipe, type FolderFile } from '@/components/ui/glass-folder-cards'
 import { COPY } from '@/content'
 
@@ -57,11 +59,12 @@ function useColumnWidth() {
   return w
 }
 
-function Price({ value, line, big = true }: { value: string; line?: string; big?: boolean }) {
+function Price({ from, to }: { from: number; to: number }) {
   return (
     <div className="text-center">
-      <span className={`text-glow block font-extrabold leading-none tracking-tighter text-sky ${big ? 'text-6xl' : 'text-4xl'}`}>{value}</span>
-      {line && <span className="mt-2 block text-base text-white/80">{line}</span>}
+      <span className="text-glow block font-display text-[5.5rem] leading-none tracking-tight text-sky tabular-nums">
+        $<CountUp to={from} />–<CountUp to={to} />
+      </span>
     </div>
   )
 }
@@ -70,25 +73,30 @@ export function Services() {
   const w = useColumnWidth()
   const tierIcons: ReactNode[] = [<QrCode key="a" />, <Smartphone key="b" />, <Globe key="c" />]
   return (
-    <section id="servicios" className="relative overflow-hidden bg-navy py-24 sm:py-32">
+    <section id="servicios" className="relative overflow-hidden bg-navy py-28 sm:py-40">
       <div aria-hidden className="absolute -left-40 top-20 size-[34rem] rounded-full bg-sky/15 blur-[130px]" />
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
-        <Reveal className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-[clamp(2.4rem,6vw,4.5rem)]">{S.title}</h2>
-          <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold"><Sparkles className="size-4 text-sky" aria-hidden /> {S.sub}</span>
-        </Reveal>
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="eyebrow mb-5">{COPY.eyebrows.servicios}</p>
+            <SplitText as="h2" text={S.title} className="display-lg" accent={['paquetes']} />
+          </div>
+          <Reveal delay={0.3}>
+            <span className="glass inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"><Sparkles className="size-4 text-sky motion-safe:animate-[spin-slow_8s_linear_infinite]" aria-hidden /> {S.sub}</span>
+          </Reveal>
+        </div>
 
         <div className="mt-16 grid items-start gap-14 lg:grid-cols-3 lg:gap-6">
           <div className="space-y-8">
             <Folder index={0} width={w} label={S.bio.name} meta={S.bio.line} art={ART.bio} seed={3} files={FILES.bio} />
-            <Price value={S.bio.price} />
+            <Price from={35} to={50} />
           </div>
 
           <div className="relative space-y-8 lg:-translate-y-6">
             <div aria-hidden className="absolute inset-x-6 top-10 h-72 rounded-full bg-sky/30 blur-3xl" />
             <span className="relative z-10 mx-auto flex w-fit items-center gap-1.5 rounded-full bg-sky px-4 py-1.5 text-sm font-bold text-navy shadow-[0_0_30px_rgb(74_189_240/0.7)]"><Sparkles className="size-4" aria-hidden /> {S.featured}</span>
             <Folder index={1} width={Math.min(420, Math.round(w * 1.08))} label={S.site.name} meta={S.site.line} art={ART.site} seed={11} files={FILES.site} />
-            <Price value={S.site.price} />
+            <Price from={50} to={70} />
           </div>
 
           <div className="space-y-8">
@@ -97,7 +105,7 @@ export function Services() {
               {S.qr.tiers.map((t, i) => (
                 <div key={t.price} className="glass rounded-2xl px-2 py-3 text-center">
                   <span className="mx-auto mb-1 block w-fit text-sky [&_svg]:size-4">{tierIcons[i]}</span>
-                  <span className="text-glow block text-3xl font-extrabold leading-none tracking-tighter text-sky">{t.price}</span>
+                  <span className="text-glow block font-display text-4xl leading-none text-sky"><CountUp to={parseInt(t.price.slice(1), 10)} prefix="$" /></span>
                   <span className="mt-1 block text-[11px] font-semibold leading-tight text-white/80">{t.label}</span>
                 </div>
               ))}

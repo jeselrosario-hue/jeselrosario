@@ -1,6 +1,14 @@
 /** Todos los textos del sitio. Cámbialos aquí sin tocar los componentes. */
 export const COPY = {
   brand: 'Ascent Co.',
+  nav: [
+    { id: 'servicios', label: 'Paquetes' },
+    { id: 'ejemplos', label: 'Ejemplos' },
+    { id: 'proceso', label: 'Proceso' },
+    { id: 'contacto', label: 'Contacto' },
+  ],
+  marquee: ['Presentación', 'Sitio web', 'Tarjeta QR', 'Agenda', 'Recibos', 'Dominio propio'],
+  eyebrows: { ejemplos: '01 — Ejemplos', servicios: '02 — Paquetes', extras: '03 — Extras', proceso: '04 — Proceso', contacto: '05 — Contacto' },
   hero: {
     line1: 'Que te encuentren.',
     line2: 'Que te elijan.',

@@ -1,6 +1,6 @@
 # Ascent Co. · sitio de presentación
 
-Vite + React + TypeScript + Tailwind v4 + Motion. Fuente: Sora. Listo para Netlify.
+Vite + React + TypeScript + Tailwind v4 + Motion + Lenis. Tipografía: Instrument Serif (títulos), Geist (texto) y Geist Mono (etiquetas). Listo para Netlify.
 
 ## Cambiar los enlaces (WhatsApp, Instagram, Facebook)
 
@@ -35,6 +35,10 @@ npm run build      # genera dist/
 ```
 
 **Netlify:** conecta el repositorio, y como carpeta base pon `ascent-site` si el proyecto está dentro de otro repo. `netlify.toml` ya trae el comando (`npm run build`) y la carpeta (`dist`). También sirve arrastrar la carpeta `dist` en netlify.com/drop.
+
+## Movimiento (Motion)
+
+`src/components/motion/`: scroll con inercia (`SmoothScroll`, Lenis), barra de progreso, cursor, botones magnéticos, titulares que se revelan por palabra (`SplitText`), números que cuentan (`CountUp`), tarjetas con foco de luz (`SpotlightCard`), cinta que reacciona al scroll (`Marquee`) y cortina de entrada (`Intro`). "Ejemplos" y "Proceso" son escenas fijas controladas por el scroll (`useScroll` + `useTransform`). Todo respeta `prefers-reduced-motion`.
 
 ## Notas técnicas
 
