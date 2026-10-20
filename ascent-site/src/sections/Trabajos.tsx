@@ -26,14 +26,14 @@ function Ventana({ t }: { t: Trabajo }) {
 function Tarjeta({ t, flip }: { t: Trabajo; flip: boolean }) {
   const body = (
     <div className={`flex flex-col justify-center ${flip ? 'lg:order-first' : ''}`}>
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="glass rounded-full px-3 py-1 font-mono text-[11px] uppercase tracking-widest">{t.paquete}</span>
-        {t.demo && <span className="rounded-full bg-sky px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-widest text-navy">{COPY.trabajos.demo}</span>}
-      </div>
-      <h3 className="font-display mt-5 text-4xl leading-tight sm:text-5xl">{t.nombre}</h3>
+      <h3 className="font-display text-4xl leading-tight sm:text-5xl">{t.nombre}</h3>
       <p className="mt-4 max-w-md text-lg text-white/75">{t.linea}</p>
+      <div className="mt-5 flex flex-wrap items-center gap-2">
+        <span className="rounded-full bg-white/10 px-3 py-1 text-sm font-medium">{t.paquete}</span>
+        {t.demo && <span className="rounded-full bg-sky px-3 py-1 text-sm font-semibold text-navy">{COPY.trabajos.demo}</span>}
+      </div>
       {t.url && (
-        <a href={`https://${t.url}`} target="_blank" rel="noopener noreferrer" aria-label={`${COPY.trabajos.ver}: ${t.nombre}`} className="mt-7 inline-flex w-fit items-center gap-2 rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold transition-colors hover:border-sky hover:text-sky">
+        <a href={`https://${t.url}`} target="_blank" rel="noopener noreferrer" aria-label={`${COPY.trabajos.ver}: ${t.nombre}`} className="mt-7 inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-white/10 px-5 text-sm font-semibold transition-[transform,background-color] duration-150 ease-out hover:bg-white/15 active:scale-[0.97]">
           {COPY.trabajos.ver} <span aria-hidden>↗</span>
         </a>
       )}
@@ -54,7 +54,7 @@ export function Trabajos() {
     <section id="trabajos" className="relative overflow-hidden bg-navy py-28 sm:py-40">
       <div aria-hidden className="absolute -left-40 top-1/3 size-[40rem] rounded-full bg-sky/10 blur-[140px]" />
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
-        <p className="eyebrow mb-5">{COPY.eyebrows.trabajos}</p>
+        <p className="eyebrow mb-5">{COPY.eyebrows.trabajos}</p>{/* taste-skill-ignore: numeración 01–08 del sitio entero; quitarla solo aquí dejaría un hueco */}
         <SplitText as="h2" text={COPY.trabajos.title} className="display-lg" accent={['Trabajos']} />
         <p className="mt-6 max-w-xl text-lg text-white/70">{COPY.trabajos.sub}</p>
         <div className="mt-20 flex flex-col gap-28 sm:gap-36">
