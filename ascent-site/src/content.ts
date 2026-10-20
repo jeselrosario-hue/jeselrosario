@@ -5,11 +5,12 @@ export const COPY = {
     { id: 'servicios', label: 'Paquetes' },
     { id: 'ejemplos', label: 'Ejemplos' },
     { id: 'cotiza', label: 'Cotiza' },
+    { id: 'preguntas', label: 'Preguntas' },
     { id: 'proceso', label: 'Proceso' },
     { id: 'contacto', label: 'Contacto' },
   ],
   marquee: ['Presentación', 'Sitio web', 'Tarjeta QR', 'Agenda', 'Recibos', 'Dominio propio'],
-  eyebrows: { ejemplos: '01', servicios: '02', extras: '03', cotiza: '04', galeria: '05', proceso: '06', contacto: '07' },
+  eyebrows: { ejemplos: '01', servicios: '02', extras: '03', cotiza: '04', galeria: '05', proceso: '06', preguntas: '07', contacto: '08' },
   hero: {
     line1: 'Que te encuentren.',
     line2: 'Que te elijan.',
@@ -88,6 +89,18 @@ export const COPY = {
       { big: '50%', small: 'al comenzar' },
       { big: '50%', small: 'al entregar' },
       { big: '2', small: 'rondas de cambios' },
+    ],
+  },
+  /** Respuestas reales. Si cambias una, cambia también el JSON-LD de index.html. */
+  faq: {
+    title: 'Preguntas.',
+    items: [
+      { q: '¿Tengo que pagar todos los meses?', a: 'No. Se paga una vez y la página es tuya. Lo único que se renueva cada año es el dominio propio, si decides tener uno, y eso se paga directo donde se compra.' },
+      { q: '¿Y si no me gusta como queda?', a: 'Cada paquete incluye dos rondas de cambios. Te la enseñamos antes de publicarla y la ajustamos.' },
+      { q: '¿Cuánto tarda?', a: 'La página de presentación suele estar en pocos días. El sitio web toma un poco más, y depende sobre todo de qué tan rápido nos pases tus fotos y tu información.' },
+      { q: '¿Cómo se paga?', a: '50% para empezar y 50% al entregar.' },
+      { q: '¿Tengo que saber de computadoras?', a: 'No. Nos cuentas qué haces, nos pasas tus fotos y nosotros armamos todo.' },
+      { q: '¿Las fotos las pongo yo?', a: 'Sí, y mientras mejores sean, mejor queda. Si no tienes, te decimos qué tomar con el celular para que se vea bien.' },
     ],
   },
   closing: {

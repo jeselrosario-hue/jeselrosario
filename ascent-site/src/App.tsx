@@ -6,6 +6,7 @@ import { SmoothScroll } from '@/components/motion/SmoothScroll'
 import { Gallery } from '@/sections/Gallery'
 import { Closing } from '@/sections/Closing'
 import { Extras } from '@/sections/Extras'
+import { Faq } from '@/sections/Faq'
 import { Hero } from '@/sections/Hero'
 import { Process } from '@/sections/Process'
 import { Quote } from '@/sections/Quote'
@@ -33,6 +34,7 @@ export default function App() {
         <Quote />
         <Gallery />
         <Process />
+        <Faq />
         <Closing />
       </main>
     </>
