@@ -60,3 +60,26 @@ npm run build      # genera dist/
 - Portada y carpetas son componentes de **21st.dev**: *Liquid Sculpture Hero* (`src/components/ui/liquid-sculpture-hero.tsx`, autor gughigug) y *Glassmorphism Folder Cards* (`src/components/ui/glass-folder-cards.tsx`, autor kedhareswer). Se usan con el logo de Ascent y la paleta de la marca (`src/sections/Hero.tsx` y `src/sections/Services.tsx`).
 - Las imágenes de la portada están en `public/hero/` (logo sobre transparente: `logo-wide.webp` escritorio, `logo-tall.webp` móvil) y las de las hojas de cada carpeta en `public/mockups/`. Para regenerar estas últimas: `npm run dev`, abre `/shots.html?s=phone` (también `links`, `fotos`, `site`, `chat`, `qr20`, `qr15`, `qr10`) y captura la escena. `shots.html` no se incluye en el build.
 - Capa estilo shadcn (`components.json`, `cn`, `Button`).
+
+## Herramientas del proyecto (`.mcp.json` y `.claude/skills/`)
+
+Al abrir Claude Code en este repositorio quedan disponibles:
+
+| Qué | Para qué | Necesita |
+|---|---|---|
+| `playwright` (MCP) | Que Claude abra el sitio, lo pruebe, mire la consola y tome capturas y video en vez de decir "ya está" | nada; se baja solo la primera vez |
+| `21st` (MCP) | Traer componentes de 21st.dev | la variable `API_KEY_21ST` |
+| `figma` (MCP) | Leer tipografías, componentes y espaciados de un archivo de Figma | cuenta de Figma; autenticar con `/mcp` |
+| `frontend-design` | Evitar el diseño genérico de IA | — |
+| `taste-skill` | Dirección de arte: reparte direcciones y revisa la página con un inspector real | Node 22+ y Chrome |
+| `emil-design-eng` | Pulido de interfaz y decisiones de animación | — |
+| `ui-ux-pro-max` | Estilos, paletas y tipografías | — |
+
+Las skills **no se activan solas**: hay que nombrarlas. Por ejemplo:
+
+> Usa la skill emil-design-eng para revisar esta página, y después pruébala con Playwright
+> en móvil y escritorio: navegación, botones, consola y capturas. No digas que funciona
+> hasta que lo hayas comprobado.
+
+El registro `@cult-ui` está en `components.json`, así que cualquier componente de
+cult-ui.com entra con `npx shadcn add @cult-ui/<nombre>`.
