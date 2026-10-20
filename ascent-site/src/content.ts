@@ -99,6 +99,16 @@ export const COPY = {
         alt: 'Sitio web de ejemplo para una barbería, hecho por Ascent Co.',
       },
       {
+        nombre: 'Cortinas Duo Home Fine',
+        linea: 'Página con catálogo, fotos de instalaciones y cotización directa por WhatsApp.',
+        paquete: 'Sitio web',
+        demo: false,
+        url: 'cortinas-duohomefine.netlify.app',
+        desktop: '/trabajos/cortinas-pagina-desktop.webp',
+        movil: '',
+        alt: 'Página web de Cortinas Duo Home Fine con botón de cotizar por WhatsApp.',
+      },
+      {
         nombre: 'Gestión y agenda',
         linea: 'App para citas, clientes, cotizaciones con PDF, facturas y pagos, hecha para un negocio de cortinas.',
         paquete: 'A medida',
