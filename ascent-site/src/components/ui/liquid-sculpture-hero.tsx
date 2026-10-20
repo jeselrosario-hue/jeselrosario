@@ -1041,6 +1041,8 @@ export interface SculptureHeroProps {
   headlineAccent?: string
   body?: string
   primaryCta?: SculptureHeroLink
+  /** Wraps the primary call to action (e.g. in a magnetic hover effect). */
+  ctaWrap?: (cta: React.ReactNode) => React.ReactNode
   secondaryCta?: SculptureHeroLink
   hint?: string
   hintTouch?: string
@@ -1220,6 +1222,8 @@ const CSS = `
 .sh-h1{font-family:var(--sh-head);font-weight:500;font-size:clamp(40px,min(6.6cqw,11.5cqh),124px);line-height:.92;letter-spacing:-.045em;margin:0;
   text-wrap:balance}
 .sh-h1 .sh-line{display:block}
+.sh-w{display:inline-block;animation:sh-word .9s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--sh-delay,0s) + var(--i,0) * 80ms)}
+@keyframes sh-word{from{opacity:0;transform:translateY(.42em) rotate(3deg)}}
 .sh-accent{font-family:var(--sh-accent);font-style:italic;font-weight:400;letter-spacing:-.02em;color:var(--sh-acc)}
 .sh-aside{max-width:400px;justify-self:end;padding-bottom:.6em}
 .sh-body{font-size:clamp(15px,1.1cqw,17px);line-height:1.5;letter-spacing:-.01em;margin:0 0 26px;opacity:.78;text-wrap:pretty}
@@ -1254,7 +1258,7 @@ const CSS = `
   .sh-credit{right:auto;left:50%;transform:translateX(-50%)}
 }
 @media (prefers-reduced-motion:reduce){
-  .sh-hint::before{animation:none}
+  .sh-hint::before,.sh-w{animation:none}
   .sh-canvas,.sh-fallback,.sh-btn,.sh-btn svg,.sh-txt svg{transition:none}
 }
 `
@@ -1299,19 +1303,31 @@ function injectFonts() {
 
 const extern = (href: string) => (/^https?:\/\//i.test(href) ? { target: "_blank", rel: "noopener noreferrer" } : {})
 
+/** Each word is its own span so the headline can assemble word by word (CSS, transform + opacity). */
 function renderHeadline(text: string, accent: string) {
+  let n = 0
+  const words = (part: string, cls?: string) =>
+    part.split(/(\s+)/).map((w, i) =>
+      !w ? null : /^\s+$/.test(w) ? (
+        w
+      ) : (
+        <span key={i} className={cls ? `sh-w ${cls}` : "sh-w"} style={{ "--i": n++ } as React.CSSProperties}>
+          {w}
+        </span>
+      ),
+    )
   const lines = text.split("\n")
   return lines.map((line, li) => {
-    let content: React.ReactNode = line
+    let content: React.ReactNode = words(line)
     const a = accent && accent.trim()
     if (a) {
       const idx = line.indexOf(a)
       if (idx >= 0) {
         content = (
           <>
-            {line.slice(0, idx)}
-            <span className="sh-accent">{a}</span>
-            {line.slice(idx + a.length)}
+            {words(line.slice(0, idx))}
+            {words(a, "sh-accent")}
+            {words(line.slice(idx + a.length))}
           </>
         )
       }
@@ -1341,6 +1357,7 @@ export default function SculptureHero(props: SculptureHeroProps) {
     headlineAccent = DEFAULTS.headlineAccent,
     body = DEFAULTS.body,
     primaryCta = DEFAULTS.primaryCta,
+    ctaWrap = (cta: React.ReactNode) => cta,
     secondaryCta = DEFAULTS.secondaryCta,
     hint = DEFAULTS.hint,
     hintTouch = DEFAULTS.hintTouch,
@@ -1712,12 +1729,14 @@ export default function SculptureHero(props: SculptureHeroProps) {
         <div className="sh-aside">
           {body ? <p className="sh-body">{body}</p> : null}
           <div className="sh-ctas">
-            {primaryCta && primaryCta.label ? (
-              <a className="sh-btn" href={primaryCta.href} {...extern(primaryCta.href)}>
-                {primaryCta.label}
-                <Arrow />
-              </a>
-            ) : null}
+            {primaryCta && primaryCta.label
+              ? ctaWrap(
+                  <a className="sh-btn" href={primaryCta.href} {...extern(primaryCta.href)}>
+                    {primaryCta.label}
+                    <Arrow />
+                  </a>,
+                )
+              : null}
             {secondaryCta && secondaryCta.label ? (
               <a className="sh-txt" href={secondaryCta.href} {...extern(secondaryCta.href)}>
                 {secondaryCta.label}

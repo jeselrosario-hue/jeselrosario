@@ -26,9 +26,9 @@ function PinnedSteps() {
             <AnimatePresence mode="wait">
               <motion.span
                 key={i}
-                initial={{ y: 90, opacity: 0, filter: 'blur(14px)' }}
-                animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-                exit={{ y: -90, opacity: 0, filter: 'blur(14px)' }}
+                initial={{ y: 90, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -90, opacity: 0 }}
                 transition={{ duration: 0.6, ease }}
                 className="absolute inset-0 flex items-center font-display text-[min(34vw,32rem)] leading-none text-transparent [-webkit-text-stroke:2px_var(--color-sky)] [text-shadow:0_0_90px_rgb(74_189_240/0.35)]"
               >

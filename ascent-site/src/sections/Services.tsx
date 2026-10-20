@@ -2,6 +2,7 @@ import { useInView } from 'motion/react'
 import { Globe, QrCode, Smartphone, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Reveal } from '@/components/Reveal'
+import { DrawLine } from '@/components/motion/DrawLine'
 import { CountUp } from '@/components/motion/CountUp'
 import { SplitText } from '@/components/motion/SplitText'
 import GlassFolder, { type ArtRecipe, type FolderFile } from '@/components/ui/glass-folder-cards'
@@ -88,6 +89,7 @@ export function Services() {
           <div>
             <p className="eyebrow mb-5">{COPY.eyebrows.servicios}</p>
             <SplitText as="h2" text={S.title} className="display-lg" accent={['paquetes']} />
+            <DrawLine className="mt-4 w-44 text-sky sm:w-64" delay={0.5} />
           </div>
           <Reveal delay={0.3}>
             <span className="glass inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"><Sparkles className="size-4 text-sky motion-safe:animate-[spin-slow_8s_linear_infinite]" aria-hidden /> {S.sub}</span>
@@ -111,11 +113,11 @@ export function Services() {
             <Folder index={2} width={w} label={S.qr.name} meta={S.qr.line} art={ART.qr} seed={7} files={FILES.qr} />
             <div className="mx-auto grid max-w-sm grid-cols-3 gap-2">
               {S.qr.tiers.map((t, i) => (
-                <div key={t.price} className="glass rounded-2xl px-2 py-3 text-center">
+                <Reveal key={t.price} y={16} duration={0.5} delay={0.2 + i * 0.12} className="glass rounded-2xl px-2 py-3 text-center">
                   <span className="mx-auto mb-1 block w-fit text-sky [&_svg]:size-4">{tierIcons[i]}</span>
                   <span className="text-glow block font-display text-4xl leading-none text-sky"><CountUp to={parseInt(t.price.slice(1), 10)} prefix="$" /></span>
                   <span className="mt-1 block text-[11px] font-semibold leading-tight text-white/80">{t.label}</span>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>

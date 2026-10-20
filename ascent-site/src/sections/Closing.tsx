@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from 'motion/react'
 import { useRef, type ComponentType, type SVGProps } from 'react'
 import { FacebookIcon, InstagramIcon, WhatsAppIcon } from '@/components/BrandIcons'
+import { DrawLine } from '@/components/motion/DrawLine'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { SplitText } from '@/components/motion/SplitText'
 import { Button } from '@/components/ui/button'
@@ -29,6 +30,7 @@ export function Closing() {
       <div className="mx-auto max-w-5xl px-5">
         <p className="eyebrow mb-6">{COPY.eyebrows.contacto}</p>
         <SplitText as="h2" text={COPY.closing.title} className="display-xl" accent={['arrancamos']} />
+        <DrawLine className="mx-auto mt-5 w-48 text-sky sm:w-72" delay={0.5} />
         <div className="mt-14 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:items-center">
           {ITEMS.map(({ key, Icon, primary }) => {
             const href = linkFor(key)
