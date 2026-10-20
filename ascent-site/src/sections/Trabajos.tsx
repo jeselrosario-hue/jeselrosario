@@ -2,7 +2,17 @@ import { Reveal } from '@/components/Reveal'
 import { SplitText } from '@/components/motion/SplitText'
 import { COPY } from '@/content'
 
-type Trabajo = (typeof COPY.trabajos.items)[number]
+interface Trabajo {
+  nombre: string
+  linea: string
+  paquete: string
+  demo: boolean
+  url: string
+  urlTexto?: string
+  desktop: string
+  movil: string
+  alt: string
+}
 
 function Ventana({ t }: { t: Trabajo }) {
   return (
@@ -10,7 +20,7 @@ function Ventana({ t }: { t: Trabajo }) {
       <div data-ui className="overflow-hidden rounded-2xl border border-white/15 bg-[#050d1c] shadow-[0_30px_80px_-24px_rgb(0_0_0/0.8)]">
         <div className="flex items-center gap-1.5 bg-[#0a1a36] px-3 py-2">
           <span className="size-2 rounded-full bg-white/25" /><span className="size-2 rounded-full bg-white/25" /><span className="size-2 rounded-full bg-white/25" />
-          {t.url && <span className="mx-auto w-3/5 truncate rounded-full bg-white/10 px-3 py-0.5 text-center text-[10px] text-white/70">{t.url}</span>}
+          {(t.urlTexto ?? t.url) && <span className="mx-auto w-3/5 truncate rounded-full bg-white/10 px-3 py-0.5 text-center text-[10px] text-white/70">{t.urlTexto ?? t.url}</span>}
         </div>
         <img src={t.desktop} alt={t.alt} width={960} height={600} loading="lazy" decoding="async" className="aspect-[16/10] w-full object-cover object-top" />
       </div>
@@ -58,7 +68,7 @@ export function Trabajos() {
         <SplitText as="h2" text={COPY.trabajos.title} className="display-lg" accent={['Trabajos']} />
         <p className="mt-6 max-w-xl text-lg text-white/70">{COPY.trabajos.sub}</p>
         <div className="mt-20 flex flex-col gap-28 sm:gap-36">
-          {COPY.trabajos.items.map((t, i) => <Tarjeta key={t.nombre} t={t} flip={i % 2 === 1} />)}
+          {(COPY.trabajos.items as ReadonlyArray<Trabajo>).map((t, i) => <Tarjeta key={t.nombre} t={t} flip={i % 2 === 1} />)}
         </div>
       </div>
     </section>
