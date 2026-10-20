@@ -18,6 +18,19 @@ export const LINKS = {
 - Si un enlace queda vacío, su botón se muestra apagado con "Pronto" y el botón de la portada baja a la sección de contacto.
 - `SITE_URL` es lo que codifica el QR de ejemplo.
 
+## Agenda de citas (Cal.com)
+
+`CAL_LINK` en el mismo `src/config.ts` enciende la agenda del paquete de citas:
+
+```ts
+export const CAL_LINK = 'ascentco/consulta'   // lo que va después de cal.com
+```
+
+Vacío no carga nada y la página queda igual. Con enlace aparece un bloque bajo los extras
+donde se reserva sin salir del sitio, con los colores de la marca. El componente es
+`src/components/CalEmbed.tsx` y sirve tal cual para el sitio de un cliente: se le pone
+su propio enlace de Cal.com (el plan gratis alcanza) y listo.
+
 ## Cambiar textos y precios
 
 Todo el texto está en **`src/content.ts`** (portada, paquetes, precios, extras, pasos, condiciones). No hay que tocar componentes.

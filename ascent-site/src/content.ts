@@ -45,6 +45,11 @@ export const COPY = {
       { id: 'dominio', title: 'Dominio propio', price: 'desde $100' },
       { id: 'recibos', title: 'Cotizaciones y recibos', price: 'precio aparte' },
     ],
+    demo: {
+      eyebrow: 'Pruébala',
+      title: 'Así reservarían tus clientes.',
+      sub: 'Esta es la misma agenda que se instala en tu sitio. Aparta un espacio y la ves por dentro.',
+    },
   },
   quote: {
     title: 'Cuánto te cuesta.',
