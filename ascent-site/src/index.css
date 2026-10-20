@@ -24,10 +24,9 @@
   h1, h2, h3 { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.02em; line-height: 0.95; text-wrap: balance; }
   :focus-visible { outline: 2px solid var(--color-sky); outline-offset: 3px; }
   ::selection { background: var(--color-sky); color: var(--color-navy); }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  }
+  /* Solo si se decide respetar "Reducir movimiento" (ver src/lib/motion.ts). */
+  html.reducir { scroll-behavior: auto; }
+  .reducir *, .reducir *::before, .reducir *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 
 /* Lenis */

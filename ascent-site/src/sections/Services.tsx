@@ -92,7 +92,7 @@ export function Services() {
             <DrawLine className="mt-4 w-44 text-sky sm:w-64" delay={0.5} />
           </div>
           <Reveal delay={0.3}>
-            <span className="glass inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"><Sparkles className="size-4 text-sky motion-safe:animate-[spin-slow_8s_linear_infinite]" aria-hidden /> {S.sub}</span>
+            <span className="glass inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"><Sparkles className="size-4 text-sky animate-[spin-slow_8s_linear_infinite]" aria-hidden /> {S.sub}</span>
           </Reveal>
         </div>
 

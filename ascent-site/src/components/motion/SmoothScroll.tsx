@@ -1,10 +1,11 @@
 import Lenis from 'lenis'
 import { useEffect } from 'react'
+import { reducirMovimiento } from '@/lib/motion'
 
-/** Scroll con inercia (Lenis). Se apaga con prefers-reduced-motion. Los enlaces #ancla también se deslizan. */
+/** Scroll con inercia (Lenis). Se apaga solo si se respeta "Reducir movimiento" (ver lib/motion). Los enlaces #ancla también se deslizan. */
 export function SmoothScroll() {
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (reducirMovimiento()) return
     const lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.95 })
     let raf = 0
     const loop = (t: number) => {

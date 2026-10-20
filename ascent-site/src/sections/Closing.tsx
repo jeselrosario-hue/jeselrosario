@@ -23,7 +23,7 @@ export function Closing() {
     <section ref={ref} id="contacto" className="relative isolate overflow-hidden bg-navy-2 pt-32 text-center sm:pt-48">
       <div aria-hidden className="absolute left-1/2 top-[38%] -z-10 size-[48rem] -translate-x-1/2 -translate-y-1/2">
         {[0, 1, 2].map((i) => (
-          <span key={i} className="absolute inset-0 rounded-full border border-sky/30 motion-safe:animate-[ripple_6s_ease-out_infinite]" style={{ animationDelay: `${i * 2}s` }} />
+          <span key={i} className="absolute inset-0 rounded-full border border-sky/30 animate-[ripple_6s_ease-out_infinite]" style={{ animationDelay: `${i * 2}s` }} />
         ))}
         <span className="absolute inset-[24%] rounded-full bg-sky/25 blur-[100px]" />
       </div>

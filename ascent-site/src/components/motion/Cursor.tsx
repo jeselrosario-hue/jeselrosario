@@ -1,11 +1,11 @@
-import { motion, useMotionValue, useReducedMotion, useSpring } from 'motion/react'
+import { motion, useMotionValue, useReducedMotionConfig, useSpring } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 /** Anillo que sigue al cursor y crece sobre lo clicable. Solo en dispositivos con puntero fino. */
 export function Cursor() {
   const fine = useMediaQuery('(pointer: fine)')
-  const reduce = useReducedMotion()
+  const reduce = useReducedMotionConfig()
   const x = useMotionValue(-100)
   const y = useMotionValue(-100)
   const sx = useSpring(x, { stiffness: 420, damping: 38, mass: 0.45 })

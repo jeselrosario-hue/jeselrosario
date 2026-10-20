@@ -1,9 +1,10 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
+import { reducirMovimiento } from '@/lib/motion'
 
 /** Cortina de entrada: el logo aparece, una línea se llena y la cortina sube. */
 export function Intro() {
-  const [show, setShow] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const [show, setShow] = useState(() => !reducirMovimiento())
   useEffect(() => {
     if (!show) return
     const t = window.setTimeout(() => setShow(false), 1500)

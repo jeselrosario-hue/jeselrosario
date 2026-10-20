@@ -7,7 +7,7 @@ export function PhoneBio({ className = '' }: { className?: string }) {
     <div className={`relative aspect-[9/18.5] w-full rounded-[2.4rem] border-[7px] border-[#050d1c] bg-[#050d1c] shadow-[0_40px_90px_-20px_rgb(0_0_0/0.7),0_0_0_1.5px_rgb(255_255_255/0.18)] ${className}`}>
       <div className="absolute left-1/2 top-2 z-20 h-4 w-16 -translate-x-1/2 rounded-full bg-black" />
       <div className="relative h-full overflow-hidden rounded-[1.9rem] bg-gradient-to-b from-[#0d2a55] to-[#071733]">
-        <div className="motion-safe:animate-[page-scroll_12s_ease-in-out_infinite] [--scroll-dist:-34%]">
+        <div className="animate-[page-scroll_12s_ease-in-out_infinite] [--scroll-dist:-34%]">
           <div className="h-28 bg-cover bg-center" style={{ backgroundImage: 'url(/examples/estudio.webp)' }} />
           <div className="-mt-9 flex flex-col items-center px-4 pb-6">
             <div className="size-[4.5rem] rounded-full border-[3px] border-sky bg-cover bg-center shadow-[0_0_24px_rgb(74_189_240/0.6)]" style={{ backgroundImage: 'url(/examples/lowfade.webp)' }} />

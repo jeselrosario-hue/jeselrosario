@@ -1,11 +1,11 @@
-import { animate, motion, useInView, useMotionValue, useReducedMotion, useTransform } from 'motion/react'
+import { animate, motion, useInView, useMotionValue, useReducedMotionConfig, useTransform } from 'motion/react'
 import { useEffect, useRef } from 'react'
 
 /** Número que cuenta desde 0 al entrar en pantalla. */
 export function CountUp({ to, prefix = '', suffix = '', duration = 1.8, className }: { to: number; prefix?: string; suffix?: string; duration?: number; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true, amount: 0.8 })
-  const reduce = useReducedMotion()
+  const reduce = useReducedMotionConfig()
   const mv = useMotionValue(reduce ? to : 0)
   const text = useTransform(mv, (v) => `${prefix}${Math.round(v)}${suffix}`)
   useEffect(() => {

@@ -9,7 +9,7 @@ export function BrowserSite({ className = '', bubble = true, url = 'fadelab.netl
         <div className="mx-auto w-3/5 truncate rounded-full bg-white/10 px-3 py-1 text-center text-[11px] text-white/70">{url}</div>
       </div>
       <div className="relative aspect-[16/10] overflow-hidden">
-        <img src="/examples/fadelab-site.webp" alt="Ejemplo: sitio web de una barbería hecho por Ascent Co." width={1100} height={4320} loading="lazy" className="w-full motion-safe:animate-[page-scroll_16s_ease-in-out_infinite] [--scroll-dist:-84%]" />
+        <img src="/examples/fadelab-site.webp" alt="Ejemplo: sitio web de una barbería hecho por Ascent Co." width={1100} height={4320} loading="lazy" className="w-full animate-[page-scroll_16s_ease-in-out_infinite] [--scroll-dist:-84%]" />
         {bubble && (
           <div className="absolute bottom-3 right-3 flex items-center gap-2 rounded-2xl rounded-br-sm bg-sky px-3 py-2 text-[11px] font-bold text-navy shadow-[0_0_30px_rgb(74_189_240/0.6)] sm:text-xs">
             <WhatsAppIcon className="size-4" /> Hola, quiero reservar

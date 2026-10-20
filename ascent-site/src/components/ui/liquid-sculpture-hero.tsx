@@ -10,6 +10,7 @@
  */
 
 import * as React from "react"
+import { reducirMovimiento } from "@/lib/motion"
 
 /* ────────────────────────────────────────────────────────────────────
    Engine (WebGL2 GPGPU particles)
@@ -1257,10 +1258,8 @@ const CSS = `
   .sh-content{padding-bottom:40px}
   .sh-credit{right:auto;left:50%;transform:translateX(-50%)}
 }
-@media (prefers-reduced-motion:reduce){
-  .sh-hint::before,.sh-w{animation:none}
-  .sh-canvas,.sh-fallback,.sh-btn,.sh-btn svg,.sh-txt svg{transition:none}
-}
+.reducir .sh-hint::before,.reducir .sh-w{animation:none}
+.reducir .sh-canvas,.reducir .sh-fallback,.reducir .sh-btn,.reducir .sh-btn svg,.reducir .sh-txt svg{transition:none}
 `
 
 const SunIcon = () => (
@@ -1523,7 +1522,7 @@ export default function SculptureHero(props: SculptureHeroProps) {
       root.dataset.gl = "off"
     }
     try {
-      engine = new LiquidEngine(canvas, optsRef.current(mq.matches), fail)
+      engine = new LiquidEngine(canvas, optsRef.current(reducirMovimiento()), fail)
       engineRef.current = engine
     } catch {
       fail()
@@ -1540,7 +1539,7 @@ export default function SculptureHero(props: SculptureHeroProps) {
     io.observe(root)
     const onVis = () => engine?.setVisible(!document.hidden)
     document.addEventListener("visibilitychange", onVis)
-    const onMq = () => engine?.setOptions({ reducedMotion: mq.matches })
+    const onMq = () => engine?.setOptions({ reducedMotion: reducirMovimiento() })
     mq.addEventListener?.("change", onMq)
 
     const pos = (e: PointerEvent) => {
@@ -1644,7 +1643,7 @@ export default function SculptureHero(props: SculptureHeroProps) {
   React.useEffect(() => {
     const e = engineRef.current
     if (!e) return
-    const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const rm = reducirMovimiento()
     e.setOptions(optsRef.current(rm))
   }, [interactive, strength, radius, particleDensity, dotSize, particleSpread, turbulence, liquid, streaks, restStyle, returnSpeed, ambient, ambientIntensity, speed, intro, bgRgb, imgBgRgb])
 

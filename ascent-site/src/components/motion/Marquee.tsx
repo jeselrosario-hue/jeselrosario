@@ -1,4 +1,4 @@
-import { motion, useAnimationFrame, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, useVelocity } from 'motion/react'
+import { motion, useAnimationFrame, useMotionValue, useReducedMotionConfig, useScroll, useSpring, useTransform, useVelocity } from 'motion/react'
 import { useRef } from 'react'
 
 const wrap = (min: number, max: number, v: number) => {
@@ -8,7 +8,7 @@ const wrap = (min: number, max: number, v: number) => {
 
 /** Cinta infinita cuya velocidad (y sentido) reacciona a la velocidad del scroll. */
 export function Marquee({ items, base = -1.6 }: { items: readonly string[]; base?: number }) {
-  const reduce = useReducedMotion()
+  const reduce = useReducedMotionConfig()
   const baseX = useMotionValue(0)
   const { scrollY } = useScroll()
   const smooth = useSpring(useVelocity(scrollY), { damping: 50, stiffness: 400 })
