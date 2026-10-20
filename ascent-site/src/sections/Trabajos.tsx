@@ -7,16 +7,16 @@ type Trabajo = (typeof COPY.trabajos.items)[number]
 function Ventana({ t }: { t: Trabajo }) {
   return (
     <div className="relative">
-      <div className="overflow-hidden rounded-2xl border border-white/15 bg-[#050d1c] shadow-[0_30px_80px_-24px_rgb(0_0_0/0.8)]">
+      <div data-ui className="overflow-hidden rounded-2xl border border-white/15 bg-[#050d1c] shadow-[0_30px_80px_-24px_rgb(0_0_0/0.8)]">
         <div className="flex items-center gap-1.5 bg-[#0a1a36] px-3 py-2">
           <span className="size-2 rounded-full bg-white/25" /><span className="size-2 rounded-full bg-white/25" /><span className="size-2 rounded-full bg-white/25" />
           {t.url && <span className="mx-auto w-3/5 truncate rounded-full bg-white/10 px-3 py-0.5 text-center text-[10px] text-white/70">{t.url}</span>}
         </div>
-        <img src={t.desktop} alt={t.alt} width={960} height={600} loading="lazy" className="aspect-[16/10] w-full object-cover object-top" />
+        <img src={t.desktop} alt={t.alt} width={960} height={600} loading="lazy" decoding="async" className="aspect-[16/10] w-full object-cover object-top" />
       </div>
       {t.movil && (
-        <div className="absolute -bottom-6 right-4 w-[26%] min-w-24 overflow-hidden rounded-[1.4rem] border-[5px] border-[#0a1a36] bg-[#050d1c] shadow-[0_24px_60px_-16px_rgb(0_0_0/0.85)] sm:right-6">
-          <img src={t.movil} alt="" width={320} height={693} loading="lazy" className="w-full" />
+        <div data-ui className="absolute -bottom-6 right-4 w-[26%] min-w-24 overflow-hidden rounded-[1.4rem] border-[5px] border-[#0a1a36] bg-[#050d1c] shadow-[0_24px_60px_-16px_rgb(0_0_0/0.85)] sm:right-6">
+          <img src={t.movil} alt="" width={320} height={693} loading="lazy" decoding="async" className="w-full" />
         </div>
       )}
     </div>
@@ -33,14 +33,14 @@ function Tarjeta({ t, flip }: { t: Trabajo; flip: boolean }) {
       <h3 className="font-display mt-5 text-4xl leading-tight sm:text-5xl">{t.nombre}</h3>
       <p className="mt-4 max-w-md text-lg text-white/75">{t.linea}</p>
       {t.url && (
-        <a href={`https://${t.url}`} target="_blank" rel="noopener" className="mt-7 inline-flex w-fit items-center gap-2 rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold transition-colors hover:border-sky hover:text-sky">
+        <a href={`https://${t.url}`} target="_blank" rel="noopener noreferrer" aria-label={`${COPY.trabajos.ver}: ${t.nombre}`} className="mt-7 inline-flex w-fit items-center gap-2 rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold transition-colors hover:border-sky hover:text-sky">
           {COPY.trabajos.ver} <span aria-hidden>↗</span>
         </a>
       )}
     </div>
   )
   return (
-    <Reveal>
+    <Reveal y={20} duration={0.5}>
       <article className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="pb-8"><Ventana t={t} /></div>
         {body}

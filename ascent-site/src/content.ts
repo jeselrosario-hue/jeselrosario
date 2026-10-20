@@ -86,6 +86,7 @@ export const COPY = {
     ver: 'Ver el sitio',
     demo: 'Ejemplo',
     // Para añadir uno: copia un bloque, pon sus capturas en public/trabajos/ y listo.
+    // Los trabajos que esperan permiso del cliente NO van aquí: están en src/trabajos-pendientes.ts (no se publican).
     // `url` sin https://. Sin `url`, la tarjeta no lleva enlace (apps privadas).
     items: [
       {
@@ -105,8 +106,18 @@ export const COPY = {
         demo: false,
         url: 'cortinas-duohomefine.netlify.app',
         desktop: '/trabajos/cortinas-pagina-desktop.webp',
-        movil: '',
+        movil: '/trabajos/cortinas-pagina-movil.webp',
         alt: 'Página web de Cortinas Duo Home Fine con botón de cotizar por WhatsApp.',
+      },
+      {
+        nombre: 'Jaeloo Cuts',
+        linea: 'Barbería en Caguas. El cliente aparta su cita en cinco pasos, en el local o a domicilio.',
+        paquete: 'Sitio web con agenda',
+        demo: false,
+        url: 'polite-zabaione-fdb28e.netlify.app',
+        desktop: '/trabajos/jaeloo-cuts-desktop.webp',
+        movil: '/trabajos/jaeloo-cuts-movil.webp',
+        alt: 'Página de Jaeloo Cuts, barbería en Caguas, con botón para reservar cita.',
       },
       {
         nombre: 'Gestión y agenda',
