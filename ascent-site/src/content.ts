@@ -5,12 +5,13 @@ export const COPY = {
     { id: 'servicios', label: 'Paquetes' },
     { id: 'ejemplos', label: 'Ejemplos' },
     { id: 'cotiza', label: 'Cotiza' },
+    { id: 'trabajos', label: 'Trabajos' },
     { id: 'preguntas', label: 'Preguntas' },
     { id: 'proceso', label: 'Proceso' },
     { id: 'contacto', label: 'Contacto' },
   ],
   marquee: ['Presentación', 'Sitio web', 'Tarjeta QR', 'Agenda', 'Recibos', 'Dominio propio'],
-  eyebrows: { ejemplos: '01', servicios: '02', extras: '03', cotiza: '04', galeria: '05', proceso: '06', preguntas: '07', contacto: '08' },
+  eyebrows: { ejemplos: '01', servicios: '02', extras: '03', cotiza: '04', trabajos: '05', proceso: '06', preguntas: '07', contacto: '08' },
   hero: {
     line1: 'Que te encuentren.',
     line2: 'Que te elijan.',
@@ -79,7 +80,46 @@ export const COPY = {
       foot: 'Es un estimado. El precio final se confirma al hablar.',
     },
   },
-  gallery: { title: 'Galería.' },
+  trabajos: {
+    title: 'Trabajos.',
+    sub: 'Lo que ya está hecho y funcionando.',
+    ver: 'Ver el sitio',
+    demo: 'Ejemplo',
+    // Para añadir uno: copia un bloque, pon sus capturas en public/trabajos/ y listo.
+    // `url` sin https://. Sin `url`, la tarjeta no lleva enlace (apps privadas).
+    items: [
+      {
+        nombre: 'Fade Lab',
+        linea: 'Sitio de barbería con reserva por WhatsApp y el mensaje ya escrito.',
+        paquete: 'Sitio web',
+        demo: true,
+        url: 'fadelab.netlify.app',
+        desktop: '/trabajos/fadelab-desktop.webp',
+        movil: '',
+        alt: 'Sitio web de ejemplo para una barbería, hecho por Ascent Co.',
+      },
+      {
+        nombre: 'Gestión y agenda',
+        linea: 'App para citas, clientes, cotizaciones con PDF, facturas y pagos, hecha para un negocio de cortinas.',
+        paquete: 'A medida',
+        demo: false,
+        url: '',
+        desktop: '/trabajos/cortinas-gestion-desktop.webp',
+        movil: '/trabajos/cortinas-gestion-movil.webp',
+        alt: 'App de gestión y agenda con datos de ejemplo.',
+      },
+      {
+        nombre: 'Inventario',
+        linea: 'Control de almacenes, modelos y medidas, con entradas, salidas y transferencias en tiempo real.',
+        paquete: 'A medida',
+        demo: false,
+        url: '',
+        desktop: '/trabajos/cortinas-inventario-desktop.webp',
+        movil: '/trabajos/cortinas-inventario-movil.webp',
+        alt: 'App de inventario con datos de ejemplo.',
+      },
+    ],
+  },
   /** Reseñas reales de clientes. Vacío = la galería muestra solo trabajos (no se inventan reseñas). */
   testimonials: [] as ReadonlyArray<{ name: string; role: string; quote: string }>,
   process: {
