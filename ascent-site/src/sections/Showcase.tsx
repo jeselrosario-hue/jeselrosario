@@ -90,7 +90,7 @@ function Stacked() {
 export function Showcase() {
   const wide = useMediaQuery('(min-width: 1024px) and (min-height: 640px)')
   return (
-    <section id="ejemplos" className="relative bg-navy-2">
+    <section id="ejemplos" className="relative overflow-hidden bg-navy-2">
       <div aria-hidden className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-navy to-transparent" />
       <div aria-hidden className="absolute left-1/2 top-1/2 size-[60rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky/15 blur-[140px]" />
       {wide ? <Pinned /> : <Stacked />}

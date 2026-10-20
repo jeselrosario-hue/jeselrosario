@@ -8,6 +8,7 @@ import { Closing } from '@/sections/Closing'
 import { Extras } from '@/sections/Extras'
 import { Hero } from '@/sections/Hero'
 import { Process } from '@/sections/Process'
+import { Quote } from '@/sections/Quote'
 import { Services } from '@/sections/Services'
 import { Showcase } from '@/sections/Showcase'
 import { Ticker } from '@/sections/Ticker'
@@ -29,6 +30,7 @@ export default function App() {
         <Showcase />
         <Services />
         <Extras />
+        <Quote />
         <Gallery />
         <Process />
         <Closing />
