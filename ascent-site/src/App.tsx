@@ -3,14 +3,16 @@ import { Cursor } from '@/components/motion/Cursor'
 import { Intro } from '@/components/motion/Intro'
 import { ScrollProgress } from '@/components/motion/ScrollProgress'
 import { SmoothScroll } from '@/components/motion/SmoothScroll'
-import { Gallery } from '@/sections/Gallery'
 import { Closing } from '@/sections/Closing'
 import { Extras } from '@/sections/Extras'
+import { Faq } from '@/sections/Faq'
 import { Hero } from '@/sections/Hero'
 import { Process } from '@/sections/Process'
+import { Quote } from '@/sections/Quote'
 import { Services } from '@/sections/Services'
 import { Showcase } from '@/sections/Showcase'
 import { Ticker } from '@/sections/Ticker'
+import { Trabajos } from '@/sections/Trabajos'
 
 export default function App() {
   return (
@@ -29,8 +31,10 @@ export default function App() {
         <Showcase />
         <Services />
         <Extras />
-        <Gallery />
+        <Quote />
+        <Trabajos />
         <Process />
+        <Faq />
         <Closing />
       </main>
     </>

@@ -87,6 +87,20 @@ body::after {
 .ascent-hero .sh-btn { background: var(--color-sky); color: var(--color-navy); font-weight: 600; height: 54px; padding: 0 28px; font-size: 16px; box-shadow: 0 0 44px -8px var(--color-sky); }
 .ascent-hero .sh-txt { font-size: 16px; font-weight: 500; }
 
+/* Cotización: borde perforado arriba y abajo, como un recibo */
+.quote-slip::before,
+.quote-slip::after {
+  content: '';
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  height: 12px;
+  background-image: radial-gradient(circle at 6px 6px, var(--color-navy-3) 5.5px, transparent 6px);
+  background-size: 18px 12px;
+}
+.quote-slip::before { top: -6px; }
+.quote-slip::after { bottom: -6px; }
+
 /* Botón con brillo que recorre el borde (shimmer) */
 .shimmer { position: relative; isolation: isolate; overflow: hidden; }
 .shimmer::before { content: ''; position: absolute; inset: -150%; z-index: -2; background: conic-gradient(from 0deg, transparent 0 295deg, rgb(255 255 255 / 0.95) 360deg); animation: spin-slow 3.2s linear infinite; }

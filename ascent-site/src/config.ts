@@ -13,6 +13,13 @@ export const LINKS: Record<'whatsapp' | 'instagram' | 'facebook', string> = {
 /** Mensaje que ya llega escrito cuando alguien toca el botón de WhatsApp. */
 export const WHATSAPP_MESSAGE = 'Hola Ascent Co., quiero cotizar mi página.'
 
+/**
+ * Agenda de citas (Cal.com, plan gratis). Es el tramo que va después de cal.com:
+ * para cal.com/ascentco/consulta aquí va 'ascentco/consulta'.
+ * Vacío = la sección de agenda muestra la demostración dibujada, sin reservar.
+ */
+export const CAL_LINK = ''
+
 /** Dirección que codifica el QR de demostración. */
 export const SITE_URL = 'https://ascentco.netlify.app'
 

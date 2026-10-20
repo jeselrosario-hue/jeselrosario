@@ -1,6 +1,8 @@
 import { motion } from 'motion/react'
 import { ArrowRight, Check, Mail, Receipt } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
+import { CalEmbed } from '@/components/CalEmbed'
+import { CAL_LINK } from '@/config'
 import { WhatsAppIcon } from '@/components/BrandIcons'
 import { Reveal } from '@/components/Reveal'
 import { SplitText } from '@/components/motion/SplitText'
@@ -75,6 +77,18 @@ export function Extras() {
             </Reveal>
           ))}
         </div>
+
+        {/* La agenda, funcionando de verdad: el cliente la prueba antes de comprarla. */}
+        {CAL_LINK && (
+          <Reveal className="mt-16">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="eyebrow mb-4">{COPY.extras.demo.eyebrow}</p>
+              <h3 className="text-[2rem] leading-tight">{COPY.extras.demo.title}</h3>
+              <p className="mx-auto mt-4 max-w-md text-white/70">{COPY.extras.demo.sub}</p>
+            </div>
+            <CalEmbed link={CAL_LINK} className="mx-auto mt-10 max-w-3xl" />
+          </Reveal>
+        )}
       </div>
     </section>
   )

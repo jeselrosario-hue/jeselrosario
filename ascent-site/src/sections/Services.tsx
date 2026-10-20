@@ -48,15 +48,23 @@ function Folder({ index, width, ...props }: { index: number; width: number } & R
   )
 }
 
+/**
+ * Ancho de cada carpeta. La carpeta dibuja sombra y abanico fuera de su caja
+ * (~5% extra), así que en móvil se deja ese margen o la página se va de lado.
+ */
 function useColumnWidth() {
-  const [w, setW] = useState(340)
+  const [s, setS] = useState({ w: 340, featured: 367 })
   useEffect(() => {
-    const calc = () => setW(Math.max(280, Math.min(380, window.innerWidth >= 1024 ? Math.floor((Math.min(window.innerWidth, 1280) - 64 - 64) / 3) : window.innerWidth - 56)))
+    const calc = () => {
+      const wide = window.innerWidth >= 1024
+      const w = Math.max(250, Math.min(380, wide ? Math.floor((Math.min(window.innerWidth, 1280) - 128) / 3) : Math.floor((window.innerWidth - 40) / 1.09)))
+      setS({ w, featured: wide ? Math.min(420, Math.round(w * 1.08)) : w })
+    }
     calc()
     window.addEventListener('resize', calc)
     return () => window.removeEventListener('resize', calc)
   }, [])
-  return w
+  return s
 }
 
 function Price({ from, to }: { from: number; to: number }) {
@@ -70,7 +78,7 @@ function Price({ from, to }: { from: number; to: number }) {
 }
 
 export function Services() {
-  const w = useColumnWidth()
+  const { w, featured } = useColumnWidth()
   const tierIcons: ReactNode[] = [<QrCode key="a" />, <Smartphone key="b" />, <Globe key="c" />]
   return (
     <section id="servicios" className="relative overflow-hidden bg-navy py-28 sm:py-40">
@@ -95,7 +103,7 @@ export function Services() {
           <div className="relative space-y-8 lg:-translate-y-6">
             <div aria-hidden className="absolute inset-x-6 top-10 h-72 rounded-full bg-sky/30 blur-3xl" />
             <span className="relative z-10 mx-auto flex w-fit items-center gap-1.5 rounded-full bg-sky px-4 py-1.5 text-sm font-bold text-navy shadow-[0_0_30px_rgb(74_189_240/0.7)]"><Sparkles className="size-4" aria-hidden /> {S.featured}</span>
-            <Folder index={1} width={Math.min(420, Math.round(w * 1.08))} label={S.site.name} meta={S.site.line} art={ART.site} seed={11} files={FILES.site} />
+            <Folder index={1} width={featured} label={S.site.name} meta={S.site.line} art={ART.site} seed={11} files={FILES.site} />
             <Price from={50} to={70} />
           </div>
 
