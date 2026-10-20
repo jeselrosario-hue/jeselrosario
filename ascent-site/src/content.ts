@@ -139,6 +139,16 @@ export const COPY = {
         movil: '/trabajos/cortinas-inventario-movil.webp',
         alt: 'App de inventario con datos de ejemplo.',
       },
+      {
+        nombre: 'Invitación Siuliris 21',
+        linea: 'Invitación interactiva con música, video y lista de confirmados.',
+        paquete: 'A medida',
+        demo: false,
+        url: 'invitacionsiuliris21.netlify.app',
+        desktop: '/trabajos/siuliris-desktop.webp',
+        movil: '/trabajos/siuliris-movil.webp',
+        alt: 'Pantalla de entrada de una invitación de cumpleaños interactiva.',
+      },
     ],
   },
   /** Reseñas reales de clientes. Vacío = la galería muestra solo trabajos (no se inventan reseñas). */

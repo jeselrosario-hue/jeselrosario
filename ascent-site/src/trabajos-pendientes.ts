@@ -11,7 +11,7 @@ interface Trabajo {
 }
 
 /**
- * Trabajos de clientes que esperan permiso. NO se importan en ningún componente a propósito:
+ * Trabajos de clientes que esperan permiso (hoy: solo la invitación Tomorrowland, falta que Carina diga que sí). NO se importan en ningún componente a propósito:
  * así ni la dirección ni el texto entran al código publicado.
  *
  * Para publicar uno cuando la persona diga que sí:
@@ -19,16 +19,6 @@ interface Trabajo {
  * 2. Copiar el bloque a `COPY.trabajos.items` en `src/content.ts` y borrarlo de aquí.
  */
 export const TRABAJOS_PENDIENTES: Trabajo[] = [
-  {
-    nombre: 'Invitación Siuliris 21',
-    linea: 'Invitación interactiva con música, video y lista de confirmados.',
-    paquete: 'A medida',
-    demo: false,
-    url: 'invitacionsiuliris21.netlify.app',
-    desktop: '/trabajos/siuliris-desktop.webp',
-    movil: '/trabajos/siuliris-movil.webp',
-    alt: 'Pantalla de entrada de una invitación de cumpleaños interactiva.',
-  },
   {
     nombre: 'Invitación Tomorrowland',
     linea: 'Invitación en formato Stories con DJs en video y confirmación de asistencia.',
