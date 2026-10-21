@@ -15,7 +15,7 @@ export const COPY = {
   hero: {
     line1: 'Que te encuentren.',
     line2: 'Que te elijan.',
-    cta: 'Cotiza por WhatsApp',
+    cta: 'Cotiza ahora',
     secondary: 'Ver servicios',
   },
   showcase: {
@@ -55,11 +55,26 @@ export const COPY = {
   },
   quote: {
     title: 'Cuánto te cuesta.',
-    sub: 'Marca lo que necesitas y el estimado se arma solo. Lo envías por WhatsApp ya escrito.',
+    sub: 'Marca lo que necesitas y el estimado se arma solo. Lo envías ya escrito.',
     empty: '$0',
     from: 'Desde',
     toQuote: 'A cotizar',
-    cta: 'Enviar por WhatsApp',
+    cta: 'Enviar mi estimado',
+    form: {
+      title: 'Envíame tu solicitud',
+      name: 'Tu nombre',
+      contact: 'Tu Instagram o correo',
+      message: 'Algo que quieras contarnos (opcional)',
+      send: 'Enviar solicitud',
+      sending: 'Enviando…',
+      ok: 'Recibido. Te respondemos por el contacto que dejaste.',
+      error: 'No se pudo enviar. Escríbenos directo por Instagram o por correo.',
+      consent: 'Al enviar aceptas la',
+      privacy: 'Privacidad',
+      and: 'y los',
+      terms: 'Términos',
+      or: '¿Prefieres escribir tú?',
+    },
     waPrefix: 'Hola Ascent Co., quiero cotizar:',
     waTotal: 'Estimado del sitio:',
     bundle: { bio: '+ presentación', site: '+ sitio web' },
@@ -188,7 +203,7 @@ export const COPY = {
   closing: {
     title: '¿Arrancamos?',
     soon: 'Pronto',
-    buttons: { whatsapp: 'WhatsApp', instagram: 'Instagram', facebook: 'Facebook' },
+    buttons: { instagram: 'Instagram', facebook: 'Facebook', email: 'Correo' },
   },
   footer: 'Ascent Co. · Puerto Rico',
 } as const

@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { useRef } from 'react'
 import { Magnetic } from '@/components/motion/Magnetic'
 import SculptureHero from '@/components/ui/liquid-sculpture-hero'
-import { whatsappUrl } from '@/config'
+import { primaryContactUrl } from '@/config'
 import { COPY } from '@/content'
 
 /**
@@ -59,7 +59,7 @@ export function Hero() {
           body=""
           headline={`${COPY.hero.line1}\n${COPY.hero.line2}`}
           headlineAccent={COPY.hero.line2}
-          primaryCta={{ label: COPY.hero.cta, href: whatsappUrl() || '#contacto' }}
+          primaryCta={{ label: COPY.hero.cta, href: primaryContactUrl() || '#contacto' }}
           ctaWrap={(cta) => <Magnetic strength={0.22}>{cta}</Magnetic>}
           secondaryCta={{ label: COPY.hero.secondary, href: '#servicios' }}
           hint="Mueve el cursor sobre el logo"

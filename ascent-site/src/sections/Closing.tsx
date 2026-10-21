@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from 'motion/react'
 import { useRef, type ComponentType, type SVGProps } from 'react'
-import { FacebookIcon, InstagramIcon, WhatsAppIcon } from '@/components/BrandIcons'
+import { Mail } from 'lucide-react'
+import { FacebookIcon, InstagramIcon } from '@/components/BrandIcons'
 import { DrawLine } from '@/components/motion/DrawLine'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { SplitText } from '@/components/motion/SplitText'
@@ -9,9 +10,9 @@ import { linkFor, LINKS } from '@/config'
 import { COPY } from '@/content'
 
 const ITEMS: Array<{ key: keyof typeof LINKS; Icon: ComponentType<SVGProps<SVGSVGElement>>; primary?: boolean }> = [
-  { key: 'whatsapp', Icon: WhatsAppIcon, primary: true },
-  { key: 'instagram', Icon: InstagramIcon },
+  { key: 'instagram', Icon: InstagramIcon, primary: true },
   { key: 'facebook', Icon: FacebookIcon },
+  { key: 'email', Icon: Mail },
 ]
 
 export function Closing() {
@@ -50,7 +51,11 @@ export function Closing() {
       </motion.p>
       <footer className="relative flex items-center justify-between gap-4 border-t border-white/10 px-6 py-6 font-mono text-xs uppercase tracking-widest text-white/60 sm:px-10">
         <span>{COPY.footer}</span>
-        <a href="#inicio" className="rounded-full px-3 py-2 outline-none hover:text-sky focus-visible:ring-2 focus-visible:ring-sky">Subir ↑</a>
+        <span className="flex items-center gap-2">
+          <a href="/terminos/" className="rounded-full px-3 py-2 outline-none hover:text-sky focus-visible:ring-2 focus-visible:ring-sky">Términos</a>
+          <a href="/privacidad/" className="rounded-full px-3 py-2 outline-none hover:text-sky focus-visible:ring-2 focus-visible:ring-sky">Privacidad</a>
+          <a href="#inicio" className="rounded-full px-3 py-2 outline-none hover:text-sky focus-visible:ring-2 focus-visible:ring-sky">Subir ↑</a>
+        </span>
       </footer>
     </section>
   )

@@ -1,11 +1,9 @@
 import { motion, AnimatePresence } from 'motion/react'
 import { Check } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { WhatsAppIcon } from '@/components/BrandIcons'
 import { Reveal } from '@/components/Reveal'
 import { SplitText } from '@/components/motion/SplitText'
-import { Button } from '@/components/ui/button'
-import { LINKS, WHATSAPP_MESSAGE } from '@/config'
+import { SolicitudForm } from '@/components/SolicitudForm'
 import { COPY } from '@/content'
 
 const Q = COPY.quote
@@ -57,11 +55,8 @@ export function Quote() {
     return { lines, total, onlyQuote: lines.length > 0 && lo === 0 }
   }, [sel])
 
-  const message = bill.lines.length
-    ? `${Q.waPrefix} ${bill.lines.map((l) => l.name).join(' + ')}. ${Q.waTotal} ${bill.onlyQuote ? Q.toQuote : bill.total}.`
-    : WHATSAPP_MESSAGE
-  const wa = LINKS.whatsapp.trim()
-  const href = !wa ? '' : /^https?:\/\//i.test(wa) ? wa : `https://wa.me/${wa.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`
+  const paquetes = bill.lines.map((l) => l.name).join(' + ')
+  const totalTexto = bill.onlyQuote ? Q.toQuote : bill.total
 
   return (
     <section id="cotiza" className="relative overflow-hidden bg-navy-3 py-28 sm:py-40">
@@ -142,21 +137,7 @@ export function Quote() {
                 <p className="mt-3 font-mono text-[11px] leading-relaxed text-navy/55">{Q.slip.terms}</p>
               </div>
 
-              <div className="mt-6">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  href={href || undefined}
-                  aria-disabled={href ? undefined : true}
-                  target={href ? '_blank' : undefined}
-                  rel="noopener noreferrer"
-                  className="w-full"
-                >
-                  <WhatsAppIcon /> {Q.cta}
-                  {!href && <span className="font-mono text-[10px] uppercase tracking-wider opacity-80">· {COPY.closing.soon}</span>}
-                </Button>
-                <p className="mt-3 text-center font-mono text-[11px] text-navy/50">{Q.slip.foot}</p>
-              </div>
+              <SolicitudForm paquetes={paquetes} total={totalTexto} />
             </div>
           </Reveal>
         </div>
