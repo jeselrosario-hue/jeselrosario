@@ -1,0 +1,20 @@
+# Para el VPS. El servicio solo escucha en 127.0.0.1: se abre al mundo por HTTPS
+# con Cloudflare Tunnel o con Caddy (ver README.md), nunca por http abierto.
+services:
+  centro-de-mando:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      CEREBRO_DIR: /cerebro
+      CEREBRO_GIT: "1"
+      COOKIE_SECURE: "1"
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ./cerebro:/cerebro
+      - ./ssh:/home/node/.ssh:ro
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
