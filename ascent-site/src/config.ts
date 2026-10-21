@@ -6,8 +6,8 @@
  * No se usa WhatsApp ni ningún número de teléfono.
  */
 export const LINKS: Record<'instagram' | 'facebook' | 'email', string> = {
-  instagram: '',
-  facebook: '',
+  instagram: 'https://www.instagram.com/ascent.c0/',
+  facebook: 'https://www.facebook.com/share/1EYd2J6Tss/',
   email: 'ascentco.pr@gmail.com',
 }
 
