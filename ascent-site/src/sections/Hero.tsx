@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
 import SculptureHero from '@/components/ui/liquid-sculpture-hero'
-import { whatsappUrl } from '@/config'
+import { primaryContactUrl } from '@/config'
 import { COPY } from '@/content'
 
 /** Portada: "Liquid Sculpture Hero" (21st.dev) con el logo de Ascent como escultura. Se desvanece con parallax al hacer scroll. */
@@ -27,7 +27,7 @@ export function Hero() {
           body=""
           headline={`${COPY.hero.line1}\n${COPY.hero.line2}`}
           headlineAccent={COPY.hero.line2}
-          primaryCta={{ label: COPY.hero.cta, href: whatsappUrl() || '#contacto' }}
+          primaryCta={{ label: COPY.hero.cta, href: primaryContactUrl() || '#contacto' }}
           secondaryCta={{ label: COPY.hero.secondary, href: '#servicios' }}
           hint="Mueve el cursor sobre el logo"
           hintTouch="Toca el logo"

@@ -2,17 +2,17 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/
 import { Menu, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { whatsappUrl } from '@/config'
+import { primaryContactUrl } from '@/config'
 import { COPY } from '@/content'
 import { Magnetic } from '@/components/motion/Magnetic'
-import { WhatsAppIcon } from './BrandIcons'
+import { InstagramIcon } from './BrandIcons'
 
 export function Nav() {
   const [active, setActive] = useState('')
   const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
   const { scrollY } = useScroll()
-  const wa = whatsappUrl()
+  const wa = primaryContactUrl()
 
   useMotionValueEvent(scrollY, 'change', (y) => {
     const prev = scrollY.getPrevious() ?? 0
@@ -59,8 +59,8 @@ export function Nav() {
           <div className="flex items-center gap-2">
             <Magnetic strength={0.25}>
               <Button href={wa || '#contacto'} size="sm" target={wa ? '_blank' : undefined} rel="noopener noreferrer">
-                <WhatsAppIcon /> <span className="hidden sm:inline">WhatsApp</span>
-                <span className="sr-only sm:hidden">WhatsApp</span>
+                <InstagramIcon /> <span className="hidden sm:inline">Escríbenos</span>
+                <span className="sr-only sm:hidden">Escríbenos</span>
               </Button>
             </Magnetic>
             <button type="button" aria-label={open ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={open} onClick={() => setOpen((o) => !o)} className="grid size-11 cursor-pointer place-items-center rounded-full outline-none hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-sky md:hidden">
