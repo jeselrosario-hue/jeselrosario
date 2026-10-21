@@ -8,7 +8,7 @@
 export const LINKS: Record<'instagram' | 'facebook' | 'email', string> = {
   instagram: '',
   facebook: '',
-  email: '',
+  email: 'ascentco.pr@gmail.com',
 }
 
 /** Mensaje que llega escrito cuando alguien toca el botón de correo. */
