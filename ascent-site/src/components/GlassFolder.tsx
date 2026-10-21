@@ -74,7 +74,7 @@ export function GlassFolder({ index, title, art, children, badge, featured }: Pr
           className="glass group absolute inset-x-0 bottom-0 z-20 flex h-[46%] cursor-pointer flex-col justify-between rounded-[2rem] bg-gradient-to-br from-[#2a5aa0]/70 via-[#11294d]/90 to-[#0b1e3c]/95 p-6 text-left outline-none focus-visible:ring-2 focus-visible:ring-sky sm:p-7"
         >
           <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-[2rem]">
-            <span className="absolute -inset-y-4 -left-1/2 w-1/3 -skew-x-12 bg-white/15 blur-md motion-safe:animate-[shine_5s_ease-in-out_infinite]" />
+            <span className="absolute -inset-y-4 -left-1/2 w-1/3 -skew-x-12 bg-white/15 blur-md animate-[shine_5s_ease-in-out_infinite]" />
           </span>
           <span className="relative flex items-start justify-between gap-3">
             <span className="text-xl font-extrabold leading-tight tracking-tight sm:text-2xl">{title}</span>

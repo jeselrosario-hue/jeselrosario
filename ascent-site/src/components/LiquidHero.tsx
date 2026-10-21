@@ -306,7 +306,7 @@ function StaticLogo({ visible }: { visible: boolean }) {
     <div className={`pointer-events-none absolute inset-0 flex items-start justify-center pt-28 transition-opacity duration-700 lg:items-center lg:justify-end lg:pt-0 lg:pr-[10vw] ${visible ? 'opacity-100' : 'opacity-0'}`}>
       <div className="relative w-[min(70vw,420px)] lg:w-[min(38vw,620px)]">
         <div className="absolute inset-[-20%] rounded-full bg-sky/25 blur-[90px]" />
-        <img src="/logo-light.png" alt="" width={1000} height={751} className="relative h-auto w-full drop-shadow-[0_0_40px_rgb(74_189_240/0.55)] motion-safe:animate-[float_6s_ease-in-out_infinite]" />
+        <img src="/logo-light.png" alt="" width={1000} height={751} className="relative h-auto w-full drop-shadow-[0_0_40px_rgb(74_189_240/0.55)] animate-[float_6s_ease-in-out_infinite]" />
       </div>
     </div>
   )

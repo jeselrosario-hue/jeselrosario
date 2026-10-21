@@ -7,10 +7,13 @@ import '@fontsource/instrument-serif/latin-400.css'
 import '@fontsource/instrument-serif/latin-400-italic.css'
 import './index.css'
 import App from './App'
+import { reducirMovimiento, RESPETAR_REDUCIR_MOVIMIENTO } from './lib/motion'
+
+if (reducirMovimiento()) document.documentElement.classList.add('reducir')
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion={RESPETAR_REDUCIR_MOVIMIENTO ? 'user' : 'never'}>
       <App />
     </MotionConfig>
   </StrictMode>,

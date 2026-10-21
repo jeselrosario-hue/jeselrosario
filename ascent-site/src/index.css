@@ -24,10 +24,9 @@
   h1, h2, h3 { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.02em; line-height: 0.95; text-wrap: balance; }
   :focus-visible { outline: 2px solid var(--color-sky); outline-offset: 3px; }
   ::selection { background: var(--color-sky); color: var(--color-navy); }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  }
+  /* Solo si se decide respetar "Reducir movimiento" (ver src/lib/motion.ts). */
+  html.reducir { scroll-behavior: auto; }
+  .reducir *, .reducir *::before, .reducir *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 
 /* Lenis */
@@ -76,11 +75,10 @@ body::after {
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes ripple { 0% { transform: scale(0.35); opacity: 0.9; } 100% { transform: scale(1); opacity: 0; } }
 @keyframes spin-slow { to { transform: rotate(360deg); } }
-@keyframes line-pulse { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
 
 /* Portada (21st.dev Liquid Sculpture Hero) con la marca de Ascent */
 .ascent-hero .sh-root { background: radial-gradient(60% 50% at 50% 40%, rgb(74 189 240 / 0.16), transparent 70%), var(--color-navy) !important; }
-.ascent-hero .sh-h1 { font-weight: 400; letter-spacing: -0.03em; line-height: 0.88; font-size: clamp(52px, min(9.6cqw, 16cqh), 190px); }
+.ascent-hero .sh-h1 { --sh-delay: 1.6s; font-weight: 400; letter-spacing: -0.03em; line-height: 0.88; font-size: clamp(52px, min(9.6cqw, 16cqh), 190px); }
 @container (max-width: 1023px) { .ascent-hero .sh-h1 { font-size: clamp(48px, min(14cqw, 9.5cqh), 96px); } }
 @container (max-width: 639px) { .ascent-hero .sh-h1 { font-size: clamp(46px, min(17cqw, 8.4cqh), 78px); } }
 .ascent-hero .sh-accent { text-shadow: 0 0 50px rgb(74 189 240 / 0.5); letter-spacing: -0.02em; }

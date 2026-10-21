@@ -1,4 +1,5 @@
-import { Reveal } from '@/components/Reveal'
+import { motion, type Variants } from 'motion/react'
+import { DrawLine } from '@/components/motion/DrawLine'
 import { SplitText } from '@/components/motion/SplitText'
 import { COPY } from '@/content'
 
@@ -14,6 +15,21 @@ interface Trabajo {
   alt: string
 }
 
+const ease = [0.22, 1, 0.36, 1] as const
+
+/** Texto de la tarjeta: entra en un solo bloque cuando la ventana ya está en su sitio. */
+const texto: Variants = { hidden: { opacity: 0, transform: 'translateY(18px)' }, shown: { opacity: 1, transform: 'translateY(0px)', transition: { duration: 0.6, delay: 0.25, ease } } }
+/** El teléfono sube y se apoya sobre la ventana, un poco después. */
+const telefono: Variants = { hidden: { opacity: 0, transform: 'translateY(48px)' }, shown: { opacity: 1, transform: 'translateY(0px)', transition: { duration: 0.6, delay: 0.35, ease } } }
+/**
+ * La ventana llega desde su lado (izquierda o derecha, alternando) y el teléfono sube después.
+ * Se anima `transform` entero (no x/y sueltos) para que Motion lo pase al compositor.
+ */
+const ventana = (side: number): Variants => ({
+  hidden: { opacity: 0, transform: `translateX(${side * 12}%)` },
+  shown: { opacity: 1, transform: 'translateX(0%)', transition: { duration: 0.8, ease } },
+})
+
 function Ventana({ t }: { t: Trabajo }) {
   return (
     <div className="relative">
@@ -25,9 +41,9 @@ function Ventana({ t }: { t: Trabajo }) {
         <img src={t.desktop} alt={t.alt} width={960} height={600} loading="lazy" decoding="async" className="aspect-[16/10] w-full object-cover object-top" />
       </div>
       {t.movil && (
-        <div data-ui className="absolute -bottom-6 right-4 w-[26%] min-w-24 overflow-hidden rounded-[1.4rem] border-[5px] border-[#0a1a36] bg-[#050d1c] shadow-[0_24px_60px_-16px_rgb(0_0_0/0.85)] sm:right-6">
+        <motion.div variants={telefono} data-ui className="absolute -bottom-6 right-4 w-[26%] min-w-24 overflow-hidden rounded-[1.4rem] border-[5px] border-[#0a1a36] bg-[#050d1c] shadow-[0_24px_60px_-16px_rgb(0_0_0/0.85)] sm:right-6">
           <img src={t.movil} alt="" width={320} height={693} loading="lazy" decoding="async" className="w-full" />
-        </div>
+        </motion.div>
       )}
     </div>
   )
@@ -35,7 +51,7 @@ function Ventana({ t }: { t: Trabajo }) {
 
 function Tarjeta({ t, flip }: { t: Trabajo; flip: boolean }) {
   const body = (
-    <div className={`flex flex-col justify-center ${flip ? 'lg:order-first' : ''}`}>
+    <motion.div variants={texto} className={`flex flex-col justify-center ${flip ? 'lg:order-first' : ''}`}>
       <h3 className="font-display text-4xl leading-tight sm:text-5xl">{t.nombre}</h3>
       <p className="mt-4 max-w-md text-lg text-white/75">{t.linea}</p>
       <div className="mt-5 flex flex-wrap items-center gap-2">
@@ -47,15 +63,13 @@ function Tarjeta({ t, flip }: { t: Trabajo; flip: boolean }) {
           {COPY.trabajos.ver} <span aria-hidden>↗</span>
         </a>
       )}
-    </div>
+    </motion.div>
   )
   return (
-    <Reveal y={20} duration={0.5}>
-      <article className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-        <div className="pb-8"><Ventana t={t} /></div>
-        {body}
-      </article>
-    </Reveal>
+    <motion.article initial="hidden" whileInView="shown" viewport={{ once: true, amount: 0.3 }} className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <motion.div variants={ventana(flip ? 1 : -1)} className="pb-8"><Ventana t={t} /></motion.div>
+      {body}
+    </motion.article>
   )
 }
 
@@ -66,6 +80,7 @@ export function Trabajos() {
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
         <p className="eyebrow mb-5">{COPY.eyebrows.trabajos}</p>{/* taste-skill-ignore: numeración 01–08 del sitio entero; quitarla solo aquí dejaría un hueco */}
         <SplitText as="h2" text={COPY.trabajos.title} className="display-lg" accent={['Trabajos']} />
+        <DrawLine className="mt-4 w-44 text-sky sm:w-64" delay={0.5} />
         <p className="mt-6 max-w-xl text-lg text-white/70">{COPY.trabajos.sub}</p>
         <div className="mt-20 flex flex-col gap-28 sm:gap-36">
           {(COPY.trabajos.items as ReadonlyArray<Trabajo>).map((t, i) => <Tarjeta key={t.nombre} t={t} flip={i % 2 === 1} />)}

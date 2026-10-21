@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from 'motion/react'
 import { useRef, type ComponentType, type SVGProps } from 'react'
 import { Mail } from 'lucide-react'
 import { FacebookIcon, InstagramIcon } from '@/components/BrandIcons'
+import { DrawLine } from '@/components/motion/DrawLine'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { SplitText } from '@/components/motion/SplitText'
 import { Button } from '@/components/ui/button'
@@ -23,13 +24,14 @@ export function Closing() {
     <section ref={ref} id="contacto" className="relative isolate overflow-hidden bg-navy-2 pt-32 text-center sm:pt-48">
       <div aria-hidden className="absolute left-1/2 top-[38%] -z-10 size-[48rem] -translate-x-1/2 -translate-y-1/2">
         {[0, 1, 2].map((i) => (
-          <span key={i} className="absolute inset-0 rounded-full border border-sky/30 motion-safe:animate-[ripple_6s_ease-out_infinite]" style={{ animationDelay: `${i * 2}s` }} />
+          <span key={i} className="absolute inset-0 rounded-full border border-sky/30 animate-[ripple_6s_ease-out_infinite]" style={{ animationDelay: `${i * 2}s` }} />
         ))}
         <span className="absolute inset-[24%] rounded-full bg-sky/25 blur-[100px]" />
       </div>
       <div className="mx-auto max-w-5xl px-5">
         <p className="eyebrow mb-6">{COPY.eyebrows.contacto}</p>
         <SplitText as="h2" text={COPY.closing.title} className="display-xl" accent={['arrancamos']} />
+        <DrawLine className="mx-auto mt-5 w-48 text-sky sm:w-72" delay={0.5} />
         <div className="mt-14 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:items-center">
           {ITEMS.map(({ key, Icon, primary }) => {
             const href = linkFor(key)
@@ -47,7 +49,7 @@ export function Closing() {
       <motion.p aria-hidden style={{ y: wy, opacity: wo }} className="mt-24 select-none bg-gradient-to-b from-white/35 to-transparent bg-clip-text text-center font-display text-[clamp(6rem,24vw,22rem)] leading-[0.78] text-transparent">
         Ascent Co.
       </motion.p>
-      <footer className="relative flex items-center justify-between gap-4 border-t border-white/10 px-6 py-6 font-mono text-xs uppercase tracking-widest text-white/60 sm:px-10">
+      <footer className="relative flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-white/10 px-6 py-6 font-mono text-xs uppercase tracking-widest text-white/60 sm:px-10">
         <span>{COPY.footer}</span>
         <span className="flex items-center gap-2">
           <a href="/terminos/" className="rounded-full px-3 py-2 outline-none hover:text-sky focus-visible:ring-2 focus-visible:ring-sky">Términos</a>

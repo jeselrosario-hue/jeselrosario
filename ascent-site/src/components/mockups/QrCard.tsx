@@ -1,4 +1,4 @@
-import { animate, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react'
+import { animate, motion, useMotionValue, useReducedMotionConfig, useSpring, useTransform } from 'motion/react'
 import qrcode from 'qrcode-generator'
 import { useEffect, useMemo, useRef } from 'react'
 import { SITE_URL } from '@/config'
@@ -18,7 +18,7 @@ function useQr(text: string) {
 /** Tarjeta con QR real que gira en 3D con el cursor (o sola, si no hay cursor). */
 export function QrCard({ className = '', interactive = true }: { className?: string; interactive?: boolean }) {
   const { n, cells } = useQr(SITE_URL)
-  const reduce = useReducedMotion()
+  const reduce = useReducedMotionConfig()
   const ref = useRef<HTMLDivElement>(null)
   const px = useMotionValue(0)
   const py = useMotionValue(0)
