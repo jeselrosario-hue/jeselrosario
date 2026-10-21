@@ -50,6 +50,7 @@ export function Closing() {
       <footer className="relative flex items-center justify-between gap-4 border-t border-white/10 px-6 py-6 font-mono text-xs uppercase tracking-widest text-white/60 sm:px-10">
         <span>{COPY.footer}</span>
         <span className="flex items-center gap-2">
+          <a href="/terminos/" className="rounded-full px-3 py-2 outline-none hover:text-sky focus-visible:ring-2 focus-visible:ring-sky">Términos</a>
           <a href="/privacidad/" className="rounded-full px-3 py-2 outline-none hover:text-sky focus-visible:ring-2 focus-visible:ring-sky">Privacidad</a>
           <a href="#inicio" className="rounded-full px-3 py-2 outline-none hover:text-sky focus-visible:ring-2 focus-visible:ring-sky">Subir ↑</a>
         </span>
