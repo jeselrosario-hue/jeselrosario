@@ -35,9 +35,10 @@ export function Closing() {
         <div className="mt-14 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:items-center">
           {ITEMS.map(({ key, Icon, primary }) => {
             const href = linkFor(key)
+            // El correo (mailto:) abre la app de correo; no hace falta pestaña nueva.
             return (
               <Magnetic key={key} strength={0.28} className="sm:inline-block">
-                <Button size="lg" variant={primary ? 'primary' : 'glass'} href={href || undefined} aria-disabled={href ? undefined : true} target={href ? '_blank' : undefined} rel="noopener noreferrer" role={href ? undefined : 'link'} className="w-full sm:w-auto">
+                <Button size="lg" variant={primary ? 'primary' : 'glass'} href={href || undefined} aria-disabled={href ? undefined : true} target={href.startsWith('https://') ? '_blank' : undefined} rel="noopener noreferrer" role={href ? undefined : 'link'} className="w-full sm:w-auto">
                   <Icon /> {COPY.closing.buttons[key]}
                   {!href && <span className="font-mono text-[10px] uppercase tracking-wider opacity-80">· {COPY.closing.soon}</span>}
                 </Button>

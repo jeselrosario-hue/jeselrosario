@@ -12,7 +12,7 @@ export function Nav() {
   const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
   const { scrollY } = useScroll()
-  const wa = primaryContactUrl()
+  const contacto = primaryContactUrl()
 
   useMotionValueEvent(scrollY, 'change', (y) => {
     const prev = scrollY.getPrevious() ?? 0
@@ -58,7 +58,7 @@ export function Nav() {
           </ul>
           <div className="flex items-center gap-2">
             <Magnetic strength={0.25}>
-              <Button href={wa || '#contacto'} size="sm" target={wa ? '_blank' : undefined} rel="noopener noreferrer">
+              <Button href={contacto || '#contacto'} size="sm" target={contacto ? '_blank' : undefined} rel="noopener noreferrer">
                 <InstagramIcon /> <span className="hidden sm:inline">Escríbenos</span>
                 <span className="sr-only sm:hidden">Escríbenos</span>
               </Button>
