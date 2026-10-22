@@ -2,6 +2,7 @@
 # Instala el Centro de mando en el VPS. Úsalo en dos partes:
 #   bash vps-instalar.sh llave     -> prepara carpeta y crea la llave de solo lectura para Cerebro
 #   bash vps-instalar.sh app       -> clona Cerebro, pide la contraseña, arranca Docker
+#   bash vps-instalar.sh hermes    -> conecta el dashboard a Hermes (solo lectura)
 #   bash vps-instalar.sh acceso    -> instala Tailscale y publica el dashboard por HTTPS (solo tu red)
 # No guarda la contraseña: solo su hash en .env (permiso 600).
 set -euo pipefail
@@ -39,5 +40,14 @@ acceso)
   tailscale serve --bg 3000
   tailscale serve status
   ;;
-*) echo "Uso: bash vps-instalar.sh llave|app|acceso"; exit 1;;
+hermes)
+  cd "$APP" && git -C "$BASE/repo" pull -q
+  read -rp "Usuario del panel de Hermes: " HU
+  read -rsp "Contraseña del panel de Hermes: " HP; echo
+  sed -i '/^HERMES_/d' .env
+  { echo "HERMES_URL=http://host.docker.internal:32769"; echo "HERMES_USER=$HU"; echo "HERMES_PASS=$HP"; } >> .env
+  unset HP; chmod 600 .env
+  docker compose up -d --build
+  ;;
+*) echo "Uso: bash vps-instalar.sh llave|app|acceso|hermes"; exit 1;;
 esac

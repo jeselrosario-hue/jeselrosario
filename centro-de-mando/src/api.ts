@@ -30,3 +30,14 @@ export type Conexiones = {
   gmail: { configurado: boolean }
   hermes: { configurado: boolean }
 }
+
+export type HermesVivo =
+  | { ok: false; configurado: boolean; error?: string }
+  | {
+      ok: true
+      version: string
+      gateway: string
+      plataformas: { nombre: string; estado: string; error: string | null }[]
+      tareas: { nombre: string; horario: string; activa: boolean; estado: string; ultima: string | null; ultimoEstado: string | null; error: string | null; proxima: string | null }[]
+      sesiones: { titulo: string; origen: string; modelo: string; mensajes: number; activa: boolean; ultima: string | null }[]
+    }

@@ -1,3 +1,4 @@
+import { hermesConfigurado, hermesResumen } from './hermes.mjs'
 import http from 'node:http'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -148,6 +149,10 @@ const servidor = http.createServer(async (req, res) => {
       return json(res, 200, { pendientes: pend, plan })
     }
 
+    if (url.pathname === '/api/hermes') {
+      if (!hermesConfigurado()) return json(res, 200, { ok: false, configurado: false })
+      try { return json(res, 200, await hermesResumen()) } catch (e) { console.error('hermes:', e.message); return json(res, 200, { ok: false, configurado: true, error: 'No pude leer Hermes' }) }
+    }
     if (url.pathname === '/api/agentes') return json(res, 200, { tareas: parsearTareas(todas) })
 
     if (url.pathname === '/api/notas') return json(res, 200, { notas: todas.map(({ texto: _t, ...n }) => n).sort((a, b) => a.path.localeCompare(b.path)) })
@@ -167,7 +172,7 @@ const servidor = http.createServer(async (req, res) => {
         agentes: { ok: todas.some((n) => n.path.startsWith('Agentes/tareas/')) },
         netlify: { configurado: Boolean(e.NETLIFY_TOKEN && e.NETLIFY_SITE_ID) },
         gmail: { configurado: Boolean(e.GMAIL_CLIENT_ID) },
-        hermes: { configurado: Boolean(e.HERMES_URL) },
+        hermes: { configurado: hermesConfigurado() },
       })
     }
 

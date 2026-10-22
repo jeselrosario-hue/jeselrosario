@@ -9,6 +9,8 @@ services:
       CEREBRO_DIR: /cerebro
       CEREBRO_GIT: "1"
       COOKIE_SECURE: "1"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "127.0.0.1:3000:3000"
     volumes:
