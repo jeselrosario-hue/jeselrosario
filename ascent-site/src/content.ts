@@ -69,7 +69,7 @@ export const COPY = {
       sending: 'Enviando…',
       ok: 'Recibido. Te respondemos por el contacto que dejaste.',
       error: 'No se pudo enviar. Escríbenos directo por Instagram o por correo.',
-      consent: 'Al enviar aceptas la',
+      consent: 'He leído y acepto la',
       privacy: 'Privacidad',
       and: 'y los',
       terms: 'Términos',

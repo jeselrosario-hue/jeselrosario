@@ -24,6 +24,9 @@ export function SolicitudForm({ paquetes, total }: { paquetes: string; total: st
     cuerpo.set('nombre', String(fd.get('nombre') ?? '').trim().slice(0, 120))
     cuerpo.set('contacto', String(fd.get('contacto') ?? '').trim().slice(0, 160))
     cuerpo.set('mensaje', String(fd.get('mensaje') ?? '').trim().slice(0, 1000))
+    if (fd.get('acepto') !== 'si') { setEstado('error'); return }
+    cuerpo.set('acepto', 'si')
+    cuerpo.set('acepto_fecha', new Date().toISOString())
     cuerpo.set('paquetes', paquetes)
     cuerpo.set('total', total)
     setEstado('enviando')
@@ -55,6 +58,13 @@ export function SolicitudForm({ paquetes, total }: { paquetes: string; total: st
       <label className="sr-only" htmlFor="sol-mensaje">{F.message}</label>
       <textarea id="sol-mensaje" name="mensaje" rows={3} maxLength={1000} placeholder={F.message} className={`${campo} resize-none`} />
 
+      <label className="flex items-start gap-3 text-left text-[13px] leading-snug text-navy">
+        <input type="checkbox" name="acepto" value="si" required className="mt-0.5 size-5 shrink-0 accent-navy" />
+        <span>
+          {F.consent} <a className="underline" href="/privacidad/" target="_blank" rel="noopener noreferrer">{F.privacy}</a> {F.and} <a className="underline" href="/terminos/" target="_blank" rel="noopener noreferrer">{F.terms}</a>.
+        </span>
+      </label>
+
       <button
         type="submit"
         disabled={estado === 'enviando' || estado === 'ok'}
@@ -68,9 +78,6 @@ export function SolicitudForm({ paquetes, total }: { paquetes: string; total: st
         {estado === 'error' && F.error}
       </p>
 
-      <p className="text-center font-mono text-[11px] leading-relaxed text-navy/55">
-        {F.consent} <a className="underline" href="/privacidad/">{F.privacy}</a> {F.and} <a className="underline" href="/terminos/">{F.terms}</a>.
-      </p>
       {(ig || correo) && (
         <p className="text-center font-mono text-[11px] text-navy/55">
           {F.or}{' '}

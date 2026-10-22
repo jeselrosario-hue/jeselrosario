@@ -3,6 +3,7 @@ import { ArrowRight, Check, Mail, Receipt } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { CalEmbed } from '@/components/CalEmbed'
 import { CAL_LINK } from '@/config'
+import { elegir, usePermiso } from '@/lib/consent'
 import { WhatsAppIcon } from '@/components/BrandIcons'
 import { Reveal } from '@/components/Reveal'
 import { SplitText } from '@/components/motion/SplitText'
@@ -58,6 +59,7 @@ function ReceiptCard() {
 const VISUALS: Record<string, ReactNode> = { agenda: <Calendar />, dominio: <Domain />, recibos: <ReceiptCard /> }
 
 export function Extras() {
+  const permiso = usePermiso()
   return (
     <section id="extras" className="relative overflow-hidden bg-navy-2 py-28 sm:py-40">
       <div aria-hidden className="absolute -right-40 top-10 size-[34rem] rounded-full bg-sky/15 blur-[130px]" />
@@ -86,7 +88,14 @@ export function Extras() {
               <h3 className="text-[2rem] leading-tight">{COPY.extras.demo.title}</h3>
               <p className="mx-auto mt-4 max-w-md text-white/70">{COPY.extras.demo.sub}</p>
             </div>
-            <CalEmbed link={CAL_LINK} className="mx-auto mt-10 max-w-3xl" />
+            {permiso === 'si' ? (
+              <CalEmbed link={CAL_LINK} className="mx-auto mt-10 max-w-3xl" />
+            ) : (
+              <div className="mx-auto mt-10 max-w-3xl rounded-2xl bg-navy/70 p-8 text-center ring-1 ring-white/10">
+                <p className="text-white/70">El calendario lo ofrece Cal.com. Para verlo, acepta que se cargue su servicio.</p>
+                <button type="button" onClick={() => elegir('si')} className="mt-5 min-h-12 cursor-pointer rounded-full bg-sky px-8 font-semibold text-navy">Aceptar y ver el calendario</button>
+              </div>
+            )}
           </Reveal>
         )}
       </div>

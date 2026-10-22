@@ -1,3 +1,4 @@
+import { CookieBanner } from '@/components/CookieBanner'
 import { Nav } from '@/components/Nav'
 import { Cursor } from '@/components/motion/Cursor'
 import { Intro } from '@/components/motion/Intro'
@@ -37,6 +38,7 @@ export default function App() {
         <Faq />
         <Closing />
       </main>
+      <CookieBanner />
     </>
   )
 }
