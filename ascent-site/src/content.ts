@@ -109,7 +109,7 @@ export const COPY = {
         linea: 'Sitio de barbería con reserva por WhatsApp y el mensaje ya escrito.',
         paquete: 'Sitio web',
         demo: true,
-        url: 'fadelab.netlify.app',
+        url: '', // sin enlace: es un ejemplo, no un sitio publicado
         desktop: '/trabajos/fadelab-desktop.webp',
         movil: '',
         alt: 'Sitio web de ejemplo para una barbería, hecho por Ascent Co.',

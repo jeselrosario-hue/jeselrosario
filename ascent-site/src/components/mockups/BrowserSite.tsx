@@ -1,7 +1,7 @@
 import { WhatsAppIcon } from '../BrandIcons'
 
 /** Sitio real (FadeLab) dentro de una ventana de navegador, con scroll automático. */
-export function BrowserSite({ className = '', bubble = true, url = 'fadelab.netlify.app' }: { className?: string; bubble?: boolean; url?: string }) {
+export function BrowserSite({ className = '', bubble = true, url = 'tu-negocio.com' }: { className?: string; bubble?: boolean; url?: string }) {
   return (
     <div className={`relative w-full overflow-hidden rounded-2xl border border-white/20 bg-[#050d1c] shadow-[0_40px_100px_-20px_rgb(0_0_0/0.75)] ${className}`}>
       <div className="flex items-center gap-2 bg-[#0a1a36] px-3 py-2.5">
