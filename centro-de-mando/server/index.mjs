@@ -1,11 +1,13 @@
 import { hermesConfigurado, hermesResumen } from './hermes.mjs'
 import { netlifyConfigurado, netlifyResumen } from './netlify.mjs'
+import { calConfigurado, calReservas } from './cal.mjs'
+import { guardarEstado, leerEstado } from './datos.mjs'
 import http from 'node:http'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { execFile } from 'node:child_process'
 import { bloqueado, cookieBorrar, cookieSesion, crearSesion, registrarFallo, sesionValida, verificarClave } from './auth.mjs'
-import { construirGrafo, leerNota, listarNotas, parsearCasillas, parsearTareas } from './cerebro.mjs'
+import { construirGrafo, leerNota, listarNotas, parsearCasillas, parsearTareas, pasoActivo } from './cerebro.mjs'
 
 try {
   process.loadEnvFile?.('.env')
@@ -92,6 +94,19 @@ async function estatico(req, res) {
   }
 }
 
+const ESTADOS_SOLICITUD = ['nueva', 'respondida', 'cliente']
+
+/** Acciones que escriben. Cada una valida sus datos; lo desconocido se rechaza. */
+async function post(ruta, datos, res) {
+  if (ruta === '/api/solicitudes/estado') {
+    const id = String(datos.id || '')
+    if (!/^[\w-]{1,64}$/.test(id) || !ESTADOS_SOLICITUD.includes(datos.estado)) return json(res, 400, { error: 'datos' })
+    await guardarEstado('solicitudes', id, datos.estado)
+    return json(res, 200, { ok: true })
+  }
+  return json(res, 404, { error: 'no encontrado' })
+}
+
 const servidor = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://x')
@@ -119,6 +134,18 @@ const servidor = http.createServer(async (req, res) => {
 
     // Todo lo demás exige sesión
     if (!sesionValida(req.headers.cookie, SECRETO)) return json(res, 401, { error: 'sin sesión' })
+
+    // Escrituras: solo desde la propia pantalla (JSON + cabecera X-CDM, que otro sitio no puede mandar).
+    if (req.method === 'POST') {
+      if (!String(req.headers['content-type'] || '').startsWith('application/json') || req.headers['x-cdm'] !== '1') return json(res, 403, { error: 'origen' })
+      let datos
+      try {
+        datos = await cuerpoJson(req)
+      } catch {
+        return json(res, 400, { error: 'datos' })
+      }
+      return post(url.pathname, datos, res)
+    }
     if (req.method !== 'GET') return json(res, 405, { error: 'método' })
 
     const todas = await notas()
@@ -127,7 +154,9 @@ const servidor = http.createServer(async (req, res) => {
 
     if (url.pathname === '/api/resumen') {
       const pend = parsearCasillas(todas.find((n) => n.path === 'Ascent/Pendientes')?.texto || '')
-      const plan = parsearCasillas(todas.find((n) => n.path === 'Ascent/Plan-maestro')?.texto || '')
+      const planTexto = todas.find((n) => n.path === 'Ascent/Plan-maestro')?.texto || ''
+      const plan = parsearCasillas(planTexto)
+      const activo = pasoActivo(planTexto)
       const grafo = construirGrafo(todas)
       const dias = {}
       for (const n of todas) {
@@ -137,8 +166,8 @@ const servidor = http.createServer(async (req, res) => {
       const tareas = parsearTareas(todas)
       return json(res, 200, {
         inicioAscent: INICIO_ASCENT,
-        pendientes: { abiertos: pend.filter((p) => !p.done).length, hechos: pend.filter((p) => p.done).length, siguiente: plan.find((p) => !p.done)?.text || pend.find((p) => !p.done)?.text || null },
-        plan: { abiertos: plan.filter((p) => !p.done).length, hechos: plan.filter((p) => p.done).length },
+        pendientes: { abiertos: pend.filter((p) => !p.done).length, hechos: pend.filter((p) => p.done).length, siguiente: pend.find((p) => !p.done)?.text || null },
+        plan: { abiertos: plan.filter((p) => !p.done).length, hechos: plan.filter((p) => p.done).length, activo: activo?.titulo ?? null, siguiente: (activo && parsearCasillas(activo.texto).find((p) => !p.done)?.text) || plan.find((p) => !p.done)?.text || null },
         cerebro: { notas: todas.length, enlaces: grafo.aristas.length, reciente: [...todas].sort((a, b) => b.mtime - a.mtime).slice(0, 5).map((n) => ({ path: n.path, title: n.title, mtime: n.mtime })), dias },
         agentes: { total: tareas.length, aprobacion: tareas.filter((t) => t.estado === 'aprobacion').length, haciendo: tareas.filter((t) => t.estado === 'haciendo').length },
       })
@@ -156,7 +185,16 @@ const servidor = http.createServer(async (req, res) => {
     }
     if (url.pathname === '/api/netlify') {
       if (!netlifyConfigurado()) return json(res, 200, { ok: false, configurado: false })
-      try { return json(res, 200, await netlifyResumen()) } catch (e) { console.error('netlify:', e.message); return json(res, 200, { ok: false, configurado: true, error: 'No pude leer Netlify' }) }
+      try {
+        const r = await netlifyResumen()
+        const estados = await leerEstado('solicitudes')
+        r.solicitudes = r.solicitudes.map((x) => ({ ...x, estado: estados[x.id] || 'nueva' }))
+        return json(res, 200, r)
+      } catch (e) { console.error('netlify:', e.message); return json(res, 200, { ok: false, configurado: true, error: 'No pude leer Netlify' }) }
+    }
+    if (url.pathname === '/api/cal') {
+      if (!calConfigurado()) return json(res, 200, { ok: false, configurado: false })
+      try { return json(res, 200, await calReservas()) } catch (e) { console.error('cal:', e.message); return json(res, 200, { ok: false, configurado: true, error: 'No pude leer Cal.com' }) }
     }
     if (url.pathname === '/api/agentes') return json(res, 200, { tareas: parsearTareas(todas) })
 
@@ -175,7 +213,8 @@ const servidor = http.createServer(async (req, res) => {
       return json(res, 200, {
         cerebro: { ok: todas.length > 0, notas: todas.length, sync: process.env.CEREBRO_GIT === '1' ? (ultimaSync ? { ok: ultimaSync.ok, en: ultimaSync.en } : { pendiente: true }) : null },
         agentes: { ok: todas.some((n) => n.path.startsWith('Agentes/tareas/')) },
-        netlify: { configurado: Boolean(e.NETLIFY_TOKEN && e.NETLIFY_SITE_ID) },
+        netlify: { configurado: Boolean(e.NETLIFY_TOKEN && e.NETLIFY_SITE_ID), creditos: Boolean(e.NETLIFY_TEAM) },
+        cal: { configurado: calConfigurado() },
         gmail: { configurado: Boolean(e.GMAIL_CLIENT_ID) },
         hermes: { configurado: hermesConfigurado() },
       })
