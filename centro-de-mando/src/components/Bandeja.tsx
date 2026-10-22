@@ -44,7 +44,7 @@ function Tarjeta({ s, cambiar }: { s: Solicitud; cambiar: (id: string, e: Estado
       {s.estado === 'cliente' && (
         <button
           onClick={() => {
-            try { sessionStorage.setItem('cdm:prefill-cliente', JSON.stringify({ nombre: s.nombre, contacto: s.contacto, paquete: '', notas: [s.paquetes && `Pidió: ${s.paquetes} ${s.total}`, s.mensaje].filter(Boolean).join('\n') })) } catch { /* sin almacenamiento: el formulario sale vacío */ }
+            try { sessionStorage.setItem('cdm:prefill-cliente', JSON.stringify({ nombre: s.nombre, contacto: s.contacto, paquete: '', notas: [s.paquetes && `Pidió: ${s.paquetes} ${s.total}`, s.mensaje && `Mensaje del formulario (texto del cliente): ${s.mensaje}`].filter(Boolean).join('\n') })) } catch { /* sin almacenamiento: el formulario sale vacío */ }
             location.hash = 'clientes/nuevo'
           }}
           className="mt-3 mr-2 inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-full bg-emerald-300/15 px-3 text-xs font-medium text-emerald-200 transition-colors hover:bg-emerald-300/25"

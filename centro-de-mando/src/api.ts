@@ -37,6 +37,7 @@ export type Conexiones = {
   hermes: { configurado: boolean }
   chat: { configurado: boolean }
   escritura: { activa: boolean }
+  ha: { configurado: boolean }
 }
 
 export type HermesVivo =

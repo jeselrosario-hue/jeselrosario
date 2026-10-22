@@ -6,6 +6,9 @@
 #   bash vps-instalar.sh netlify   -> conecta el dashboard a Netlify (solicitudes del formulario, solo lectura)
 #   bash vps-instalar.sh hermes-chat -> conecta el chat con Hermes (su API, solo por la red interna de Docker)
 #   bash vps-instalar.sh escribir  -> deja que el dashboard escriba en el Cerebro (fichas, tareas), siempre con tu Aprobar
+#   bash vps-instalar.sh alertas   -> avisos por Telegram a través de Hermes (webhook, sin gastar tokens)
+#   bash vps-instalar.sh ha        -> conecta Home Assistant (solo lectura)
+#   bash vps-instalar.sh ha-revisar -> diagnostica los reintentos de Home Assistant en Hermes (no cambia nada)
 #   bash vps-instalar.sh cal       -> conecta las citas de Cal.com (solo lectura)
 #   bash vps-instalar.sh actualizar -> baja la última versión y reinicia
 #   bash vps-instalar.sh acceso    -> instala Tailscale y publica el dashboard por HTTPS (solo tu red)
@@ -19,6 +22,16 @@ fijar() { touch .env; sed -i "/^$1=/d" .env; printf '%s=%s\n' "$1" "$2" >> .env;
 # Carpeta de estado propio del dashboard (estados de solicitudes, aprobaciones). El contenedor corre como 1000.
 datos() { mkdir -p "$APP/datos" && chmod 700 "$APP/datos" && chown 1000:1000 "$APP/datos"; }
 reiniciar() { datos; docker compose up -d --build; docker compose ps; }
+# Busca el contenedor de Hermes y une el Centro de mando a su red interna (sin publicar puertos).
+unir_hermes() {
+  HC=$(docker ps --format '{{.Names}}' | grep -i hermes | head -1)
+  [ -n "$HC" ] || { echo "No encontré el contenedor de Hermes (docker ps)."; exit 1; }
+  NET=$(docker inspect "$HC" -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' | awk '{print $1}')
+  if [ "$NET" = "bridge" ] || [ -z "$NET" ]; then
+    echo "Hermes está en la red 'bridge' por defecto: ahí Docker no resuelve nombres. Pídele a Claude el plan B."; exit 1
+  fi
+  printf 'services:\n  centro-de-mando:\n    networks: [default, hermes]\nnetworks:\n  hermes:\n    external: true\n    name: %s\n' "$NET" > docker-compose.override.yml
+}
 
 case "${1:-}" in
 llave)
@@ -69,16 +82,10 @@ netlify)
   ;;
 hermes-chat)
   cd "$APP" && git -C "$BASE/repo" pull -q
-  HC=$(docker ps --format '{{.Names}}' | grep -i hermes | head -1)
-  [ -n "$HC" ] || { echo "No encontré el contenedor de Hermes (docker ps)."; exit 1; }
-  NET=$(docker inspect "$HC" -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' | awk '{print $1}')
-  if [ "$NET" = "bridge" ] || [ -z "$NET" ]; then
-    echo "Hermes está en la red 'bridge' por defecto: ahí Docker no resuelve nombres. Pídele a Claude el plan B."; exit 1
-  fi
+  unir_hermes
   KEY=$(openssl rand -hex 32)
   fijar HERMES_API_URL "http://$HC:8642"; fijar HERMES_API_KEY "$KEY"
   # El Centro de mando entra a la red de Hermes; el puerto 8642 NO se publica en el VPS.
-  printf 'services:\n  centro-de-mando:\n    networks: [default, hermes]\nnetworks:\n  hermes:\n    external: true\n    name: %s\n' "$NET" > docker-compose.override.yml
   reiniciar
   echo
   echo "Falta encender la API en Hermes ($HC). En sus variables de entorno (hPanel > Docker, o el .env de Hermes) pon:"
@@ -87,6 +94,40 @@ hermes-chat)
   echo "  API_SERVER_KEY=$KEY"
   echo "NO publiques el puerto 8642 (nada de 8642:8642): da acceso a la terminal de Hermes. Reinicia Hermes y abre el chat."
   unset KEY
+  ;;
+alertas)
+  cd "$APP" && git -C "$BASE/repo" pull -q
+  unir_hermes
+  echo "1) En Hermes debe estar encendido el webhook: WEBHOOK_ENABLED=true en sus variables (sin publicar el puerto 8644)."
+  read -rp "2) Tu chat_id de Telegram (el que usa Hermes para escribirte): " CHAT
+  echo "3) Creando la ruta 'centro-de-mando' en Hermes (entrega directa: el texto llega tal cual)..."
+  docker exec "$HC" hermes webhook subscribe centro-de-mando --deliver telegram --deliver-chat-id "$CHAT" --deliver-only \
+    --prompt "{mensaje}" --description "Alertas del Centro de mando" || { echo "Hermes no pudo crear la ruta."; exit 1; }
+  read -rsp "4) Pega el secreto (HMAC) que acaba de mostrar Hermes (no se ve al escribir): " WS; echo
+  fijar HERMES_WEBHOOK_URL "http://$HC:8644/webhooks/centro-de-mando"; fijar HERMES_WEBHOOK_SECRET "$WS"; unset WS
+  reiniciar
+  echo "Listo. En Conexiones > Salud del sitio pulsa 'Probar alerta'."
+  ;;
+ha)
+  cd "$APP" && git -C "$BASE/repo" pull -q
+  echo "En Home Assistant: tu perfil > Seguridad > Tokens de acceso de larga duración > Crear token."
+  read -rsp "Token de Home Assistant (no se ve al escribir): " HT; echo
+  fijar HA_URL http://host.docker.internal:32768; fijar HA_TOKEN "$HT"; unset HT
+  reiniciar
+  ;;
+ha-revisar)
+  HC=$(docker ps --format '{{.Names}}' | grep -i hermes | head -1)
+  echo "Puertos en este VPS:"
+  for p in 32768 32769; do printf "  %s -> " $p; curl -s -m 5 -o /dev/null -w "%{http_code}" "http://127.0.0.1:$p/api/" || printf "sin respuesta"; echo; done
+  echo "  (Home Assistant responde 401 en /api/ sin token; el panel de Hermes responde otra cosa.)"
+  if [ -n "$HC" ]; then
+    echo "Variables de Home Assistant dentro de $HC (sin mostrar tokens):"
+    docker exec "$HC" sh -c 'env | grep -E "^(HASS|HA_|HOMEASSISTANT)" | sed -E "s/(TOKEN|KEY|PASS)[A-Z_]*=.*/\1…=(oculto)/"' || true
+    echo "Últimos reintentos en el log de Hermes:"
+    docker logs --since 1h "$HC" 2>&1 | grep -i -E "home ?assistant|hass" | tail -5 || true
+  fi
+  echo
+  echo "Si HASS_URL apunta al 32769, Hermes se está llamando a sí mismo: cámbialo a 32768, o quita HASS_URL y HASS_TOKEN si no usas Home Assistant en Hermes, y reinicia Hermes."
   ;;
 cal)
   cd "$APP" && git -C "$BASE/repo" pull -q
@@ -107,5 +148,5 @@ actualizar)
   cd "$APP" && git -C "$BASE/repo" pull -q
   reiniciar
   ;;
-*) echo "Uso: bash vps-instalar.sh llave|app|acceso|hermes|hermes-chat|netlify|cal|escribir|actualizar"; exit 1;;
+*) echo "Uso: bash vps-instalar.sh llave|app|acceso|hermes|hermes-chat|netlify|cal|ha|ha-revisar|alertas|escribir|actualizar"; exit 1;;
 esac

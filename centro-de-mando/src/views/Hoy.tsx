@@ -1,6 +1,7 @@
 import { Brain, ListChecks, Network, Bot } from 'lucide-react'
 import type { NetlifyVivo, Resumen } from '@/api'
 import { Aprobaciones } from '@/components/Aprobaciones'
+import { Casa } from '@/components/Casa'
 import { AvisoCreditos, Bandeja, cuando } from '@/components/Bandeja'
 import { haceCuanto, useApi } from '@/hooks'
 
@@ -116,6 +117,7 @@ export function Hoy({ alSinSesion, ir }: { alSinSesion: () => void; ir: (v: stri
       </div>
 
       <Sitio datos={netlify} />
+      <Casa alSinSesion={alSinSesion} />
     </div>
   )
 }
