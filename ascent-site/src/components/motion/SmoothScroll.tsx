@@ -20,7 +20,16 @@ export function SmoothScroll() {
       const el = document.querySelector<HTMLElement>(id)
       if (!el) return
       e.preventDefault()
-      lenis.scrollTo(el, { offset: id === '#inicio' ? 0 : -8, duration: 1.5 })
+      const offset = id === '#inicio' ? 0 : -8
+      // Al pasar, algunas secciones crecen (las carpetas se abren solas) y el destino se corre:
+      // al terminar se corrige una vez, corto, si la sección no quedó arriba.
+      lenis.scrollTo(el, {
+        offset,
+        duration: 1.5,
+        onComplete: () => {
+          if (Math.abs(el.getBoundingClientRect().top + offset) > 12) lenis.scrollTo(el, { offset, duration: 0.5 })
+        },
+      })
     }
     document.addEventListener('click', onClick)
     return () => {

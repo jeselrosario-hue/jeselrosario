@@ -3,8 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <!-- La letra del titular llega antes de pintar: sin ella el titular se pinta con otra letra más ancha y luego salta (CLS). -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="./node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="./node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0B1E3C" />
+    <link rel="canonical" href="https://ascentco.netlify.app/" />
     <title>Ascent Co. · Páginas web y tarjetas QR en Puerto Rico</title>
     <meta name="description" content="Que te encuentren. Que te elijan. Páginas de presentación, sitios web y tarjetas QR para personas y negocios en Puerto Rico." />
     <meta property="og:title" content="Ascent Co. · Páginas web y tarjetas QR" />

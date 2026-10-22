@@ -1190,6 +1190,8 @@ const CSS = `
 .sh-stage{position:absolute;inset:0;z-index:0;pointer-events:none}
 .sh-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .5s ease}
 .sh-fallback{position:absolute;display:block;max-width:none;user-select:none;-webkit-user-drag:none;transition:opacity .5s ease}
+/* until the image is measured and placed, the fallback and the cue stay hidden: no layout shift on load */
+.sh-root:not([data-laid]) .sh-fallback,.sh-root:not([data-laid]) .sh-hint{visibility:hidden}
 .sh-root[data-gl="on"] .sh-canvas{opacity:1}
 .sh-root[data-gl="on"] .sh-fallback{opacity:0}
 .sh-root[data-swap="1"] .sh-canvas{opacity:0;transition-duration:.25s}
@@ -1427,8 +1429,9 @@ export default function SculptureHero(props: SculptureHeroProps) {
     () => (imageBackground ? hexToRgb(imageBackground, [0.918, 0.914, 0.906]) : null),
     [imageBackground]
   )
-  const [isMobile, setIsMobile] = React.useState(false)
-  const mobileRef = React.useRef(false)
+  // known from the first render, so a phone never loads the wide image and then swaps it (layout shift)
+  const [isMobile, setIsMobile] = React.useState(() => typeof window !== "undefined" && window.innerWidth < 640)
+  const mobileRef = React.useRef(isMobile)
   // pick the image for the current theme and layout, falling back sensibly
   const activeSrc =
     (isMobile && mode === "dark" && (mobileDarkSrc || darkSrc)) ||
@@ -1612,6 +1615,7 @@ export default function SculptureHero(props: SculptureHeroProps) {
       if (cancelled) return
       aspectRef.current = image.naturalWidth / image.naturalHeight || aspectRef.current
       relayout()
+      root.dataset.laid = "1"
       if (engine && root.dataset.gl !== "off") {
         try {
           engine.onFirstFrame = () => {
