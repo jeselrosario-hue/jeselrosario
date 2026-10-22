@@ -14,8 +14,8 @@ const RULES: Record<Id, { lo: number; hi: number; open?: boolean; quote?: boolea
   qr: { lo: 20, hi: 20 },
   bio: { lo: 35, hi: 50 },
   site: { lo: 50, hi: 70 },
-  agenda: { lo: 85, hi: 85, open: true, needs: 'site' },
-  dominio: { lo: 100, hi: 100, open: true, needs: 'site' },
+  agenda: { lo: 25, hi: 25, needs: 'site' },
+  dominio: { lo: 50, hi: 50, needs: 'site' },
   recibos: { lo: 0, hi: 0, quote: true },
 }
 

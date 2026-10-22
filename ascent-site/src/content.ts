@@ -43,8 +43,8 @@ export const COPY = {
   extras: {
     title: 'Extras.',
     items: [
-      { id: 'agenda', title: 'Agenda y citas', price: 'desde $85' },
-      { id: 'dominio', title: 'Dominio propio', price: 'desde $100' },
+      { id: 'agenda', title: 'Agenda y citas', price: '+$25' },
+      { id: 'dominio', title: 'Dominio propio', price: '+$50' },
       { id: 'recibos', title: 'Cotizaciones y recibos', price: 'precio aparte' },
     ],
     demo: {
@@ -82,8 +82,8 @@ export const COPY = {
       { id: 'bio', name: 'Página de presentación', line: 'Tu link en la bio.', tag: '$35–50' },
       { id: 'site', name: 'Sitio web', line: 'Te escriben directo, con mensaje listo.', tag: '$50–70' },
       { id: 'qr', name: 'Tarjeta con QR', line: 'Baja de precio si llevas página.', tag: '$20 · $15 · $10' },
-      { id: 'agenda', name: 'Agenda y citas', line: 'Reservan y confirman por WhatsApp.', tag: 'desde $85' },
-      { id: 'dominio', name: 'Dominio propio', line: 'Tu dirección, sin netlify.app.', tag: 'desde $100' },
+      { id: 'agenda', name: 'Agenda y citas', line: 'Reservan y confirman por WhatsApp.', tag: '+$25' },
+      { id: 'dominio', name: 'Dominio propio', line: 'Tu dirección, sin netlify.app.', tag: '+$50' },
       { id: 'recibos', name: 'Cotizaciones y recibos', line: 'Documentos para tus clientes.', tag: 'aparte' },
     ],
     slip: {
