@@ -2,7 +2,7 @@ import { Check, ShieldCheck, X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { api, avisarPropuestas, enviar, SinSesion, type Propuesta } from '@/api'
 
-const ETIQUETAS: Record<string, string> = { nombre: 'Cliente', paquete: 'Paquete', estado: 'Estado', portafolio: 'Portafolio', ruta: 'Archivo', instruccion: 'Instrucción' }
+const ETIQUETAS: Record<string, string> = { aviso: 'Ojo', nombre: 'Cliente', paquete: 'Paquete', estado: 'Estado', portafolio: 'Portafolio', ruta: 'Archivo', instruccion: 'Instrucción' }
 
 /** Bandeja de aprobaciones: nada que escriba o envíe corre sin que Jesel pulse Aprobar. */
 export function Aprobaciones({ alSinSesion, vista, cliente, siempre = false }: { alSinSesion: () => void; vista?: string; cliente?: string; siempre?: boolean }) {

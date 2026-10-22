@@ -42,6 +42,16 @@ queda pendiente para reintentar.
 Una carpeta por cliente en el Cerebro: `Clientes/<nombre>/ficha.md` (formato en `Clientes/README.md`
 del Cerebro). Sin claves ni datos de pago.
 
+## Salud y alertas
+Cada 10 minutos revisa el sitio (responde, días del certificado, cabeceras de seguridad), los créditos
+de Netlify y las solicitudes nuevas. Si algo **cambia**, avisa por Telegram a través de un webhook de
+Hermes con entrega directa (no gasta tokens). Se conecta con `bash deploy/vps-instalar.sh alertas`.
+
+## Home Assistant
+Solo lectura, opcional (`bash deploy/vps-instalar.sh ha`). Usa el puerto 32768; el 32769 es el panel
+de Hermes. Si HA no responde, espera cada vez más antes de reintentar. Para los reintentos que hace
+Hermes: `bash deploy/vps-instalar.sh ha-revisar` (no cambia nada).
+
 ## Tareas de agentes
 Hermes deja un archivo por tarea en `Agentes/tareas/` del Cerebro:
 ```

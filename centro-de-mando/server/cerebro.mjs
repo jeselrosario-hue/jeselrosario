@@ -22,9 +22,10 @@ export async function listarNotas(raiz) {
         const rel = path.relative(raiz, completa).split(path.sep).join('/')
         const [st, texto] = await Promise.all([fs.stat(completa), fs.readFile(completa, 'utf8')])
         const h1 = texto.match(/^#\s+(.+)$/m)
+        const fmTitulo = texto.match(/^---\n[\s\S]*?^(?:titulo|nombre):\s*(.+)$[\s\S]*?\n---/m)
         notas.push({
           path: rel.replace(/\.md$/, ''),
-          title: (h1 ? h1[1] : e.name.replace(/\.md$/, '')).trim(),
+          title: (h1 ? h1[1] : fmTitulo ? fmTitulo[1] : e.name.replace(/\.md$/, '')).trim(),
           folder: rel.includes('/') ? rel.split('/')[0] : '(raíz)',
           mtime: st.mtimeMs,
           texto,
