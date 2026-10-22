@@ -1,4 +1,4 @@
-import { Bot, Brain, Home, ListChecks, LogOut, MessageSquare, Network, PlugZap, Users } from 'lucide-react'
+import { Bot, Brain, Globe, Home, ListChecks, LogOut, MessageSquare, Network, PlugZap, Users } from 'lucide-react'
 import { useCallback, useEffect, useState, type ComponentType } from 'react'
 import { api, salir } from '@/api'
 import { Agentes } from '@/views/Agentes'
@@ -10,12 +10,14 @@ import { Hoy } from '@/views/Hoy'
 import { Login } from '@/views/Login'
 import { Mapa } from '@/views/Mapa'
 import { Pendientes } from '@/views/Pendientes'
+import { Sitios } from '@/views/Sitios'
 
-type Vista = 'hoy' | 'hermes' | 'clientes' | 'pendientes' | 'agentes' | 'cerebro' | 'mapa' | 'conexiones'
+type Vista = 'hoy' | 'hermes' | 'clientes' | 'sitios' | 'pendientes' | 'agentes' | 'cerebro' | 'mapa' | 'conexiones'
 const MENU: { id: Vista; nombre: string; Icono: ComponentType<{ className?: string }> }[] = [
   { id: 'hoy', nombre: 'Hoy', Icono: Home },
   { id: 'hermes', nombre: 'Hermes', Icono: MessageSquare },
   { id: 'clientes', nombre: 'Clientes', Icono: Users },
+  { id: 'sitios', nombre: 'Sitios', Icono: Globe },
   { id: 'pendientes', nombre: 'Pendientes', Icono: ListChecks },
   { id: 'agentes', nombre: 'Agentes', Icono: Bot },
   { id: 'cerebro', nombre: 'Cerebro', Icono: Brain },
@@ -64,6 +66,7 @@ export function App() {
         {vista === 'hoy' && <Hoy alSinSesion={alSinSesion} ir={ir} />}
         {vista === 'hermes' && <Hermes alSinSesion={alSinSesion} abrir={abrirNota} />}
         {vista === 'clientes' && <Clientes alSinSesion={alSinSesion} sub={nota} abrir={abrirNota} />}
+        {vista === 'sitios' && <Sitios alSinSesion={alSinSesion} />}
         {vista === 'pendientes' && <Pendientes alSinSesion={alSinSesion} />}
         {vista === 'agentes' && <Agentes alSinSesion={alSinSesion} abrir={abrirNota} />}
         {vista === 'cerebro' && <Cerebro alSinSesion={alSinSesion} nota={nota} abrir={abrirNota} />}

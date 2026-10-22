@@ -90,21 +90,45 @@ export function pasoActivo(texto) {
   return { titulo: lineas[i].replace(/^##\s+/, '').replace(/\s*\(ACTIVO\)\s*$/i, '').trim(), texto: lineas.slice(i + 1, fin < 0 ? undefined : fin).join('\n') }
 }
 
-/** Tareas de agentes: Agentes/tareas/*.md con frontmatter (titulo, agente, estado, actualizado). */
+/** Tareas de agentes: Agentes/tareas/*.md con frontmatter (titulo, agente, estado, actualizado, cliente). */
+export const ESTADOS_TAREA = ['pendiente', 'haciendo', 'aprobacion', 'listo', 'aprobada', 'rechazada']
 export function parsearTareas(notas) {
   return notas
-    .filter((n) => n.path.startsWith('Agentes/tareas/'))
+    .filter((n) => n.path.startsWith('Agentes/tareas/') && !n.path.endsWith('/README'))
     .map((n) => {
-      const fm = n.texto.match(/^---\n([\s\S]*?)\n---/)
+      const fm = n.texto.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/)
       const campos = {}
       if (fm) for (const l of fm[1].split('\n')) {
-        const k = l.match(/^(\w+):\s*(.*)$/)
+        const k = l.match(/^(\w+):\s*(.*?)\s*(#.*)?$/)
         if (k) campos[k[1]] = k[2].trim()
       }
-      const estado = ['pendiente', 'haciendo', 'listo', 'aprobacion'].includes(campos.estado) ? campos.estado : 'pendiente'
-      return { path: n.path, titulo: campos.titulo || n.title, agente: campos.agente || 'sin nombre', estado, actualizado: campos.actualizado || '', mtime: n.mtime }
+      const estado = ESTADOS_TAREA.includes(campos.estado) ? campos.estado : 'pendiente'
+      const cuerpo = (fm ? fm[2] : n.texto).replace(/^#.*$/m, '').trim()
+      return {
+        path: n.path,
+        titulo: campos.titulo || n.title,
+        agente: campos.agente || 'sin nombre',
+        estado,
+        actualizado: campos.actualizado || '',
+        creado: campos.creado || '',
+        cliente: campos.cliente || '',
+        resumen: cuerpo.split('\n').filter((l) => l.trim() && !l.startsWith('>')).slice(0, 3).join(' ').slice(0, 280),
+        mtime: n.mtime,
+      }
     })
     .sort((a, b) => b.mtime - a.mtime)
+}
+
+/** Cambia el estado de una tarea y deja constancia de la decisión al final del archivo. */
+export function decidirTareaMd(texto, aprobada, cuando) {
+  const estado = aprobada ? 'aprobada' : 'rechazada'
+  let t = texto.match(/^---\n[\s\S]*?\n---/) ? texto : `---\nestado: pendiente\n---\n${texto}`
+  t = t.replace(/^(---\n[\s\S]*?)\n---/, (_m, fm) => {
+    let f = /\nestado:/.test(`\n${fm.slice(4)}`) ? fm.replace(/^estado:.*$/m, `estado: ${estado}`) : `${fm}\nestado: ${estado}`
+    f = /^actualizado:/m.test(f) ? f.replace(/^actualizado:.*$/m, `actualizado: ${cuando}`) : `${f}\nactualizado: ${cuando}`
+    return `${f}\n---`
+  })
+  return `${t.trimEnd()}\n\n> Decisión de Jesel (${cuando}): ${aprobada ? 'APROBADA. Puedes seguir.' : 'RECHAZADA. No lo hagas.'}\n`
 }
 
 /** Lee una nota por ruta, sin salir de la carpeta del Cerebro. */
