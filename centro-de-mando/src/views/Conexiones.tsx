@@ -15,7 +15,8 @@ export function Conexiones({ alSinSesion }: { alSinSesion: () => void }) {
     { nombre: 'Créditos de Netlify (aviso bajo 60)', ok: c.netlify.creditos, detalle: c.netlify.creditos ? 'Leyendo el saldo del equipo' : 'Pendiente', siguiente: 'Poner NETLIFY_TEAM en el .env del servidor: es el nombre corto del equipo que sale en la dirección de Netlify (app.netlify.com/teams/ESTE-NOMBRE).' },
     { nombre: 'Citas (Cal.com, solo lectura)', ok: c.cal.configurado, detalle: c.cal.configurado ? 'Clave configurada' : 'Pendiente', siguiente: 'En Cal.com: Settings → Developer → API keys, crear una clave y ponerla como CAL_API_KEY en el .env del servidor (nunca en el chat).' },
     { nombre: 'Correo de Ascent (Gmail, solo lectura)', ok: c.gmail.configurado, detalle: c.gmail.configurado ? 'Configurado' : 'Pendiente', siguiente: 'Crear el acceso de solo lectura en Google y autorizarlo una vez.' },
-    { nombre: 'Hablar con Hermes', ok: c.hermes.configurado, detalle: c.hermes.configurado ? 'Configurado' : 'Pendiente', siguiente: 'Confirmar qué API expone el panel de Hermes y ponerla detrás de HTTPS.' },
+    { nombre: 'Hermes en vivo (estado, tareas, sesiones)', ok: c.hermes.configurado, detalle: c.hermes.configurado ? 'Leyendo el panel de Hermes' : 'Pendiente', siguiente: 'En el VPS: bash vps-instalar.sh hermes (usuario y contraseña del panel).' },
+    { nombre: 'Chat con Hermes', ok: c.chat.configurado, detalle: c.chat.configurado ? 'API de Hermes conectada' : 'Pendiente', siguiente: 'En el VPS: bash vps-instalar.sh hermes-chat. Crea la clave y explica cómo encender la API de Hermes sin abrirla a internet.' },
   ]
 
   return (

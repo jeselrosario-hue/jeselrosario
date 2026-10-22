@@ -34,6 +34,7 @@ export type Conexiones = {
   cal: { configurado: boolean }
   gmail: { configurado: boolean }
   hermes: { configurado: boolean }
+  chat: { configurado: boolean }
 }
 
 export type HermesVivo =

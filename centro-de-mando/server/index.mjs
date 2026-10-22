@@ -1,6 +1,7 @@
 import { hermesConfigurado, hermesResumen } from './hermes.mjs'
 import { netlifyConfigurado, netlifyResumen } from './netlify.mjs'
 import { calConfigurado, calReservas } from './cal.mjs'
+import { chatConfigurado, chatEnviar, chatHistorial, chatNueva, MAX_TEXTO } from './hermes-chat.mjs'
 import { guardarEstado, leerEstado } from './datos.mjs'
 import http from 'node:http'
 import fs from 'node:fs/promises'
@@ -61,12 +62,12 @@ function json(res, codigo, cuerpo, extra = {}) {
   res.end(JSON.stringify(cuerpo))
 }
 
-async function cuerpoJson(req) {
+async function cuerpoJson(req, limite = 4096) {
   let total = 0
   const trozos = []
   for await (const t of req) {
     total += t.length
-    if (total > 4096) throw new Error('grande')
+    if (total > limite) throw new Error('grande')
     trozos.push(t)
   }
   return JSON.parse(Buffer.concat(trozos).toString() || '{}')
@@ -102,6 +103,17 @@ async function post(ruta, datos, res) {
     const id = String(datos.id || '')
     if (!/^[\w-]{1,64}$/.test(id) || !ESTADOS_SOLICITUD.includes(datos.estado)) return json(res, 400, { error: 'datos' })
     await guardarEstado('solicitudes', id, datos.estado)
+    return json(res, 200, { ok: true })
+  }
+  if (ruta === '/api/hermes/chat') {
+    if (!chatConfigurado()) return json(res, 409, { error: 'El chat con Hermes no está conectado.' })
+    const texto = typeof datos.texto === 'string' ? datos.texto.trim() : ''
+    if (!texto || texto.length > MAX_TEXTO) return json(res, 400, { error: `Escribe entre 1 y ${MAX_TEXTO} caracteres.` })
+    const r = await chatEnviar(texto)
+    return json(res, r.ok ? 200 : 502, r)
+  }
+  if (ruta === '/api/hermes/chat/nueva') {
+    await chatNueva()
     return json(res, 200, { ok: true })
   }
   return json(res, 404, { error: 'no encontrado' })
@@ -140,7 +152,7 @@ const servidor = http.createServer(async (req, res) => {
       if (!String(req.headers['content-type'] || '').startsWith('application/json') || req.headers['x-cdm'] !== '1') return json(res, 403, { error: 'origen' })
       let datos
       try {
-        datos = await cuerpoJson(req)
+        datos = await cuerpoJson(req, 16384)
       } catch {
         return json(res, 400, { error: 'datos' })
       }
@@ -192,6 +204,7 @@ const servidor = http.createServer(async (req, res) => {
         return json(res, 200, r)
       } catch (e) { console.error('netlify:', e.message); return json(res, 200, { ok: false, configurado: true, error: 'No pude leer Netlify' }) }
     }
+    if (url.pathname === '/api/hermes/chat') return json(res, 200, { configurado: chatConfigurado(), ...(await chatHistorial()) })
     if (url.pathname === '/api/cal') {
       if (!calConfigurado()) return json(res, 200, { ok: false, configurado: false })
       try { return json(res, 200, await calReservas()) } catch (e) { console.error('cal:', e.message); return json(res, 200, { ok: false, configurado: true, error: 'No pude leer Cal.com' }) }
@@ -217,6 +230,7 @@ const servidor = http.createServer(async (req, res) => {
         cal: { configurado: calConfigurado() },
         gmail: { configurado: Boolean(e.GMAIL_CLIENT_ID) },
         hermes: { configurado: hermesConfigurado() },
+        chat: { configurado: chatConfigurado() },
       })
     }
 
