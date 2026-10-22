@@ -3,6 +3,7 @@
 #   bash vps-instalar.sh llave     -> prepara carpeta y crea la llave de solo lectura para Cerebro
 #   bash vps-instalar.sh app       -> clona Cerebro, pide la contraseña, arranca Docker
 #   bash vps-instalar.sh hermes    -> conecta el dashboard a Hermes (solo lectura)
+#   bash vps-instalar.sh netlify   -> conecta el dashboard a Netlify (solicitudes del formulario, solo lectura)
 #   bash vps-instalar.sh acceso    -> instala Tailscale y publica el dashboard por HTTPS (solo tu red)
 # No guarda la contraseña: solo su hash en .env (permiso 600).
 set -euo pipefail
@@ -49,5 +50,14 @@ hermes)
   unset HP; chmod 600 .env
   docker compose up -d --build
   ;;
-*) echo "Uso: bash vps-instalar.sh llave|app|acceso|hermes"; exit 1;;
+netlify)
+  cd "$APP" && git -C "$BASE/repo" pull -q
+  read -rsp "Token de Netlify (no se ve al escribir): " NT; echo
+  read -rp "ID del sitio en Netlify: " NS
+  sed -i '/^NETLIFY_/d' .env
+  { echo "NETLIFY_TOKEN=$NT"; echo "NETLIFY_SITE_ID=$NS"; } >> .env
+  unset NT; chmod 600 .env
+  docker compose up -d --build
+  ;;
+*) echo "Uso: bash vps-instalar.sh llave|app|acceso|hermes|netlify"; exit 1;;
 esac

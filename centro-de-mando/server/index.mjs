@@ -1,4 +1,5 @@
 import { hermesConfigurado, hermesResumen } from './hermes.mjs'
+import { netlifyConfigurado, netlifyResumen } from './netlify.mjs'
 import http from 'node:http'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -152,6 +153,10 @@ const servidor = http.createServer(async (req, res) => {
     if (url.pathname === '/api/hermes') {
       if (!hermesConfigurado()) return json(res, 200, { ok: false, configurado: false })
       try { return json(res, 200, await hermesResumen()) } catch (e) { console.error('hermes:', e.message); return json(res, 200, { ok: false, configurado: true, error: 'No pude leer Hermes' }) }
+    }
+    if (url.pathname === '/api/netlify') {
+      if (!netlifyConfigurado()) return json(res, 200, { ok: false, configurado: false })
+      try { return json(res, 200, await netlifyResumen()) } catch (e) { console.error('netlify:', e.message); return json(res, 200, { ok: false, configurado: true, error: 'No pude leer Netlify' }) }
     }
     if (url.pathname === '/api/agentes') return json(res, 200, { tareas: parsearTareas(todas) })
 

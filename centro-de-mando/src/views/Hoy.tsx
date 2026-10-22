@@ -1,5 +1,5 @@
 import { Brain, ListChecks, Network, Bot } from 'lucide-react'
-import type { Resumen } from '@/api'
+import type { NetlifyVivo, Resumen } from '@/api'
 import { haceCuanto, useApi } from '@/hooks'
 
 function saludo() {
@@ -31,6 +31,51 @@ function Pulso({ dias }: { dias: Record<string, number> }) {
         <div key={x.d} title={`${x.d}: ${x.n}`} className="w-full rounded-t bg-sky/70" style={{ height: `${Math.max(6, (x.n / max) * 100)}%`, opacity: x.n ? 1 : 0.25 }} />
       ))}
     </div>
+  )
+}
+
+function SitioYSolicitudes({ alSinSesion }: { alSinSesion: () => void }) {
+  const { datos } = useApi<NetlifyVivo>('/api/netlify', alSinSesion, 60000)
+  if (!datos) return null
+  const cuando = (iso: string) => new Date(iso).toLocaleString('es-PR', { timeZone: 'America/Puerto_Rico', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })
+  if (!datos.ok) {
+    return (
+      <section className="panel mt-4 p-6">
+        <p className="eyebrow">Solicitudes del sitio</p>
+        <p className="mt-2 text-sm text-white/65">{datos.configurado ? datos.error : 'Sin conectar. Falta NETLIFY_TOKEN y NETLIFY_SITE_ID en el servidor.'}</p>
+      </section>
+    )
+  }
+  const reales = datos.solicitudes.filter((s) => !s.spam)
+  return (
+    <section className="mt-4 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+      <div className="panel p-6">
+        <p className="eyebrow">Solicitudes del sitio <span className="font-mono text-white/45">{reales.length}</span></p>
+        {reales.length === 0 ? <p className="mt-3 text-sm text-white/60">Todavía no hay solicitudes.</p> : (
+          <ul className="mt-3 divide-y divide-white/10">
+            {reales.map((s, i) => (
+              <li key={i} className="py-3 text-sm">
+                <span className="flex flex-wrap items-center justify-between gap-2"><span className="font-medium">{s.nombre}</span><span className="font-mono text-[11px] text-white/50">{cuando(s.en)}</span></span>
+                <span className="block text-white/70">{s.contacto}</span>
+                {s.paquetes && <span className="block font-mono text-[11px] text-sky">{s.paquetes} {s.total && `· ${s.total}`}</span>}
+                {s.mensaje && <span className="block text-white/60">{s.mensaje}</span>}
+                <span className={`mt-1 inline-block font-mono text-[11px] ${s.acepto ? 'text-emerald-300' : 'text-amber-300'}`}>{s.acepto ? 'aceptó privacidad y términos' : 'sin constancia de aceptación'}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <div className="panel p-6">
+        <p className="eyebrow">Sitio</p>
+        <p className="mt-2 break-all text-sm">{datos.sitio.url}</p>
+        <p className="mt-1 font-mono text-[11px] text-white/50">publicado {datos.sitio.publicado ? cuando(datos.sitio.publicado) : '—'} · {datos.sitio.estado ?? '—'}</p>
+        <ul className="mt-4 space-y-2">
+          {datos.deploys.map((d, i) => (
+            <li key={i} className="flex items-center gap-2 text-sm text-white/75"><span className="size-2 rounded-full" style={{ background: d.estado === 'ready' ? '#34d399' : d.estado === 'error' ? '#f87171' : '#fbbf24' }} /><span className="min-w-0 flex-1 truncate">{d.mensaje || d.rama}</span><span className="font-mono text-[11px] text-white/45">{cuando(d.en)}</span></li>
+          ))}
+        </ul>
+      </div>
+    </section>
   )
 }
 
@@ -93,6 +138,7 @@ export function Hoy({ alSinSesion, ir }: { alSinSesion: () => void; ir: (v: stri
         <p className="mt-2 text-white/70">Aquí van a llegar las solicitudes de clientes, los correos de Ascent y los avisos de Hermes.</p>
         <button onClick={() => ir('conexiones')} className="mt-3 cursor-pointer rounded-full border border-white/25 px-4 py-2 text-sm hover:border-sky">Ver qué falta conectar</button>
       </section>
+      <SitioYSolicitudes alSinSesion={alSinSesion} />
     </div>
   )
 }

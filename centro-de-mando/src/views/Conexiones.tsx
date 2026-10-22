@@ -11,7 +11,7 @@ export function Conexiones({ alSinSesion }: { alSinSesion: () => void }) {
   const filas: { nombre: string; ok: boolean; detalle: string; siguiente?: string }[] = [
     { nombre: 'Cerebro (notas, pendientes, mapa)', ok: c.cerebro.ok, detalle: `${c.cerebro.notas} notas leídas${sync ? ('pendiente' in sync ? ' · sincronizando con GitHub…' : sync.ok ? ` · GitHub ${haceCuanto(sync.en)}` : ' · falló la sincronización con GitHub') : ''}` },
     { nombre: 'Tareas de agentes (Hermes)', ok: c.agentes.ok, detalle: c.agentes.ok ? 'Leyendo Agentes/tareas/' : 'Aún sin tareas', siguiente: 'Enseñar a Hermes a dejar un archivo por tarea (ver Herramientas/Hermes-aprende).' },
-    { nombre: 'Solicitudes de clientes (Netlify Forms)', ok: c.netlify.configurado, detalle: c.netlify.configurado ? 'Token configurado' : 'Pendiente', siguiente: 'Cuando el sitio esté en Netlify: crear un token de tu cuenta y ponerlo en el .env del servidor (NETLIFY_TOKEN y NETLIFY_SITE_ID).' },
+    { nombre: 'Solicitudes de clientes (Netlify Forms)', ok: c.netlify.configurado, detalle: c.netlify.configurado ? 'Token configurado' : 'Pendiente', siguiente: 'Crear un token en Netlify (User settings → Applications → Personal access tokens) y en el servidor correr: bash cdm-instalar.sh netlify. El token se escribe ahí, nunca en el chat.' },
     { nombre: 'Correo de Ascent (Gmail, solo lectura)', ok: c.gmail.configurado, detalle: c.gmail.configurado ? 'Configurado' : 'Pendiente', siguiente: 'Crear el acceso de solo lectura en Google y autorizarlo una vez.' },
     { nombre: 'Hablar con Hermes', ok: c.hermes.configurado, detalle: c.hermes.configurado ? 'Configurado' : 'Pendiente', siguiente: 'Confirmar qué API expone el panel de Hermes y ponerla detrás de HTTPS.' },
   ]

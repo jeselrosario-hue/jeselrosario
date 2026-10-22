@@ -41,3 +41,12 @@ export type HermesVivo =
       tareas: { nombre: string; horario: string; activa: boolean; estado: string; ultima: string | null; ultimoEstado: string | null; error: string | null; proxima: string | null }[]
       sesiones: { titulo: string; origen: string; modelo: string; mensajes: number; activa: boolean; ultima: string | null }[]
     }
+
+export type NetlifyVivo =
+  | { ok: false; configurado: boolean; error?: string }
+  | {
+      ok: true
+      sitio: { nombre: string; url: string; publicado: string | null; estado: string | null }
+      deploys: { estado: string; rama: string; mensaje: string; en: string }[]
+      solicitudes: { nombre: string; contacto: string; mensaje: string; paquetes: string; total: string; acepto: boolean; en: string; spam: boolean }[]
+    }
