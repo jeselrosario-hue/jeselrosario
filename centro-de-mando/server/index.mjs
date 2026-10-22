@@ -3,6 +3,9 @@ import { netlifyConfigurado, netlifyResumen } from './netlify.mjs'
 import { calConfigurado, calReservas } from './cal.mjs'
 import { chatConfigurado, chatEnviar, chatHistorial, chatNueva, MAX_TEXTO } from './hermes-chat.mjs'
 import { guardarEstado, leerEstado } from './datos.mjs'
+import { escribirCerebro, escrituraActiva } from './escritor.mjs'
+import { ESTADOS_CLIENTE, fichaMd, listarClientes, PAQUETES, PERMISOS, slug, validarCliente } from './clientes.mjs'
+import { decidir, listarPropuestas, proponer, registrar } from './propuestas.mjs'
 import http from 'node:http'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -96,6 +99,27 @@ async function estatico(req, res) {
 }
 
 const ESTADOS_SOLICITUD = ['nueva', 'respondida', 'cliente']
+const hoyPR = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Puerto_Rico' }).format(new Date())
+
+// Lo que hace cada propuesta cuando Jesel la aprueba.
+registrar('crear-cliente', async (d) => {
+  const r = await escribirCerebro([{ ruta: `Clientes/${d.id}/ficha.md`, contenido: fichaMd(d, hoyPR()), soloSiNoExiste: true }], `Cliente nuevo: ${d.nombre} (aprobado en el Centro de mando)`)
+  cache.en = 0
+  return { texto: `Ficha creada en Clientes/${d.id}/ficha.md${r.commit ? ` (commit ${r.commit})` : ''}.` }
+})
+registrar('tarea-hermes', async (d) => {
+  if (!chatConfigurado()) throw new Error('El chat con Hermes no está conectado.')
+  let tarea = ''
+  if (escrituraActiva()) {
+    tarea = `Agentes/tareas/${hoyPR()}-${d.id}-${Date.now().toString(36)}.md`
+    await escribirCerebro([{ ruta: tarea, contenido: `---\ntitulo: ${d.nombre}: ${d.instruccion.split('\n')[0].slice(0, 80)}\nagente: Hermes\nestado: haciendo\nactualizado: ${new Date().toISOString().slice(0, 16).replace('T', ' ')}\ncliente: ${d.id}\n---\n${d.instruccion}\n` }], `Tarea para Hermes: ${d.nombre}`)
+    cache.en = 0
+  }
+  const mensaje = `Tarea aprobada por Jesel para el cliente ${d.nombre}.\n\nInstrucción: ${d.instruccion}\n\n${tarea ? `Actualiza el estado en ${tarea} del Cerebro cuando avances.\n\n` : ''}Ficha del cliente:\n\n${d.ficha}`
+  const r = await chatEnviar(mensaje)
+  if (!r.ok) throw new Error(r.error)
+  return { texto: r.mensaje.texto.slice(0, 600), tarea: tarea || null }
+})
 
 /** Acciones que escriben. Cada una valida sus datos; lo desconocido se rechaza. */
 async function post(ruta, datos, res) {
@@ -111,6 +135,27 @@ async function post(ruta, datos, res) {
     if (!texto || texto.length > MAX_TEXTO) return json(res, 400, { error: `Escribe entre 1 y ${MAX_TEXTO} caracteres.` })
     const r = await chatEnviar(texto)
     return json(res, r.ok ? 200 : 502, r)
+  }
+  if (ruta === '/api/clientes/proponer') {
+    const v = validarCliente(datos)
+    if (v.error) return json(res, 400, { error: v.error })
+    const id = slug(v.datos.nombre)
+    if (listarClientes(await notas()).some((c) => c.id === id)) return json(res, 409, { error: 'Ya hay un cliente con ese nombre.' })
+    const p = await proponer('crear-cliente', `Crear la ficha de ${v.datos.nombre}`, { ...v.datos, id }, 'clientes')
+    return json(res, 200, { ok: true, propuesta: p })
+  }
+  if (ruta === '/api/clientes/hermes') {
+    const c = listarClientes(await notas()).find((x) => x.id === datos.id)
+    const instruccion = typeof datos.instruccion === 'string' ? datos.instruccion.trim().slice(0, 1500) : ''
+    if (!c || instruccion.length < 3) return json(res, 400, { error: 'Falta el cliente o la instrucción.' })
+    const ficha = (await notas()).find((n) => n.path === c.ficha)?.texto || ''
+    const p = await proponer('tarea-hermes', `Pasar a Hermes: ${c.nombre}`, { id: c.id, nombre: c.nombre, instruccion, ficha: ficha.slice(0, 6000) }, 'clientes')
+    return json(res, 200, { ok: true, propuesta: p })
+  }
+  if (ruta === '/api/propuestas/decidir') {
+    if (typeof datos.id !== 'string' || typeof datos.aprobar !== 'boolean') return json(res, 400, { error: 'datos' })
+    const r = await decidir(datos.id, datos.aprobar)
+    return json(res, r.ok ? 200 : 409, r)
   }
   if (ruta === '/api/hermes/chat/nueva') {
     await chatNueva()
@@ -182,6 +227,7 @@ const servidor = http.createServer(async (req, res) => {
         plan: { abiertos: plan.filter((p) => !p.done).length, hechos: plan.filter((p) => p.done).length, activo: activo?.titulo ?? null, siguiente: (activo && parsearCasillas(activo.texto).find((p) => !p.done)?.text) || plan.find((p) => !p.done)?.text || null },
         cerebro: { notas: todas.length, enlaces: grafo.aristas.length, reciente: [...todas].sort((a, b) => b.mtime - a.mtime).slice(0, 5).map((n) => ({ path: n.path, title: n.title, mtime: n.mtime })), dias },
         agentes: { total: tareas.length, aprobacion: tareas.filter((t) => t.estado === 'aprobacion').length, haciendo: tareas.filter((t) => t.estado === 'haciendo').length },
+        propuestas: (await listarPropuestas()).filter((p) => p.estado === 'pendiente').length,
       })
     }
 
@@ -204,6 +250,8 @@ const servidor = http.createServer(async (req, res) => {
         return json(res, 200, r)
       } catch (e) { console.error('netlify:', e.message); return json(res, 200, { ok: false, configurado: true, error: 'No pude leer Netlify' }) }
     }
+    if (url.pathname === '/api/clientes') return json(res, 200, { clientes: listarClientes(todas), escritura: escrituraActiva(), chat: chatConfigurado(), paquetes: PAQUETES, estados: ESTADOS_CLIENTE, permisos: PERMISOS })
+    if (url.pathname === '/api/propuestas') return json(res, 200, { propuestas: (await listarPropuestas()).map(({ datos: d, ...p }) => ({ ...p, detalle: p.tipo === 'crear-cliente' ? { nombre: d.nombre, paquete: d.paquete, estado: d.estado, portafolio: d.portafolio, ruta: `Clientes/${d.id}/ficha.md` } : { nombre: d.nombre, instruccion: d.instruccion } })) })
     if (url.pathname === '/api/hermes/chat') return json(res, 200, { configurado: chatConfigurado(), ...(await chatHistorial()) })
     if (url.pathname === '/api/cal') {
       if (!calConfigurado()) return json(res, 200, { ok: false, configurado: false })
@@ -231,6 +279,7 @@ const servidor = http.createServer(async (req, res) => {
         gmail: { configurado: Boolean(e.GMAIL_CLIENT_ID) },
         hermes: { configurado: hermesConfigurado() },
         chat: { configurado: chatConfigurado() },
+        escritura: { activa: escrituraActiva() },
       })
     }
 

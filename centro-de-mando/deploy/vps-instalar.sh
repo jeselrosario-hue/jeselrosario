@@ -5,6 +5,7 @@
 #   bash vps-instalar.sh hermes    -> conecta el dashboard a Hermes (solo lectura)
 #   bash vps-instalar.sh netlify   -> conecta el dashboard a Netlify (solicitudes del formulario, solo lectura)
 #   bash vps-instalar.sh hermes-chat -> conecta el chat con Hermes (su API, solo por la red interna de Docker)
+#   bash vps-instalar.sh escribir  -> deja que el dashboard escriba en el Cerebro (fichas, tareas), siempre con tu Aprobar
 #   bash vps-instalar.sh cal       -> conecta las citas de Cal.com (solo lectura)
 #   bash vps-instalar.sh actualizar -> baja la última versión y reinicia
 #   bash vps-instalar.sh acceso    -> instala Tailscale y publica el dashboard por HTTPS (solo tu red)
@@ -93,9 +94,18 @@ cal)
   fijar CAL_API_KEY "$CK"; unset CK
   reiniciar
   ;;
+escribir)
+  cd "$APP" && git -C "$BASE/repo" pull -q
+  echo "1) En GitHub > Cerebro > Settings > Deploy keys: borra la llave 'centro-de-mando-vps' y vuelve a añadirla"
+  echo "   con esta misma llave pública, marcando 'Allow write access':"; echo; cat "$APP/ssh/id_ed25519.pub"; echo
+  read -rp "2) ¿Ya la añadiste con permiso de escritura? (si/no): " OK
+  [ "$OK" = "si" ] || { echo "No cambié nada."; exit 0; }
+  fijar CEREBRO_ESCRIBIR 1
+  reiniciar
+  ;;
 actualizar)
   cd "$APP" && git -C "$BASE/repo" pull -q
   reiniciar
   ;;
-*) echo "Uso: bash vps-instalar.sh llave|app|acceso|hermes|hermes-chat|netlify|cal|actualizar"; exit 1;;
+*) echo "Uso: bash vps-instalar.sh llave|app|acceso|hermes|hermes-chat|netlify|cal|escribir|actualizar"; exit 1;;
 esac

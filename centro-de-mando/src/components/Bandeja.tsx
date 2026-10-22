@@ -1,4 +1,4 @@
-import { AlertTriangle, CalendarClock, Inbox, Video } from 'lucide-react'
+import { AlertTriangle, CalendarClock, Inbox, UserPlus, Video } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { enviar, SinSesion, type CalVivo, type EstadoSolicitud, type NetlifyVivo, type Solicitud } from '@/api'
 import { useApi } from '@/hooks'
@@ -41,6 +41,17 @@ function Tarjeta({ s, cambiar }: { s: Solicitud; cambiar: (id: string, e: Estado
         </p>
       )}
       {s.mensaje && <p className="mt-2 text-sm text-white/65">{s.mensaje}</p>}
+      {s.estado === 'cliente' && (
+        <button
+          onClick={() => {
+            try { sessionStorage.setItem('cdm:prefill-cliente', JSON.stringify({ nombre: s.nombre, contacto: s.contacto, paquete: '', notas: [s.paquetes && `Pidió: ${s.paquetes} ${s.total}`, s.mensaje].filter(Boolean).join('\n') })) } catch { /* sin almacenamiento: el formulario sale vacío */ }
+            location.hash = 'clientes/nuevo'
+          }}
+          className="mt-3 mr-2 inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-full bg-emerald-300/15 px-3 text-xs font-medium text-emerald-200 transition-colors hover:bg-emerald-300/25"
+        >
+          <UserPlus className="size-3.5" aria-hidden /> Crear ficha
+        </button>
+      )}
       <div role="radiogroup" aria-label={`Estado de ${s.nombre || 'la solicitud'}`} className="mt-3 inline-flex rounded-full border border-white/15 p-0.5">
         {ESTADOS.map((e) => {
           const activo = s.estado === e.id
