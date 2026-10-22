@@ -19,7 +19,7 @@ export const CONTACT_MESSAGE = 'Hola Ascent Co., quiero cotizar mi página.'
  * para cal.com/ascentco/consulta aquí va 'ascentco/consulta'.
  * Vacío = la sección de agenda muestra la demostración dibujada, sin reservar.
  */
-export const CAL_LINK = ''
+export const CAL_LINK = 'jesel-rosario-xgn25q/15min'
 
 /** Dirección que codifica el QR de demostración. */
 export const SITE_URL = 'https://ascentco.netlify.app'

@@ -11,8 +11,7 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 # Seguridad: se aplica a todo el sitio.
-# CSP: solo carga lo propio. Si algún día se activa la agenda de Cal.com, hay que
-# añadir https://app.cal.com a script-src, connect-src y frame-src (y probar).
+# CSP: solo carga lo propio, más https://app.cal.com para la agenda (solo se carga si la persona acepta).
 [[headers]]
   for = "/*"
   [headers.values]
@@ -22,4 +21,4 @@
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
     Cross-Origin-Opener-Policy = "same-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self'; connect-src 'self'; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://app.cal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self'; connect-src 'self' https://app.cal.com; frame-src https://app.cal.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
