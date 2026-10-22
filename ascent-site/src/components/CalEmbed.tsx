@@ -26,25 +26,29 @@ declare global {
   }
 }
 
-/** Carga el script oficial una sola vez por página. */
+/**
+ * Carga el script oficial (patrón de arranque de Cal.com): se crea una cola `Cal`,
+ * y el script real la ejecuta al cargar. Una sola vez por página.
+ */
 function loadCal(): Promise<NonNullable<Window['Cal']>> {
-  if (window.Cal?.loaded) return Promise.resolve(window.Cal)
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector<HTMLScriptElement>('script[data-cal-embed]')
-    const done = () => (window.Cal ? resolve(window.Cal) : reject(new Error('Cal no cargó')))
-    if (existing) {
-      existing.addEventListener('load', done, { once: true })
-      existing.addEventListener('error', () => reject(new Error('Cal no cargó')), { once: true })
-      return
-    }
-    const s = document.createElement('script')
-    s.src = 'https://app.cal.com/embed/embed.js'
-    s.async = true
-    s.dataset.calEmbed = ''
-    s.addEventListener('load', done, { once: true })
-    s.addEventListener('error', () => reject(new Error('Cal no cargó')), { once: true })
-    document.head.appendChild(s)
-  })
+  if (!window.Cal) {
+    const cola: unknown[] = []
+    const stub = ((...args: unknown[]) => {
+      if (!stub.loaded) {
+        stub.ns = {}
+        stub.loaded = true
+        const s = document.createElement('script')
+        s.src = 'https://app.cal.com/embed/embed.js'
+        s.async = true
+        s.dataset.calEmbed = ''
+        document.head.appendChild(s)
+      }
+      cola.push(args)
+    }) as NonNullable<Window['Cal']>
+    stub.q = cola
+    window.Cal = stub
+  }
+  return Promise.resolve(window.Cal)
 }
 
 export function CalEmbed({ link, brandColor = '4ABDF0', height = 560, className = '', fallback = null }: Props) {
