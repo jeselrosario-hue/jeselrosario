@@ -11,7 +11,8 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { execFile } from 'node:child_process'
 import { bloqueado, cookieBorrar, cookieSesion, crearSesion, registrarFallo, sesionValida, verificarClave } from './auth.mjs'
-import { construirGrafo, leerNota, listarNotas, parsearCasillas, parsearTareas, pasoActivo } from './cerebro.mjs'
+import { construirGrafo, decidirTareaMd, leerNota, listarNotas, parsearCasillas, parsearTareas, pasoActivo } from './cerebro.mjs'
+import { captura, listarSitios } from './sitios.mjs'
 
 try {
   process.loadEnvFile?.('.env')
@@ -157,6 +158,23 @@ async function post(ruta, datos, res) {
     const r = await decidir(datos.id, datos.aprobar)
     return json(res, r.ok ? 200 : 409, r)
   }
+  if (ruta === '/api/agentes/decidir') {
+    const t = parsearTareas(await notas()).find((x) => x.path === datos.path)
+    if (!t || typeof datos.aprobar !== 'boolean') return json(res, 400, { error: 'datos' })
+    if (t.estado !== 'aprobacion') return json(res, 409, { error: 'Esa tarea ya no espera aprobación.' })
+    if (!escrituraActiva()) return json(res, 409, { error: 'El Centro de mando no tiene permiso para escribir en el Cerebro (Conexiones).' })
+    const texto = (await notas()).find((n) => n.path === t.path)?.texto || ''
+    const cuando = new Date().toLocaleString('sv-SE', { timeZone: 'America/Puerto_Rico' }).slice(0, 16)
+    try {
+      await escribirCerebro([{ ruta: `${t.path}.md`, contenido: decidirTareaMd(texto, datos.aprobar, cuando) }], `${datos.aprobar ? 'Aprobada' : 'Rechazada'}: ${t.titulo}`)
+    } catch (e) {
+      return json(res, 502, { error: e.message })
+    }
+    cache.en = 0
+    // Avisarle a Hermes si su chat está conectado (si falla, la decisión ya quedó en el Cerebro).
+    if (chatConfigurado() && /hermes/i.test(t.agente)) chatEnviar(`Jesel ${datos.aprobar ? 'APROBÓ' : 'RECHAZÓ'} tu tarea "${t.titulo}" (${t.path}.md).${datos.aprobar ? ' Puedes seguir.' : ' No la hagas.'}`).catch(() => {})
+    return json(res, 200, { ok: true, estado: datos.aprobar ? 'aprobada' : 'rechazada' })
+  }
   if (ruta === '/api/hermes/chat/nueva') {
     await chatNueva()
     return json(res, 200, { ok: true })
@@ -252,12 +270,19 @@ const servidor = http.createServer(async (req, res) => {
     }
     if (url.pathname === '/api/clientes') return json(res, 200, { clientes: listarClientes(todas), escritura: escrituraActiva(), chat: chatConfigurado(), paquetes: PAQUETES, estados: ESTADOS_CLIENTE, permisos: PERMISOS })
     if (url.pathname === '/api/propuestas') return json(res, 200, { propuestas: (await listarPropuestas()).map(({ datos: d, ...p }) => ({ ...p, detalle: p.tipo === 'crear-cliente' ? { nombre: d.nombre, paquete: d.paquete, estado: d.estado, portafolio: d.portafolio, ruta: `Clientes/${d.id}/ficha.md` } : { nombre: d.nombre, instruccion: d.instruccion } })) })
+    if (url.pathname === '/api/sitios') return json(res, 200, await listarSitios(listarClientes(todas)))
+    if (url.pathname === '/api/sitios/captura') {
+      const img = await captura(url.searchParams.get('id') || '').catch(() => null)
+      if (!img) return json(res, 404, { error: 'sin captura' })
+      res.writeHead(200, { 'Content-Type': img.tipo, 'Cache-Control': 'private, max-age=3600', ...CABECERAS })
+      return res.end(img.datos)
+    }
     if (url.pathname === '/api/hermes/chat') return json(res, 200, { configurado: chatConfigurado(), ...(await chatHistorial()) })
     if (url.pathname === '/api/cal') {
       if (!calConfigurado()) return json(res, 200, { ok: false, configurado: false })
       try { return json(res, 200, await calReservas()) } catch (e) { console.error('cal:', e.message); return json(res, 200, { ok: false, configurado: true, error: 'No pude leer Cal.com' }) }
     }
-    if (url.pathname === '/api/agentes') return json(res, 200, { tareas: parsearTareas(todas) })
+    if (url.pathname === '/api/agentes') return json(res, 200, { tareas: parsearTareas(todas), escritura: escrituraActiva() })
 
     if (url.pathname === '/api/notas') return json(res, 200, { notas: todas.map(({ texto: _t, ...n }) => n).sort((a, b) => a.path.localeCompare(b.path)) })
 

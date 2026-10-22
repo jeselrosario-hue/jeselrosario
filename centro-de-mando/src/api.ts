@@ -26,7 +26,7 @@ export type Resumen = {
   propuestas: number
 }
 export type NotaInfo = { path: string; title: string; folder: string; mtime: number }
-export type Tarea = { path: string; titulo: string; agente: string; estado: 'pendiente' | 'haciendo' | 'listo' | 'aprobacion'; actualizado: string; mtime: number }
+export type Tarea = { path: string; titulo: string; agente: string; estado: 'pendiente' | 'haciendo' | 'aprobacion' | 'listo' | 'aprobada' | 'rechazada'; actualizado: string; creado: string; cliente: string; resumen: string; mtime: number }
 export type Grafo = { nodos: { id: string; title: string; folder: string }[]; aristas: { from: string; to: string }[] }
 export type Conexiones = {
   cerebro: { ok: boolean; notas: number; sync: null | { ok: boolean; en: number } | { pendiente: true } }
@@ -86,3 +86,16 @@ export type Propuesta = {
 
 /** Avisa a los paneles que hay propuestas nuevas o decididas. */
 export const avisarPropuestas = () => dispatchEvent(new Event('cdm:propuestas'))
+
+export type Sitio = {
+  id: string
+  nombre: string
+  url: string | null
+  origen: 'netlify' | 'ficha'
+  deploy: string | null
+  publicado: string | null
+  captura: string | null
+  cliente: string | null
+  portafolio: string | null
+  salud?: { codigo: number; ms: number; en: number; omitido?: boolean }
+}

@@ -1,12 +1,18 @@
-import type { HermesVivo, Tarea } from '@/api'
+import { Check, X } from 'lucide-react'
+import { useState } from 'react'
+import { enviar, SinSesion, type HermesVivo, type Tarea } from '@/api'
 import { haceCuanto, useApi } from '@/hooks'
 
-const ESTADOS: { id: Tarea['estado']; nombre: string; color: string }[] = [
-  { id: 'aprobacion', nombre: 'Necesita tu aprobación', color: '#fbbf24' },
-  { id: 'haciendo', nombre: 'Haciendo', color: '#4abdf0' },
-  { id: 'pendiente', nombre: 'Pendiente', color: '#94a3b8' },
-  { id: 'listo', nombre: 'Listo', color: '#34d399' },
+const COLUMNAS: { id: string; nombre: string; color: string; estados: Tarea['estado'][] }[] = [
+  { id: 'aprobacion', nombre: 'Necesita tu aprobación', color: '#fbbf24', estados: ['aprobacion'] },
+  { id: 'haciendo', nombre: 'Haciendo', color: '#4abdf0', estados: ['haciendo'] },
+  { id: 'pendiente', nombre: 'Pendiente', color: '#94a3b8', estados: ['pendiente'] },
+  { id: 'listo', nombre: 'Listo', color: '#34d399', estados: ['listo', 'aprobada', 'rechazada'] },
 ]
+const SELLO: Partial<Record<Tarea['estado'], { texto: string; clase: string }>> = {
+  aprobada: { texto: 'Aprobada', clase: 'text-emerald-300' },
+  rechazada: { texto: 'Rechazada', clase: 'text-red-300' },
+}
 
 const cuando = (iso: string | null) => {
   if (!iso) return '—'
@@ -63,50 +69,82 @@ function HermesEnVivo({ alSinSesion }: { alSinSesion: () => void }) {
   )
 }
 
+function TareaCard({ t, escritura, abrir, alSinSesion, decidida }: { t: Tarea; escritura: boolean; abrir: (ruta: string) => void; alSinSesion: () => void; decidida: () => void }) {
+  const [ocupado, setOcupado] = useState(false)
+  const [error, setError] = useState('')
+  const sello = SELLO[t.estado]
+  async function decidir(aprobar: boolean) {
+    setOcupado(true)
+    setError('')
+    try {
+      await enviar('/api/agentes/decidir', { path: t.path, aprobar })
+      decidida()
+    } catch (e) {
+      if (e instanceof SinSesion) return alSinSesion()
+      setError((e as Error).message)
+    } finally {
+      setOcupado(false)
+    }
+  }
+  return (
+    <li className="rounded-xl border border-white/10 bg-white/5 p-3">
+      <button onClick={() => abrir(t.path)} className="w-full cursor-pointer text-left">
+        <span className="block text-sm font-medium hover:text-sky">{t.titulo}</span>
+        {t.resumen && <span className="mt-1 line-clamp-3 block text-xs text-white/60">{t.resumen}</span>}
+        <span className="mt-1.5 block font-mono text-[11px] text-white/50">{t.agente} · {t.creado ? `desde ${t.creado}` : t.actualizado ? `al ${t.actualizado}` : haceCuanto(t.mtime)}{sello && <span className={`ml-1.5 ${sello.clase}`}>· {sello.texto}</span>}</span>
+      </button>
+      {t.estado === 'aprobacion' && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button disabled={!escritura || ocupado} onClick={() => decidir(true)} className="flex min-h-9 cursor-pointer items-center gap-1.5 rounded-full bg-sky px-3.5 text-xs font-semibold text-navy transition-transform duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"><Check className="size-3.5" aria-hidden /> Aprobar</button>
+          <button disabled={!escritura || ocupado} onClick={() => decidir(false)} className="flex min-h-9 cursor-pointer items-center gap-1.5 rounded-full border border-white/20 px-3.5 text-xs text-white/80 transition-colors hover:border-red-300 disabled:cursor-not-allowed disabled:opacity-40"><X className="size-3.5" aria-hidden /> Rechazar</button>
+          {!escritura && <span className="w-full text-[11px] text-white/45">Para decidir desde aquí, activa la escritura en Conexiones.</span>}
+        </div>
+      )}
+      {error && <p role="alert" className="mt-2 text-xs text-red-300">{error}</p>}
+    </li>
+  )
+}
+
 export function Agentes({ alSinSesion, abrir }: { alSinSesion: () => void; abrir: (ruta: string) => void }) {
-  const { datos, error } = useApi<{ tareas: Tarea[] }>('/api/agentes', alSinSesion, 30000)
+  const [vuelta, setVuelta] = useState(0)
+  const { datos, error } = useApi<{ tareas: Tarea[]; escritura: boolean }>(`/api/agentes?v=${vuelta}`, alSinSesion, 30000)
   if (error) return <p className="text-red-300">{error}</p>
   if (!datos) return <p className="text-white/60">Cargando…</p>
 
   return (
     <div className="entra">
       <p className="eyebrow">Agentes</p>
-      <h1 className="mt-2 text-5xl">Qué está haciendo Hermes.</h1>
-      <HermesEnVivo alSinSesion={alSinSesion} />
+      <h1 className="mt-2 text-5xl">Qué están haciendo los agentes.</h1>
 
       {datos.tareas.length === 0 ? (
         <section className="panel mt-8 max-w-2xl p-6">
-          <p className="text-white/80">Todavía no hay tareas. Cuando Hermes o un subagente trabaje, deja un archivo en <code className="rounded bg-white/10 px-1.5 font-mono text-sm">Agentes/tareas/</code> del Cerebro y aparece aquí solo.</p>
+          <p className="text-white/80">Todavía no hay tareas. Cuando Hermes, Claude Code o un subagente trabaje, deja un archivo en <code className="rounded bg-white/10 px-1.5 font-mono text-sm">Agentes/tareas/</code> del Cerebro y aparece aquí solo.</p>
           <pre className="mt-4 overflow-x-auto rounded-xl bg-black/35 p-4 font-mono text-xs leading-relaxed text-white/75">{`---
 titulo: Sitio para la barbería de Jael
 agente: Hermes
-estado: aprobacion   # pendiente | haciendo | listo | aprobacion
+estado: aprobacion   # pendiente | haciendo | aprobacion | listo
+creado: 2026-10-21 09:00
 actualizado: 2026-10-21 14:30
+cliente: jaeloo-cuts
 ---
 Qué hizo, enlaces a las capturas y qué necesita de ti.`}</pre>
         </section>
       ) : (
         <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {ESTADOS.map((e) => {
-            const lista = datos.tareas.filter((t) => t.estado === e.id)
+          {COLUMNAS.map((c) => {
+            const lista = datos.tareas.filter((t) => c.estados.includes(t.estado))
             return (
-              <section key={e.id} className="panel p-4">
-                <h2 className="flex items-center gap-2 font-sans text-sm font-semibold"><span className="size-2.5 rounded-full" style={{ background: e.color }} />{e.nombre} <span className="font-mono text-white/45">{lista.length}</span></h2>
+              <section key={c.id} className={`panel p-4 ${c.id === 'aprobacion' && lista.length ? 'border-amber-300/40' : ''}`}>
+                <h2 className="flex items-center gap-2 font-sans text-sm font-semibold"><span aria-hidden className="size-2.5 rounded-full" style={{ background: c.color }} />{c.nombre} <span className="font-mono text-white/45">{lista.length}</span></h2>
                 <ul className="mt-3 space-y-2">
-                  {lista.map((t) => (
-                    <li key={t.path}>
-                      <button onClick={() => abrir(t.path)} className="w-full cursor-pointer rounded-xl border border-white/10 bg-white/5 p-3 text-left transition hover:border-sky/50">
-                        <span className="block text-sm font-medium">{t.titulo}</span>
-                        <span className="mt-1 block font-mono text-[11px] text-white/50">{t.agente} · {haceCuanto(t.mtime)}</span>
-                      </button>
-                    </li>
-                  ))}
+                  {lista.map((t) => <TareaCard key={t.path} t={t} escritura={datos.escritura} abrir={abrir} alSinSesion={alSinSesion} decidida={() => setVuelta((v) => v + 1)} />)}
                 </ul>
               </section>
             )
           })}
         </div>
       )}
+      <HermesEnVivo alSinSesion={alSinSesion} />
     </div>
   )
 }
