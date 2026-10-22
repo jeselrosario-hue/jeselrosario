@@ -4,3 +4,4 @@ dist
 *.log
 *.tsbuildinfo
 datos/
+docker-compose.override.yml

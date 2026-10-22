@@ -4,6 +4,7 @@
 #   bash vps-instalar.sh app       -> clona Cerebro, pide la contraseña, arranca Docker
 #   bash vps-instalar.sh hermes    -> conecta el dashboard a Hermes (solo lectura)
 #   bash vps-instalar.sh netlify   -> conecta el dashboard a Netlify (solicitudes del formulario, solo lectura)
+#   bash vps-instalar.sh hermes-chat -> conecta el chat con Hermes (su API, solo por la red interna de Docker)
 #   bash vps-instalar.sh cal       -> conecta las citas de Cal.com (solo lectura)
 #   bash vps-instalar.sh actualizar -> baja la última versión y reinicia
 #   bash vps-instalar.sh acceso    -> instala Tailscale y publica el dashboard por HTTPS (solo tu red)
@@ -65,6 +66,27 @@ netlify)
   unset NT
   reiniciar
   ;;
+hermes-chat)
+  cd "$APP" && git -C "$BASE/repo" pull -q
+  HC=$(docker ps --format '{{.Names}}' | grep -i hermes | head -1)
+  [ -n "$HC" ] || { echo "No encontré el contenedor de Hermes (docker ps)."; exit 1; }
+  NET=$(docker inspect "$HC" -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' | awk '{print $1}')
+  if [ "$NET" = "bridge" ] || [ -z "$NET" ]; then
+    echo "Hermes está en la red 'bridge' por defecto: ahí Docker no resuelve nombres. Pídele a Claude el plan B."; exit 1
+  fi
+  KEY=$(openssl rand -hex 32)
+  fijar HERMES_API_URL "http://$HC:8642"; fijar HERMES_API_KEY "$KEY"
+  # El Centro de mando entra a la red de Hermes; el puerto 8642 NO se publica en el VPS.
+  printf 'services:\n  centro-de-mando:\n    networks: [default, hermes]\nnetworks:\n  hermes:\n    external: true\n    name: %s\n' "$NET" > docker-compose.override.yml
+  reiniciar
+  echo
+  echo "Falta encender la API en Hermes ($HC). En sus variables de entorno (hPanel > Docker, o el .env de Hermes) pon:"
+  echo "  API_SERVER_ENABLED=true"
+  echo "  API_SERVER_HOST=0.0.0.0"
+  echo "  API_SERVER_KEY=$KEY"
+  echo "NO publiques el puerto 8642 (nada de 8642:8642): da acceso a la terminal de Hermes. Reinicia Hermes y abre el chat."
+  unset KEY
+  ;;
 cal)
   cd "$APP" && git -C "$BASE/repo" pull -q
   read -rsp "Clave de Cal.com (Settings > Developer > API keys; no se ve al escribir): " CK; echo
@@ -75,5 +97,5 @@ actualizar)
   cd "$APP" && git -C "$BASE/repo" pull -q
   reiniciar
   ;;
-*) echo "Uso: bash vps-instalar.sh llave|app|acceso|hermes|netlify|cal|actualizar"; exit 1;;
+*) echo "Uso: bash vps-instalar.sh llave|app|acceso|hermes|hermes-chat|netlify|cal|actualizar"; exit 1;;
 esac

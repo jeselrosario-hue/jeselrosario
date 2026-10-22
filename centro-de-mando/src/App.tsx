@@ -1,17 +1,19 @@
-import { Bot, Brain, Home, ListChecks, LogOut, Network, PlugZap } from 'lucide-react'
+import { Bot, Brain, Home, ListChecks, LogOut, MessageSquare, Network, PlugZap } from 'lucide-react'
 import { useCallback, useEffect, useState, type ComponentType } from 'react'
 import { api, salir } from '@/api'
 import { Agentes } from '@/views/Agentes'
 import { Cerebro } from '@/views/Cerebro'
 import { Conexiones } from '@/views/Conexiones'
+import { Hermes } from '@/views/Hermes'
 import { Hoy } from '@/views/Hoy'
 import { Login } from '@/views/Login'
 import { Mapa } from '@/views/Mapa'
 import { Pendientes } from '@/views/Pendientes'
 
-type Vista = 'hoy' | 'pendientes' | 'agentes' | 'cerebro' | 'mapa' | 'conexiones'
+type Vista = 'hoy' | 'hermes' | 'pendientes' | 'agentes' | 'cerebro' | 'mapa' | 'conexiones'
 const MENU: { id: Vista; nombre: string; Icono: ComponentType<{ className?: string }> }[] = [
   { id: 'hoy', nombre: 'Hoy', Icono: Home },
+  { id: 'hermes', nombre: 'Hermes', Icono: MessageSquare },
   { id: 'pendientes', nombre: 'Pendientes', Icono: ListChecks },
   { id: 'agentes', nombre: 'Agentes', Icono: Bot },
   { id: 'cerebro', nombre: 'Cerebro', Icono: Brain },
@@ -58,6 +60,7 @@ export function App() {
       </nav>
       <main className="min-w-0 flex-1 px-5 py-8 sm:px-8 md:py-10 lg:px-12">
         {vista === 'hoy' && <Hoy alSinSesion={alSinSesion} ir={ir} />}
+        {vista === 'hermes' && <Hermes alSinSesion={alSinSesion} abrir={abrirNota} />}
         {vista === 'pendientes' && <Pendientes alSinSesion={alSinSesion} />}
         {vista === 'agentes' && <Agentes alSinSesion={alSinSesion} abrir={abrirNota} />}
         {vista === 'cerebro' && <Cerebro alSinSesion={alSinSesion} nota={nota} abrir={abrirNota} />}
