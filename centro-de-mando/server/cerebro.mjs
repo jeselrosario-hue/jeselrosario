@@ -15,6 +15,8 @@ export async function listarNotas(raiz) {
     for (const e of entradas) {
       if (IGNORAR.has(e.name) || e.name.startsWith('.')) continue
       const completa = path.join(dir, e.name)
+      // Hermes/skills son paquetes para copiar, no notas
+      if (e.isDirectory() && path.relative(raiz, completa).split(path.sep).join('/') === 'Hermes/skills') continue
       if (e.isDirectory()) await caminar(completa)
       else if (e.isFile() && e.name.endsWith('.md')) {
         const rel = path.relative(raiz, completa).split(path.sep).join('/')
