@@ -10,7 +10,7 @@ async function iniciar() {
   const res = await fetch(`${BASE()}/auth/password-login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: process.env.HERMES_USER, password: process.env.HERMES_PASS, next: '/' }),
+    body: JSON.stringify({ provider: 'basic', username: process.env.HERMES_USER, password: process.env.HERMES_PASS, next: '/' }),
     redirect: 'manual',
     signal: AbortSignal.timeout(8000),
   })
