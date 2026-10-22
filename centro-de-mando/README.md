@@ -31,6 +31,17 @@ npm run build && npm start  # http://127.0.0.1:3000
 - CSP estricta y contenedor sin privilegios, sin escritura en disco.
 - Las claves (Netlify, Gmail, Hermes) van en `.env`, nunca en la pantalla ni en el Cerebro.
 
+## Aprobaciones
+Todo lo que escribe o envía algo (crear la ficha de un cliente, pasarle una tarea a Hermes) se
+guarda primero como propuesta y solo corre cuando pulsas **Aprobar**. Para escribir en el Cerebro
+hace falta `CEREBRO_ESCRIBIR=1` y la llave del Cerebro con permiso de escritura
+(`bash deploy/vps-instalar.sh escribir`). Si GitHub rechaza el cambio, se deshace y la propuesta
+queda pendiente para reintentar.
+
+## Clientes
+Una carpeta por cliente en el Cerebro: `Clientes/<nombre>/ficha.md` (formato en `Clientes/README.md`
+del Cerebro). Sin claves ni datos de pago.
+
 ## Tareas de agentes
 Hermes deja un archivo por tarea en `Agentes/tareas/` del Cerebro:
 ```

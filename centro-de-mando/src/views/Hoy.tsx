@@ -1,5 +1,6 @@
 import { Brain, ListChecks, Network, Bot } from 'lucide-react'
 import type { NetlifyVivo, Resumen } from '@/api'
+import { Aprobaciones } from '@/components/Aprobaciones'
 import { AvisoCreditos, Bandeja, cuando } from '@/components/Bandeja'
 import { haceCuanto, useApi } from '@/hooks'
 
@@ -66,7 +67,7 @@ export function Hoy({ alSinSesion, ir }: { alSinSesion: () => void; ir: (v: stri
 
   const tarjetas = [
     { Icono: ListChecks, n: r.pendientes.abiertos, t: 'pendientes abiertos', a: 'pendientes' },
-    { Icono: Bot, n: r.agentes.aprobacion, t: 'esperan tu aprobación', a: 'agentes' },
+    { Icono: Bot, n: r.agentes.aprobacion + r.propuestas, t: 'esperan tu aprobación', a: r.propuestas ? 'hoy' : 'agentes' },
     { Icono: Brain, n: r.cerebro.notas, t: 'notas en el Cerebro', a: 'cerebro' },
     { Icono: Network, n: r.cerebro.enlaces, t: 'enlaces entre notas', a: 'mapa' },
   ]
@@ -76,6 +77,7 @@ export function Hoy({ alSinSesion, ir }: { alSinSesion: () => void; ir: (v: stri
       <p className="eyebrow">Día {dias} de Ascent Co.</p>
       <h1 className="mt-2 text-[clamp(2.4rem,6vw,4.4rem)]">{saludo()}, Jesel.</h1>
       <AvisoCreditos datos={netlify} />
+      <Aprobaciones alSinSesion={alSinSesion} />
 
       <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         {tarjetas.map(({ Icono, n, t, a }) => (
