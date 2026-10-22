@@ -12,11 +12,15 @@ export const entrar = (clave: string) =>
   api<{ ok: true }>('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clave }) })
 export const salir = () => api<{ ok: true }>('/api/logout', { method: 'POST' })
 
+/** Escritura desde la pantalla. La cabecera X-CDM la exige el servidor en todo POST. */
+export const enviar = <T = { ok: true }>(ruta: string, cuerpo: unknown) =>
+  api<T>(ruta, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CDM': '1' }, body: JSON.stringify(cuerpo) })
+
 export type Casilla = { done: boolean; text: string }
 export type Resumen = {
   inicioAscent: string
   pendientes: { abiertos: number; hechos: number; siguiente: string | null }
-  plan: { abiertos: number; hechos: number }
+  plan: { abiertos: number; hechos: number; activo: string | null; siguiente: string | null }
   cerebro: { notas: number; enlaces: number; reciente: { path: string; title: string; mtime: number }[]; dias: Record<string, number> }
   agentes: { total: number; aprobacion: number; haciendo: number }
 }
@@ -26,7 +30,8 @@ export type Grafo = { nodos: { id: string; title: string; folder: string }[]; ar
 export type Conexiones = {
   cerebro: { ok: boolean; notas: number; sync: null | { ok: boolean; en: number } | { pendiente: true } }
   agentes: { ok: boolean }
-  netlify: { configurado: boolean }
+  netlify: { configurado: boolean; creditos: boolean }
+  cal: { configurado: boolean }
   gmail: { configurado: boolean }
   hermes: { configurado: boolean }
 }
@@ -48,5 +53,13 @@ export type NetlifyVivo =
       ok: true
       sitio: { nombre: string; url: string; publicado: string | null; estado: string | null }
       deploys: { estado: string; rama: string; mensaje: string; en: string }[]
-      solicitudes: { nombre: string; contacto: string; mensaje: string; paquetes: string; total: string; acepto: boolean; en: string; spam: boolean }[]
+      creditos: { disponible: false; motivo: string } | { disponible: true; quedan: number; minimo: number; bajo: boolean }
+      solicitudes: Solicitud[]
     }
+
+export type EstadoSolicitud = 'nueva' | 'respondida' | 'cliente'
+export type Solicitud = { id: string; nombre: string; contacto: string; mensaje: string; paquetes: string; total: string; acepto: boolean; en: string; spam: boolean; estado: EstadoSolicitud }
+
+export type CalVivo =
+  | { ok: false; configurado: boolean; error?: string }
+  | { ok: true; reservas: { id: string; titulo: string; inicio: string; fin: string; estado: string; nombre: string; correo: string; enlace: string | null }[] }

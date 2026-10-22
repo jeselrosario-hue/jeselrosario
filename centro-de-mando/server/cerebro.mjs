@@ -81,6 +81,15 @@ export function parsearCasillas(texto) {
   return items.map((i) => ({ ...i, text: limpio(i.text) }))
 }
 
+/** Sección del plan marcada como ACTIVO en su título ("## Paso 2: Cerrar seguridad (ACTIVO)"). */
+export function pasoActivo(texto) {
+  const lineas = texto.split('\n')
+  const i = lineas.findIndex((l) => /^##\s+.+\(ACTIVO\)\s*$/i.test(l))
+  if (i < 0) return null
+  const fin = lineas.findIndex((l, k) => k > i && /^##\s/.test(l))
+  return { titulo: lineas[i].replace(/^##\s+/, '').replace(/\s*\(ACTIVO\)\s*$/i, '').trim(), texto: lineas.slice(i + 1, fin < 0 ? undefined : fin).join('\n') }
+}
+
 /** Tareas de agentes: Agentes/tareas/*.md con frontmatter (titulo, agente, estado, actualizado). */
 export function parsearTareas(notas) {
   return notas

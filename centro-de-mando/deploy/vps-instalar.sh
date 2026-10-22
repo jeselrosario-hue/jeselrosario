@@ -4,11 +4,19 @@
 #   bash vps-instalar.sh app       -> clona Cerebro, pide la contraseña, arranca Docker
 #   bash vps-instalar.sh hermes    -> conecta el dashboard a Hermes (solo lectura)
 #   bash vps-instalar.sh netlify   -> conecta el dashboard a Netlify (solicitudes del formulario, solo lectura)
+#   bash vps-instalar.sh cal       -> conecta las citas de Cal.com (solo lectura)
+#   bash vps-instalar.sh actualizar -> baja la última versión y reinicia
 #   bash vps-instalar.sh acceso    -> instala Tailscale y publica el dashboard por HTTPS (solo tu red)
 # No guarda la contraseña: solo su hash en .env (permiso 600).
 set -euo pipefail
 BASE=/opt/centro-de-mando
 APP=$BASE/repo/centro-de-mando
+
+# Cambia (o añade) una variable del .env sin tocar las demás.
+fijar() { touch .env; sed -i "/^$1=/d" .env; printf '%s=%s\n' "$1" "$2" >> .env; chmod 600 .env; }
+# Carpeta de estado propio del dashboard (estados de solicitudes, aprobaciones). El contenedor corre como 1000.
+datos() { mkdir -p "$APP/datos" && chmod 700 "$APP/datos" && chown 1000:1000 "$APP/datos"; }
+reiniciar() { datos; docker compose up -d --build; docker compose ps; }
 
 case "${1:-}" in
 llave)
@@ -32,8 +40,7 @@ app)
   umask 077
   { echo "PORT=3000"; echo "DASH_PASSWORD_HASH=$HASH"; echo "SESSION_SECRET=$(openssl rand -hex 32)"; } > .env
   chmod 600 .env
-  docker compose up -d --build
-  docker compose ps
+  reiniciar
   ;;
 acceso)
   command -v tailscale >/dev/null || curl -fsSL https://tailscale.com/install.sh | sh
@@ -45,19 +52,28 @@ hermes)
   cd "$APP" && git -C "$BASE/repo" pull -q
   read -rp "Usuario del panel de Hermes: " HU
   read -rsp "Contraseña del panel de Hermes: " HP; echo
-  sed -i '/^HERMES_/d' .env
-  { echo "HERMES_URL=http://host.docker.internal:32769"; echo "HERMES_USER=$HU"; echo "HERMES_PASS=$HP"; } >> .env
-  unset HP; chmod 600 .env
-  docker compose up -d --build
+  fijar HERMES_URL http://host.docker.internal:32769; fijar HERMES_USER "$HU"; fijar HERMES_PASS "$HP"
+  unset HP
+  reiniciar
   ;;
 netlify)
   cd "$APP" && git -C "$BASE/repo" pull -q
   read -rsp "Token de Netlify (no se ve al escribir): " NT; echo
   read -rp "ID del sitio en Netlify: " NS
-  sed -i '/^NETLIFY_/d' .env
-  { echo "NETLIFY_TOKEN=$NT"; echo "NETLIFY_SITE_ID=$NS"; } >> .env
-  unset NT; chmod 600 .env
-  docker compose up -d --build
+  read -rp "Nombre corto del equipo (app.netlify.com/teams/ESTE; Enter para saltar): " NE
+  fijar NETLIFY_TOKEN "$NT"; fijar NETLIFY_SITE_ID "$NS"; [ -n "$NE" ] && fijar NETLIFY_TEAM "$NE"
+  unset NT
+  reiniciar
   ;;
-*) echo "Uso: bash vps-instalar.sh llave|app|acceso|hermes|netlify"; exit 1;;
+cal)
+  cd "$APP" && git -C "$BASE/repo" pull -q
+  read -rsp "Clave de Cal.com (Settings > Developer > API keys; no se ve al escribir): " CK; echo
+  fijar CAL_API_KEY "$CK"; unset CK
+  reiniciar
+  ;;
+actualizar)
+  cd "$APP" && git -C "$BASE/repo" pull -q
+  reiniciar
+  ;;
+*) echo "Uso: bash vps-instalar.sh llave|app|acceso|hermes|netlify|cal|actualizar"; exit 1;;
 esac

@@ -7,6 +7,7 @@ services:
     env_file: .env
     environment:
       CEREBRO_DIR: /cerebro
+      DATA_DIR: /datos
       CEREBRO_GIT: "1"
       COOKIE_SECURE: "1"
     extra_hosts:
@@ -16,6 +17,7 @@ services:
     volumes:
       - ./cerebro:/cerebro
       - ./ssh:/home/node/.ssh:ro
+      - ./datos:/datos
     read_only: true
     tmpfs: ["/tmp"]
     cap_drop: [ALL]
