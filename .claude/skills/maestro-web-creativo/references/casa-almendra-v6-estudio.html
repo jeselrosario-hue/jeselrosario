@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1c1511">
+<title>Casa Almendra — Pan hecho con tiempo</title>
+<meta name="description" content="Panadería y café de masa madre en Santurce. Sitio de prueba con información pendiente de confirmar.">
+<style>
+{{FONTFACE}}
+:root{--cream:#f4f0e8;--paper:#efe7d8;--ink:#2a211b;--oven:#1c1511;--clay:#b8572e;--gold:#e2b155;--line:rgba(42,33,27,.16);--bg:#f4f0e8;--fg:#2a211b;--serif:Fraunces,Georgia,serif;--sans:"DM Sans",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{font-family:var(--sans);background:var(--bg);color:var(--fg);line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img,video,canvas{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.sr{position:absolute;left:-9999px}
+.skip{position:absolute;left:12px;top:-60px;background:var(--ink);color:var(--cream);padding:10px 14px;border-radius:8px;z-index:100}
+.skip:focus{top:12px}
+.demo-bar{position:relative;z-index:60;background:var(--oven);color:#e9dcc6;font-size:12.5px;text-align:center;padding:8px 16px;letter-spacing:.02em}
+
+/* nav */
+.nav{position:fixed;top:34px;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:14px clamp(16px,4vw,48px);color:#fff;mix-blend-mode:difference;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.nav.hide{transform:translateY(-140%)}
+.logo{font-family:var(--serif);font-size:22px;letter-spacing:.01em;text-decoration:none}
+.nav ul{display:flex;gap:26px;list-style:none;font-size:14px}
+.nav a{text-decoration:none;opacity:.9}
+.nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
+@media(max-width:760px){.nav ul{display:none}}
+.progress{position:fixed;left:0;top:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--gold),var(--clay));z-index:80}
+.motion{position:fixed;right:14px;bottom:14px;z-index:70;display:flex;align-items:center;gap:8px;background:rgba(28,21,17,.86);color:#f1e7d6;padding:8px 12px 8px 10px;border-radius:999px;font-size:12.5px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14)}
+.motion i{width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 0 rgba(226,177,85,.7);animation:ping 1.8s infinite}
+.soft .motion i{background:#9aa;animation-duration:3.6s}
+@keyframes ping{70%{box-shadow:0 0 0 9px rgba(226,177,85,0)}100%{box-shadow:0 0 0 0 rgba(226,177,85,0)}}
+.notice{position:fixed;left:50%;bottom:64px;transform:translateX(-50%);z-index:70;background:var(--gold);color:#241a10;padding:10px 16px;border-radius:12px;font-size:13px;max-width:92vw;display:none;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.notice.on{display:block}
+.notice button{text-decoration:underline;font-weight:700;margin-left:6px}
+
+/* cursor */
+.cursor{position:fixed;left:0;top:0;width:14px;height:14px;border-radius:50%;background:#fff;mix-blend-mode:difference;pointer-events:none;z-index:90;opacity:0;transition:opacity .3s,width .25s,height .25s;will-change:transform}
+.cursor.on{opacity:1}.cursor.big{width:54px;height:54px;margin:-20px 0 0 -20px}
+@media(pointer:coarse){.cursor{display:none}}
+
+/* hero */
+.hero{position:relative;height:100vh;min-height:620px;overflow:hidden;background:var(--oven);color:#fff}
+.hero video{position:absolute;inset:-4%;width:108%;height:108%;object-fit:cover;opacity:.78;will-change:transform}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 100%,rgba(28,21,17,.92),rgba(28,21,17,.25) 55%,rgba(28,21,17,.55))}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.hero-in{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:flex-end;padding:0 clamp(16px,5vw,72px) clamp(40px,9vh,90px)}
+.eyebrow{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.title{font-family:var(--serif);font-weight:500;font-size:clamp(54px,12.4vw,190px);line-height:.9;letter-spacing:-.02em;display:flex;flex-wrap:wrap;column-gap:.28em;user-select:none}
+.word{display:inline-flex}
+.ch{display:inline-block;will-change:transform;transform-origin:50% 70%}
+.hero p.lead{font-size:clamp(17px,1.8vw,24px);max-width:520px;margin:22px 0 28px;color:#eadfca}
+.btn{position:relative;display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:999px;background:var(--gold);color:#241a10;font-weight:700;text-decoration:none;overflow:hidden;will-change:transform}
+.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);animation:shimmer 3.2s infinite}
+@keyframes shimmer{60%,100%{transform:translateX(120%)}}
+.scroll-cue{position:absolute;right:clamp(16px,5vw,72px);bottom:clamp(40px,9vh,90px);z-index:3;font-size:12px;letter-spacing:.2em;text-transform:uppercase;writing-mode:vertical-rl;color:#eadfca;display:flex;align-items:center;gap:12px}
+.scroll-cue b{display:block;width:1px;height:70px;background:linear-gradient(var(--gold),transparent);animation:drip 2s infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* marquee */
+.marquee{overflow:hidden;background:var(--clay);color:#fff3e2;padding:18px 0;white-space:nowrap;position:relative;z-index:2}
+.marquee .track{display:inline-flex;gap:40px;will-change:transform;font-family:var(--serif);font-size:clamp(24px,3.4vw,44px)}
+.marquee span::after{content:"✦";margin-left:40px;color:var(--gold)}
+
+/* scrub */
+.scrub{position:relative;height:420vh;background:var(--oven)}
+.stage{position:sticky;top:0;height:100vh;overflow:hidden;color:#fff}
+.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stage::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(28,21,17,.82),rgba(28,21,17,.1) 65%)}
+.stage .cap{position:absolute;z-index:2;left:clamp(16px,5vw,72px);bottom:12vh;width:min(560px,86vw);height:300px}
+.cap small{letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-size:13px}
+.cap-item{position:absolute;left:0;bottom:0;opacity:0;transform:translateY(40px);transition:opacity .6s,transform .8s cubic-bezier(.2,.7,.2,1);width:100%}
+.cap-item.on{opacity:1;transform:none}
+.cap-item h2{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.4vw,78px);line-height:1;margin:10px 0 14px}
+.cap-item p{color:#eadfca;font-size:18px;max-width:440px}
+.stage .count{position:absolute;z-index:2;right:clamp(16px,5vw,72px);top:18vh;font-family:var(--serif);font-size:clamp(60px,11vw,170px);line-height:1;color:rgba(255,255,255,.9)}
+.stage .count em{font-size:.3em;color:var(--gold);font-style:normal}
+.rail{position:absolute;z-index:2;right:clamp(16px,5vw,72px);bottom:16vh;width:2px;height:30vh;background:rgba(255,255,255,.25)}
+.rail i{position:absolute;left:0;top:0;width:100%;height:100%;background:var(--gold);transform-origin:top;transform:scaleY(0)}
+
+/* statement */
+.statement{padding:clamp(90px,18vh,200px) clamp(16px,6vw,96px);background:var(--cream)}
+.statement .eyebrow{color:var(--clay)}
+.statement p{font-family:var(--serif);font-size:clamp(30px,5vw,72px);line-height:1.14;max-width:18em}
+.statement p span{opacity:.14;transition:opacity .25s}
+.statement p span.on{opacity:1}
+
+/* reveal / parallax */
+.duo{position:relative;padding:clamp(60px,12vh,140px) clamp(16px,6vw,96px);display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,5vw,80px);align-items:center;background:var(--paper);overflow:hidden}
+.duo .frame{position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:6px;clip-path:inset(0 100% 0 0);will-change:clip-path}
+.duo .frame img{position:absolute;inset:-12% 0;width:100%;height:124%;object-fit:cover;will-change:transform}
+.duo .tag{position:absolute;z-index:2;left:14px;bottom:14px;background:rgba(28,21,17,.78);color:#f3e9d6;font-size:12px;padding:5px 10px;border-radius:99px}
+.duo h2{font-family:var(--serif);font-weight:500;font-size:clamp(40px,6vw,92px);line-height:.98;margin:12px 0 22px}
+.duo .eyebrow{color:var(--clay)}
+.duo p{max-width:440px;font-size:18px;color:#4a3c31}
+.float{position:absolute;width:clamp(120px,16vw,230px);aspect-ratio:1;border-radius:50%;overflow:hidden;right:6%;top:8%;will-change:transform;box-shadow:0 20px 50px rgba(42,33,27,.3)}
+.float img{width:100%;height:100%;object-fit:cover}
+.stats{display:flex;gap:40px;margin-top:34px}
+.stats b{font-family:var(--serif);font-size:56px;font-weight:500;display:block;line-height:1;color:var(--clay)}
+.stats span{font-size:14px;color:#6b5a4b}
+@media(max-width:820px){.duo{grid-template-columns:1fr}}
+
+/* horizontal */
+.hz{position:relative;background:var(--oven);color:#fff}
+.hz-pin{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.hz-head{padding:0 clamp(16px,6vw,96px);margin-bottom:28px}
+.hz-head h2{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.6vw,84px);line-height:1}
+.hz-head .eyebrow{margin-bottom:10px}
+.hz-track{display:flex;gap:28px;padding:0 clamp(16px,6vw,96px);will-change:transform}
+.panel{flex:0 0 clamp(260px,34vw,500px);height:min(52vh,460px);border-radius:8px;overflow:hidden;position:relative;background:#000}
+.panel img{width:116%;height:100%;object-fit:cover;max-width:none;will-change:transform}
+.panel figcaption{position:absolute;left:0;right:0;bottom:0;padding:40px 18px 16px;background:linear-gradient(transparent,rgba(0,0,0,.8));font-family:var(--serif);font-size:22px}
+.panel figcaption small{display:block;font-family:var(--sans);font-size:12px;opacity:.75;letter-spacing:.14em;text-transform:uppercase}
+@media(max-width:820px){.hz{height:auto!important}.hz-pin{position:relative;height:auto;padding:70px 0}.hz-track{overflow-x:auto;scroll-snap-type:x mandatory;transform:none!important;padding-bottom:12px}.panel{scroll-snap-align:center}}
+
+/* route */
+.route{padding:clamp(80px,14vh,160px) clamp(16px,6vw,96px);background:var(--cream);position:relative}
+.route h2{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.6vw,84px);line-height:1;margin-bottom:10px}
+.route .eyebrow{color:var(--clay)}
+.route svg{width:100%;height:auto;overflow:visible;margin-top:30px}
+.route path.base{fill:none;stroke:rgba(42,33,27,.14);stroke-width:3;stroke-linecap:round;stroke-dasharray:2 10}
+.route path.draw{fill:none;stroke:var(--clay);stroke-width:4;stroke-linecap:round}
+.route .dot{fill:var(--cream);stroke:var(--clay);stroke-width:4;transition:fill .4s,r .4s}
+.route .dot.on{fill:var(--clay)}
+.route text{font-family:var(--serif);font-size:26px;fill:var(--ink)}
+.route text.sm{font-family:var(--sans);font-size:16px;fill:#6b5a4b}
+
+/* menu */
+.menu{padding:clamp(70px,12vh,140px) clamp(16px,6vw,96px);background:var(--paper)}
+.menu h2{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.6vw,84px);line-height:1}
+.menu .eyebrow{color:var(--clay)}
+.menu .sub{margin:12px 0 34px;color:#6b5a4b;max-width:560px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;perspective:1100px}
+.card{position:relative;background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:20px;transform-style:preserve-3d;transition:box-shadow .3s,transform .5s cubic-bezier(.2,.7,.2,1);will-change:transform}
+.card:hover{box-shadow:0 24px 50px rgba(42,33,27,.18)}
+.card .k{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--clay)}
+.card h3{font-family:var(--serif);font-weight:500;font-size:26px;margin:8px 0 6px;line-height:1.1}
+.card p{font-size:14.5px;color:#6b5a4b;min-height:44px}
+.card .row{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+.price{font-weight:700}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);font-size:18px;line-height:1;transition:background .2s,transform .15s}
+.qty button:hover{background:var(--ink);color:var(--cream)}.qty button:active{transform:scale(.88)}
+.qty output{min-width:22px;text-align:center;font-weight:700}
+.total{position:sticky;bottom:16px;margin-top:26px;background:var(--oven);color:#f1e7d6;border-radius:16px;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 16px 40px rgba(0,0,0,.28);z-index:5}
+.total strong{font-family:var(--serif);font-size:30px;font-weight:500;color:var(--gold)}
+.total small{opacity:.7}
+
+/* compare */
+.compare{padding:clamp(70px,12vh,140px) clamp(16px,6vw,96px);background:var(--cream)}
+.compare h2{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.6vw,84px);line-height:1;margin-bottom:28px}
+.cmp{position:relative;aspect-ratio:16/9;max-height:70vh;margin:0 auto;border-radius:12px;overflow:hidden;touch-action:pan-y;user-select:none;cursor:ew-resize;background:#000}
+.cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cmp .top{clip-path:inset(0 50% 0 0)}
+.cmp .bar{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#fff;box-shadow:0 0 14px rgba(0,0,0,.5)}
+.cmp .bar::after{content:"↔";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-size:20px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.cmp .lab{position:absolute;bottom:14px;background:rgba(28,21,17,.75);color:#fff;font-size:12px;padding:5px 10px;border-radius:99px}
+
+/* voices + footer */
+.voices{padding:clamp(70px,12vh,130px) clamp(16px,6vw,96px);background:var(--oven);color:#eadfca;overflow:hidden}
+.voices h2{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5vw,72px);line-height:1}
+.voices .note{margin:12px 0 30px;opacity:.7;max-width:520px;font-size:14px}
+.vrow{display:flex;gap:16px;will-change:transform}
+.vcard{flex:0 0 300px;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:22px;font-family:var(--serif);font-size:20px}
+.vcard small{display:block;margin-top:14px;font-family:var(--sans);font-size:12px;opacity:.6}
+footer{background:var(--clay);color:#fff3e2;padding:clamp(60px,10vh,110px) clamp(16px,6vw,96px) 50px}
+footer h2{font-family:var(--serif);font-weight:500;font-size:clamp(44px,8vw,130px);line-height:.95}
+footer p{margin-top:18px;max-width:520px}
+footer small{display:block;margin-top:40px;opacity:.8;font-size:12.5px;max-width:700px}
+
+/* reveals */
+.rv{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.soft .rv{transform:translateY(12px);transition-duration:.6s}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+</style>
+</head>
+<body>
+<a class="skip" href="#menu">Saltar al contenido</a>
+<div class="progress" id="progress"></div>
+<div class="cursor" id="cursor"></div>
+<div class="demo-bar">Sitio de prueba · precios, horario, dirección y reservas por confirmar</div>
+
+<header class="nav" id="nav">
+  <a class="logo" href="#top">casa almendra</a>
+  <ul><li><a href="#oficio">El oficio</a></li><li><a href="#galeria">Galería</a></li><li><a href="#menu">Pan y café</a></li><li><a href="#visita">Visítanos</a></li></ul>
+</header>
+
+<main id="top">
+<section class="hero" id="hero" aria-label="Inicio">
+  <video id="vHero" muted loop playsinline autoplay preload="auto" aria-hidden="true"></video>
+  <canvas id="dust" aria-hidden="true"></canvas>
+  <div class="hero-in">
+    <div class="eyebrow">Santurce · panadería y café</div>
+    <h1 class="title" id="title" aria-label="Casa Almendra"><span class="word" aria-hidden="true">Casa</span><span class="word" aria-hidden="true">Almendra</span></h1>
+    <p class="lead">Pan hecho con tiempo. Masa madre, hojaldre y café para acompañar el día.</p>
+    <div><a class="btn" href="#menu" data-mag>Explora el menú <span>→</span></a></div>
+  </div>
+  <div class="scroll-cue"><b></b>Desliza</div>
+</section>
+
+<div class="marquee" aria-hidden="true"><div class="track" id="mq"><span>Masa madre</span><span>Horno tibio</span><span>Café colado</span><span>Santurce</span><span>Hojaldre</span><span>Una pausa</span><span>Pan de cada día</span><span>En la mesa</span><span>Masa madre</span><span>Horno tibio</span><span>Café colado</span><span>Santurce</span></div></div>
+
+<section class="scrub" id="oficio" aria-label="Del fermento a la mesa">
+  <div class="stage">
+    <video id="vScrub" muted playsinline preload="auto" aria-hidden="true"></video>
+    <div class="count"><span id="cnt">01</span><em> / 03</em></div>
+    <div class="cap">
+      <div class="cap-item on"><small>Antes del alba</small><h2>El fermento despierta.</h2><p>La masa se prepara con calma para que el tiempo haga su parte.</p></div>
+      <div class="cap-item"><small>Con el horno listo</small><h2>El pan toma color.</h2><p>Calor, vapor y una corteza que anuncia que la mañana comenzó.</p></div>
+      <div class="cap-item"><small>Puertas abiertas</small><h2>La mesa se comparte.</h2><p>Una hogaza, algo dulce y café para acompañar el día.</p></div>
+    </div>
+    <div class="rail"><i id="rail"></i></div>
+  </div>
+</section>
+
+<section class="statement" aria-label="Bienvenida">
+  <div class="eyebrow">Una hoja de bienvenida</div>
+  <p id="stm">En Casa Almendra, el fermento es el comienzo: harina, agua y paciencia que vuelven cada mañana a la mesa.</p>
+</section>
+
+<section class="duo" id="duo">
+  <div class="float" id="flt"><img data-img="2" alt="" ></div>
+  <div class="frame" id="frm"><img data-img="1" alt="Hogaza de masa madre sobre una rejilla. Foto de referencia."><span class="tag">Imagen de referencia · no es del negocio</span></div>
+  <div>
+    <div class="eyebrow">Un oficio paciente</div>
+    <h2 class="rv">El pan lleva su propio ritmo.</h2>
+    <p class="rv">Una corteza crujiente, una miga abierta. Aquí cada pieza se toma su tiempo, y se nota.</p>
+    <div class="stats rv"><div><b data-count="8">0</b><span>imágenes de referencia</span></div><div><b data-count="8">0</b><span>productos en el menú demo</span></div></div>
+  </div>
+</section>
+
+<section class="hz" id="galeria" aria-label="Galería">
+  <div class="hz-pin">
+    <div class="hz-head"><div class="eyebrow">Una mesa abierta</div><h2>Mira por dentro.</h2></div>
+    <div class="hz-track" id="hzt">
+      <figure class="panel"><img data-img="5" alt="Vitrina con panes y dulces"><figcaption><small>Vitrina</small>Todo lo del día</figcaption></figure>
+      <figure class="panel"><img data-img="3" alt="Hogazas dentro del horno"><figcaption><small>Horno</small>Calor y vapor</figcaption></figure>
+      <figure class="panel"><img data-img="4" alt="Barista sirviendo leche"><figcaption><small>Barra</small>Un café al momento</figcaption></figure>
+      <figure class="panel"><img data-img="7" alt="Panadero con hogazas"><figcaption><small>Obrador</small>Manos que saben</figcaption></figure>
+      <figure class="panel"><img data-img="6" alt="Latte con arte"><figcaption><small>Taza</small>Para quedarse un rato</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="route" aria-label="El recorrido">
+  <div class="eyebrow">Sigue el recorrido</div>
+  <h2>Del fermento a la mesa.</h2>
+  <svg id="routeSvg" viewBox="0 0 1200 260" role="img" aria-label="Línea con tres paradas: fermento, horno y mesa">
+    <path class="base" d="M40 190 C 260 40, 420 40, 600 130 S 940 230, 1160 70"/>
+    <path class="draw" id="routeDraw" d="M40 190 C 260 40, 420 40, 600 130 S 940 230, 1160 70"/>
+    <circle class="dot" cx="40" cy="190" r="14"/><circle class="dot" cx="600" cy="130" r="14"/><circle class="dot" cx="1160" cy="70" r="14"/>
+    <text x="40" y="236">Fermento</text><text class="sm" x="40" y="256">Antes del alba</text>
+    <text x="520" y="190">Horno</text><text class="sm" x="520" y="210">Pan con color</text>
+    <text x="1040" y="30">Mesa</text><text class="sm" x="1000" y="50">Puertas abiertas</text>
+  </svg>
+</section>
+
+<section class="menu" id="menu">
+  <div class="eyebrow">De la vitrina a la taza</div>
+  <h2>Pan y café.</h2>
+  <p class="sub">Productos y precios de demostración, pendientes de confirmación. Arma tu pedido y mira cambiar el total.</p>
+  <div class="cards" id="cards"></div>
+  <div class="total"><div><small>Total de demostración</small><br><strong id="tot">$0.00</strong></div><div><small id="cnt2">0 artículos</small></div><a class="btn" href="#visita" data-mag>Pedir (demo)</a></div>
+</section>
+
+<section class="compare" aria-label="Comparador">
+  <div class="eyebrow" style="color:var(--clay);letter-spacing:.22em;text-transform:uppercase;font-size:13px;margin-bottom:10px">De masa a hogaza</div>
+  <h2>El cambio ocurre despacio.</h2>
+  <div class="cmp" id="cmp" role="slider" tabindex="0" aria-label="Comparar masa y hogaza" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+    <img data-img="1" alt="Hogaza"><img class="top" data-img="0" alt="Masa trabajada" id="cmpTop">
+    <div class="bar" id="cmpBar"></div><span class="lab" style="left:14px">Masa trabajada</span><span class="lab" style="right:14px">Hogaza</span>
+  </div>
+</section>
+
+<section class="voices" aria-label="Voces de la mesa">
+  <h2>Un espacio para escuchar.</h2>
+  <p class="note">Plantilla: sustituir por citas reales con autorización. Sin reseñas ficticias.</p>
+  <div class="vrow" id="vrow"></div>
+</section>
+</main>
+
+<footer id="visita">
+  <h2>Te esperamos<br>en Santurce.</h2>
+  <p>Dirección, horario y reservas por confirmar con el negocio.</p>
+  <small>Sitio de demostración de Ascent Co. Casa Almendra es un negocio ficticio. Las fotografías son referencias de terceros con sus licencias y créditos aparte; ningún dato aquí es comercial verificado.</small>
+</footer>
+
+<div class="notice" id="notice">Tu sistema pide menos animación, así que empecé en modo suave. <button id="noticeBtn">Activar movimiento completo</button></div>
+<button class="motion" id="motion" aria-pressed="true" aria-label="Cambiar movimiento"><i></i><span id="motionTxt">Movimiento: completo</span></button>
+
+{{ASSETS}}
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var clamp=function(v,a,b){return Math.max(a,Math.min(b,v))},lerp=function(a,b,t){return a+(b-a)*t};
+var osReduced=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+var fine=window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches;
+var mode='full';try{var sv=localStorage.getItem('ca-motion');if(sv)mode=sv;else if(osReduced)mode='soft'}catch(e){if(osReduced)mode='soft'}
+function applyMode(){document.documentElement.classList.toggle('soft',mode==='soft');$('#motionTxt').textContent='Movimiento: '+(mode==='soft'?'reducido':'completo');$('#motion').setAttribute('aria-pressed',mode==='full');try{localStorage.setItem('ca-motion',mode)}catch(e){}}
+$('#motion').onclick=function(){mode=mode==='full'?'soft':'full';applyMode();$('#notice').classList.remove('on')};
+$('#noticeBtn').onclick=function(){mode='full';applyMode();$('#notice').classList.remove('on')};
+applyMode();if(osReduced&&mode==='soft'){$('#notice').classList.add('on');setTimeout(function(){$('#notice').classList.remove('on')},9000)}
+var AMP=function(){return mode==='soft'?.3:1};
+
+/* assets -> blob urls */
+function blobFrom(id,type){var el=document.getElementById(id);if(!el)return null;var b=atob(el.textContent.trim()),n=b.length,u=new Uint8Array(n);for(var i=0;i<n;i++)u[i]=b.charCodeAt(i);return URL.createObjectURL(new Blob([u],{type:type}))}
+var imgUrls={};for(var i=0;i<8;i++){imgUrls[i]=blobFrom('a-img'+i,'image/webp')}
+$$('img[data-img]').forEach(function(im){im.src=imgUrls[im.dataset.img]});
+var vH=$('#vHero'),vS=$('#vScrub');vH.src=blobFrom('a-hero','video/webm');vS.src=blobFrom('a-scrub','video/webm');vH.play&&vH.play().catch(function(){});
+
+/* hero letters */
+var title=$('#title'),letters=[];
+$$('.word',title).forEach(function(w){var t=w.textContent;w.textContent='';t.split('').forEach(function(c){var s=document.createElement('span');s.className='ch';s.textContent=c;s.setAttribute('aria-hidden','true');w.appendChild(s);letters.push({el:s,x:0,y:0,s:1,r:0,c:0})})});
+var mx=-9999,my=-9999,mvT=0;
+addEventListener('pointermove',function(e){mx=e.clientX;my=e.clientY;mvT=performance.now()},{passive:true});
+addEventListener('pointerleave',function(){mx=my=-9999});
+
+/* cursor + magnetic */
+var cur=$('#cursor'),cx=0,cy=0,tx=0,ty=0;
+if(fine){addEventListener('pointermove',function(e){tx=e.clientX;ty=e.clientY;cur.classList.add('on')},{passive:true});
+$$('a,button,.card,.cmp').forEach(function(el){el.addEventListener('pointerenter',function(){cur.classList.add('big')});el.addEventListener('pointerleave',function(){cur.classList.remove('big')})})}
+var mags=$$('[data-mag]');
+
+/* dust canvas */
+var cv=$('#dust'),cx2=cv.getContext('2d'),P=[],W=0,H=0,dpr=Math.min(devicePixelRatio||1,2);
+function sizeCv(){W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cx2.setTransform(dpr,0,0,dpr,0,0)}
+function seed(){P=[];var n=W<700?36:80;for(var i=0;i<n;i++)P.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.4+.6,vx:(Math.random()-.5)*.3,vy:-Math.random()*.35-.05,a:Math.random()*.5+.2,ph:Math.random()*6})}
+
+/* layout cache */
+var L={};
+function measure(){var sy=scrollY;
+ function top(el){return el.getBoundingClientRect().top+sy}
+ L.vh=innerHeight;L.hero=$('#hero').offsetHeight;
+ L.scrub=$('.scrub');L.scrubTop=top(L.scrub);L.scrubH=L.scrub.offsetHeight-L.vh;
+ L.stm=$('#stm');L.stmTop=top(L.stm);L.stmH=L.stm.offsetHeight;
+ L.duo=$('#duo');L.duoTop=top(L.duo);L.duoH=L.duo.offsetHeight;
+ L.hz=$('.hz');var hzt=$('#hzt');L.hzW=hzt.scrollWidth-innerWidth+80;L.mobile=innerWidth<=820;
+ if(!L.mobile){L.hz.style.height=(L.hzW+L.vh)+'px'}else{L.hz.style.height='auto'}
+ L.hzTop=top(L.hz);
+ L.route=$('.route');L.routeTop=top(L.route);L.routeH=L.route.offsetHeight;
+ L.voices=$('.voices');L.vTop=top(L.voices);
+ L.mq=$('.marquee');
+ sizeCv();if(!P.length)seed()}
+/* statement spans */
+var sp=$('#stm');var words=sp.textContent.split(' ');sp.innerHTML=words.map(function(w){return '<span>'+w+'</span>'}).join(' ');var wspans=$$('span',sp);
+/* cards */
+var MENU=[['Horno','Pan de masa madre','Harina, agua, sal y fermento vivo.',7],['Horno','Croissant de almendra','Hojaldre dorado con almendra tostada.',4.5],['Horno','Mallorca con jamón y queso','Un clásico suave, recién hecho.',6.5],['Horno','Tostada de aguacate','Pan de masa madre y aguacate.',9],['Café y antojos','Café colado','Café puertorriqueño preparado al momento.',2.5],['Café y antojos','Latte de vainilla','Espresso, leche y un toque de vainilla.',5],['Café y antojos','Cold brew','Café de extracción lenta, servido frío.',4.5],['Café y antojos','Limber de parcha','Un final fresco con sabor de aquí.',2]];
+var qtys=MENU.map(function(){return 0});
+$('#cards').innerHTML=MENU.map(function(m,i){return '<article class="card rv" data-i="'+i+'"><div class="k">'+m[0]+'</div><h3>'+m[1]+'</h3><p>'+m[2]+'</p><div class="row"><span class="price">$'+m[3].toFixed(2)+' demo</span><div class="qty"><button aria-label="Quitar">−</button><output>0</output><button aria-label="Añadir">+</button></div></div></article>'}).join('');
+function updTot(){var t=0,n=0;qtys.forEach(function(q,i){t+=q*MENU[i][3];n+=q});$('#tot').textContent='$'+t.toFixed(2);$('#cnt2').textContent=n+(n===1?' artículo':' artículos')}
+$$('.card').forEach(function(c){var i=+c.dataset.i,o=$('output',c),b=$$('button',c);b[0].onclick=function(){qtys[i]=Math.max(0,qtys[i]-1);o.textContent=qtys[i];updTot()};b[1].onclick=function(){qtys[i]++;o.textContent=qtys[i];updTot()};
+ var rx=0,ry=0,tr=0,tt=0,hov=false;c.addEventListener('pointermove',function(e){if(!fine||mode==='soft')return;var r=c.getBoundingClientRect();ry=((e.clientX-r.left)/r.width-.5)*14;rx=-((e.clientY-r.top)/r.height-.5)*14;c.style.transform='rotateX('+rx+'deg) rotateY('+ry+'deg) translateZ(8px)'});c.addEventListener('pointerleave',function(){c.style.transform=''})});
+/* voices */
+var vr=$('#vrow'),vtxt='';for(var k=0;k<10;k++){vtxt+='<div class="vcard">«Cita de cliente autorizada pendiente de incorporar.»<small>Nombre y permiso de uso pendientes</small></div>'}vr.innerHTML=vtxt;
+/* reveal observer */
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+$$('.rv').forEach(function(el,i){el.style.transitionDelay=(i%4)*.07+'s';io.observe(el)});
+/* counters */
+var cio=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;var el=e.target,to=+el.dataset.count,t0=performance.now();(function f(t){var p=clamp((t-t0)/1400,0,1);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0);cio.unobserve(el)})},{threshold:.6});$$('[data-count]').forEach(function(el){cio.observe(el)});
+/* compare */
+var cmp=$('#cmp'),pos=50,auto=true,touched=false;
+function setCmp(p){pos=clamp(p,0,100);$('#cmpTop').style.clipPath='inset(0 '+(100-pos)+'% 0 0)';$('#cmpBar').style.left=pos+'%';cmp.setAttribute('aria-valuenow',Math.round(pos))}
+function dragTo(e){var r=cmp.getBoundingClientRect();setCmp((e.clientX-r.left)/r.width*100)}
+cmp.addEventListener('pointerdown',function(e){touched=true;cmp.setPointerCapture(e.pointerId);dragTo(e);cmp.onpointermove=dragTo});cmp.addEventListener('pointerup',function(){cmp.onpointermove=null});
+cmp.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'){touched=true;setCmp(pos-5)}if(e.key==='ArrowRight'){touched=true;setCmp(pos+5)}});
+/* route */
+var rd=$('#routeDraw'),rlen=rd.getTotalLength();rd.style.strokeDasharray=rlen;rd.style.strokeDashoffset=rlen;var dots=$$('.dot');var dotAt=[.02,.5,.97];
+/* nav hide */
+var lastY=0,nav=$('#nav');
+/* state */
+var sY=0,cY=0,vel=0,mqX=0,vrX=0,scrubT=0,scrubCur=0,frame=0,visHero=true;
+var dur=function(){return vS.duration&&isFinite(vS.duration)?vS.duration:8};
+new IntersectionObserver(function(es){visHero=es[0].isIntersecting;if(visHero){vH.play&&vH.play().catch(function(){})}else{vH.pause&&vH.pause()}}).observe($('#hero'));
+vS.addEventListener('loadedmetadata',function(){vS.pause()});
+var pbar=$('#progress'),caps=$$('.cap-item'),cnt=$('#cnt'),rail=$('#rail'),shown=-1;
+var bgStops=[[0,'#f4f0e8'],[1,'#f4f0e8']];
+function tick(t){
+ sY=scrollY;var dy=sY-lastY;vel=lerp(vel,dy,.18);
+ /* progress + nav */
+ pbar.style.transform='scaleX('+clamp(sY/(document.documentElement.scrollHeight-L.vh),0,1)+')';
+ if(sY>L.vh*.6&&dy>4)nav.classList.add('hide');else if(dy<-4||sY<L.vh*.6)nav.classList.remove('hide');lastY=sY;
+ var a=AMP();
+ /* hero parallax */
+ var hp=clamp(sY/L.hero,0,1);
+ if(hp<1){vH.style.transform='translate3d(0,'+(hp*80*a)+'px,0) scale('+(1+hp*.12*a)+')';$('.hero-in').style.transform='translate3d(0,'+(hp*-60*a)+'px,0)';$('.hero-in').style.opacity=1-hp*.9*a*1.1}
+ /* letters */
+ var idle=t-mvT>1800||mx<-999;
+ letters.forEach(function(l,i){var r=l.el.getBoundingClientRect(),ex=r.left+r.width/2,ey=r.top+r.height/2,tx2=0,ty2=0,ts=1,tr2=0,tc=0;
+  if(r.bottom>-50&&r.top<L.vh+50){
+   if(!idle&&fine){var dx=mx-ex,dyy=my-ey,d=Math.hypot(dx,dyy),p=clamp(1-d/(Math.max(240,r.width*2.4)),0,1);p=p*p*(3-2*p);tx2=-dx*.22*p*a;ty2=-dyy*.3*p*a;ts=1+.42*p*a;tr2=dx*.05*p*a;tc=p}
+   else{var w=Math.sin(t/700+i*.55);tx2=0;ty2=w*7*(mode==='soft'?.6:1);ts=1+w*.012;tr2=Math.sin(t/900+i)*1.4;tc=(w+1)/2*.25}
+   l.x=lerp(l.x,tx2,.16);l.y=lerp(l.y,ty2,.16);l.s=lerp(l.s,ts,.16);l.r=lerp(l.r,tr2,.16);l.c=lerp(l.c,tc,.16);
+   l.el.style.transform='translate3d('+l.x.toFixed(2)+'px,'+l.y.toFixed(2)+'px,0) rotate('+l.r.toFixed(2)+'deg) scale('+l.s.toFixed(3)+')';
+   l.el.style.color='rgb('+Math.round(255-(255-226)*l.c)+','+Math.round(255-(255-177)*l.c)+','+Math.round(255-(255-85)*l.c)+')'}});
+ /* dust */
+ if(visHero){cx2.clearRect(0,0,W,H);for(var i=0;i<P.length;i++){var q=P[i];q.x+=q.vx*a+Math.sin(t/1200+q.ph)*.15;q.y+=q.vy*a;
+   if(mx>-999&&fine){var ddx=q.x-mx,ddy=q.y-(my-(cv.getBoundingClientRect().top)),dd=Math.hypot(ddx,ddy);if(dd<120){q.x+=ddx/dd*2.2;q.y+=ddy/dd*2.2}}
+   if(q.y<-6){q.y=H+6;q.x=Math.random()*W}if(q.x<-6)q.x=W+6;if(q.x>W+6)q.x=-6;
+   cx2.globalAlpha=q.a*(.6+.4*Math.sin(t/600+q.ph));cx2.fillStyle='#f6e6c4';cx2.beginPath();cx2.arc(q.x,q.y,q.r,0,6.283);cx2.fill()}}
+ /* marquee */
+ mqX-=(.8+Math.abs(vel)*.35)*(mode==='soft'?.6:1);var tw=$('#mq').scrollWidth/2;if(mqX<-tw)mqX+=tw;
+ $('#mq').style.transform='translate3d('+mqX+'px,0,0) skewX('+clamp(-vel*.35*a,-8,8)+'deg)';
+ /* scrub */
+ var sp2=clamp((sY-L.scrubTop)/L.scrubH,0,1);
+ if(sY>L.scrubTop-L.vh&&sY<L.scrubTop+L.scrubH+L.vh){scrubT=sp2*(dur()-.05);scrubCur=lerp(scrubCur,scrubT,.14);if(Math.abs(vS.currentTime-scrubCur)>.02&&!vS.seeking){try{vS.currentTime=scrubCur}catch(e){}}
+   var idx=sp2<.33?0:sp2<.66?1:2;if(idx!==shown){shown=idx;caps.forEach(function(c,j){c.classList.toggle('on',j===idx)});cnt.textContent='0'+(idx+1)}rail.style.transform='scaleY('+sp2+')'}
+ /* statement words */
+ var spp=clamp((sY+L.vh*.82-L.stmTop)/(L.stmH+L.vh*.35),0,1),n=Math.round(spp*wspans.length*1.05);
+ for(var k=0;k<wspans.length;k++){var on=k<n;if(wspans[k]._on!==on){wspans[k]._on=on;wspans[k].classList.toggle('on',on)}}
+ /* duo */
+ var dp=clamp((sY+L.vh-L.duoTop)/(L.duoH+L.vh),0,1),rev=clamp((dp-.12)/.3,0,1);
+ $('#frm').style.clipPath='inset(0 '+((1-rev)*100)+'% 0 0)';
+ $('#frm').firstElementChild.style.transform='translate3d(0,'+((dp-.5)*-110*a)+'px,0) scale('+(1.08+(1-rev)*.12)+')';
+ $('#flt').style.transform='translate3d(0,'+((dp-.5)*260*a)+'px,0) rotate('+(dp*80*a)+'deg)';
+ /* horizontal */
+ if(!L.mobile){var hp2=clamp((sY-L.hzTop)/L.hzW,0,1);$('#hzt').style.transform='translate3d('+(-hp2*L.hzW)+'px,0,0)';
+  $$('.panel img').forEach(function(im,i){im.style.transform='translate3d('+((hp2-.5)*-60*a*(i%2?1:-1))+'px,0,0)'})}
+ /* route */
+ var rp=clamp((sY+L.vh*.75-L.routeTop)/(L.routeH+L.vh*.1),0,1);rd.style.strokeDashoffset=rlen*(1-rp);
+ dots.forEach(function(d,i){d.classList.toggle('on',rp>=dotAt[i])});
+ /* voices drift */
+ vrX=-(sY-L.vTop)*.35*(mode==='soft'?.4:1);$('#vrow').style.transform='translate3d('+vrX+'px,0,0)';
+ /* bg shift */
+ /* compare auto */
+ if(!touched){var cr=cmp.getBoundingClientRect();if(cr.top<L.vh&&cr.bottom>0){setCmp(50+Math.sin(t/1400)*38)}}
+ /* cursor + magnetic */
+ if(fine){cx=lerp(cx,tx,.22);cy=lerp(cy,ty,.22);cur.style.transform='translate3d('+cx+'px,'+cy+'px,0)';
+  mags.forEach(function(m){var r=m.getBoundingClientRect(),dx=tx-(r.left+r.width/2),dy2=ty-(r.top+r.height/2),d=Math.hypot(dx,dy2),on=d<110&&mode==='full';m._x=lerp(m._x||0,on?dx*.28:0,.2);m._y=lerp(m._y||0,on?dy2*.4:0,.2);m.style.transform='translate3d('+m._x.toFixed(1)+'px,'+m._y.toFixed(1)+'px,0)'})}
+ requestAnimationFrame(tick)}
+addEventListener('resize',function(){measure()});
+addEventListener('load',function(){measure()});
+measure();setTimeout(measure,600);setTimeout(measure,2000);
+requestAnimationFrame(tick);
+window.__ca={get mode(){return mode},setMode:function(m){mode=m;applyMode()}};
+})();
+</script>
+</body>
+</html>

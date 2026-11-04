@@ -21,13 +21,13 @@ Sirve para cualquier modelo (Claude, Hermes). Revisado el 3 nov 2026. Hermes pro
 Godly, Mobbin, Refero Styles (su `DESIGN.md` sirve para copiar un estilo), blog Vibe Coder.
 
 ## Prohibidas hasta que Jesel diga
-Skiper UI premium, Motion+, Magic UI Pro, Motion Sites, Spline, Manus, BKLit UI, Particles (sin licencia), Watermelon UI y Motion Primitives (licencia sin confirmar).
+Skiper UI premium, Motion+, Magic UI Pro, Motion Sites, Spline, Manus, BKLit UI, Particles (sin licencia; escribe tus propias partículas con canvas, es fácil), Watermelon UI y Motion Primitives (licencia sin confirmar).
 
 ## Reglas al usarlas
 1. Rama propia. Un componente = un archivo; anota en el historial del cliente cuál usaste y de dónde.
-2. Máximo 3 efectos llamativos por página; el resto, sobrio. Poco texto, visual y profesional.
-3. Respeta `prefers-reduced-motion`: sin movimiento cuando el visitante lo pide.
+2. Sin tope de efectos, pero una idea fuerte por pantalla y que todo sirva al concepto (ver `maestro-web-creativo`). Poco texto, visual y profesional.
+3. Movimiento reducido: modo "suave" que conserva video, letras y reveals cortos (no apagues todo), con botón visible "Movimiento: completo/reducido". Apagarlo todo dejó el sitio v5 estático en la computadora de Jesel.
 4. Anima solo `transform` y `opacity`. Nada que cambie el tamaño al cargar (CLS menor de 0.1). Precarga la tipografía principal.
-5. Móvil primero (390×844): sin animaciones pesadas ni fondos con canvas grandes.
+5. Móvil primero (390×844): video sí, efectos de mouse no, sin canvas enormes.
 6. No copies código sin leerlo: ningún script externo, nada de rastreo, sin llamadas a otros sitios.
 7. Antes de entregar: build limpio, Playwright en móvil y escritorio, capturas a Jesel para sí o no.
