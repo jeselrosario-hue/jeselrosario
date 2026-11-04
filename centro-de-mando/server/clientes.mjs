@@ -2,6 +2,7 @@
 // Aquí no van claves ni pagos (regla del Cerebro). Solo nombre, contacto, paquete, estado y permiso.
 export const ESTADOS_CLIENTE = ['prospecto', 'en-proceso', 'entregado', 'pausado']
 export const PERMISOS = ['si', 'capturas', 'no', 'por-preguntar']
+export const CONTRATOS = ['pendiente', 'enviado', 'firmado']
 export const PAQUETES = ['Presentación', 'Sitio web', 'Tarjeta QR', 'Agenda', 'Invitación', 'A medida']
 
 export function frontmatter(texto) {
@@ -26,6 +27,9 @@ export function listarClientes(notas) {
     .map((n) => {
       const c = frontmatter(n.texto)
       const id = n.path.split('/')[1]
+      const cn = notas.find((o) => o.path === `Clientes/${id}/contrato`)
+      const ce = cn ? frontmatter(cn.texto).contrato : ''
+      const contrato = CONTRATOS.includes(ce) ? ce : 'sin-contrato'
       const archivos = notas.filter((o) => o.path.startsWith(`Clientes/${id}/`) && o.path !== n.path).map((o) => ({ path: o.path, title: o.title }))
       const sitios = [...n.texto.matchAll(/https:\/\/[^\s)>\]]+/g)].map((m) => m[0])
       const pendientes = [...n.texto.matchAll(/^\s*[-*]\s+\[ \]\s+(.+)$/gm)].length
@@ -38,6 +42,7 @@ export function listarClientes(notas) {
         estado: ESTADOS_CLIENTE.includes(c.estado) ? c.estado : 'prospecto',
         portafolio: PERMISOS.includes(c.portafolio) ? c.portafolio : 'por-preguntar',
         creado: c.creado || '',
+        contrato,
         sitios: [...new Set(sitios)],
         archivos,
         pendientes,
@@ -84,9 +89,61 @@ ${d.sitio ? `- ${d.sitio}` : '- (todavía ninguno)'}
 Notas y entregas de este cliente van en esta misma carpeta.
 
 ## Pendientes
-- [ ] Acuerdo de servicio firmado antes del 50%.
+- [ ] Acuerdo de servicio firmado por los dos antes del 50% (ver contrato.md).
 
 ## Notas
 ${d.notas || ''}
+`
+}
+
+/** Hoja de contrato: datos del acuerdo y seguimiento de firmas. El PDF firmado vive en Drive, no aquí. */
+export function contratoMd(d, hoy = new Date().toISOString().slice(0, 10)) {
+  return `---
+contrato: pendiente   # pendiente | enviado | firmado
+cliente: ${d.nombre}
+creado: ${hoy}
+---
+# Contrato de ${d.nombre}
+
+Basado en [[Ascent/plantillas/acuerdo-de-servicio]]. Sin claves, datos de pago ni direcciones personales. El PDF firmado se guarda en una carpeta privada de Drive; aquí solo va el enlace y las fechas.
+
+## Datos
+- Proveedor: Ascent Co. (Jesel Rosario)
+- Cliente: ${d.nombre} · contacto de trabajo: ${d.contacto || '(por completar)'}
+- Paquete: ${d.paquete || '(por decidir)'}
+- Qué se entrega:
+- Precio total: $   · 50% al empezar: $   · 50% al entregar: $
+- Rondas de cambios incluidas: 2
+- Fecha estimada de entrega:
+- Dominio y cuentas: a nombre de ${d.nombre} (el dominio se paga directo donde se compra)
+- Permiso para el portafolio: ${d.portafolio || 'por-preguntar'}
+
+## Firmas (las dos partes)
+| Parte | Nombre | Fecha | Cómo firmó |
+|---|---|---|---|
+| Ascent Co. | Jesel Rosario | | |
+| Cliente | ${d.nombre} | | |
+
+- PDF firmado (enlace de Drive privado):
+- Contrato enviado el:
+- Depósito del 50% recibido el:
+
+## Reglas
+- No se empieza el trabajo sin contrato firmado por los dos y el 50% pagado.
+- Cualquier cambio de alcance o precio se anota aquí con fecha y se confirma por escrito.
+- Estado del contrato arriba (campo contrato): el Centro de mando lo muestra en la ficha.
+`
+}
+
+/** Historial: una línea por hecho, con fecha. Lo llenan Jesel, Claude y Hermes. */
+export function historialMd(d, hoy = new Date().toISOString().slice(0, 10)) {
+  return `---
+cliente: ${d.nombre}
+---
+# Historial de ${d.nombre}
+
+Una línea por hecho, la más nueva abajo. Formato: \`AAAA-MM-DD · quién · qué pasó\`. Sin claves ni datos de pago.
+
+- ${hoy} · Centro de mando · Ficha creada.
 `
 }

@@ -4,7 +4,7 @@ import { calConfigurado, calReservas } from './cal.mjs'
 import { chatConfigurado, chatEnviar, chatHistorial, chatNueva, MAX_TEXTO } from './hermes-chat.mjs'
 import { guardarEstado, leerEstado } from './datos.mjs'
 import { escribirCerebro, escrituraActiva } from './escritor.mjs'
-import { ESTADOS_CLIENTE, fichaMd, listarClientes, PAQUETES, PERMISOS, slug, validarCliente } from './clientes.mjs'
+import { contratoMd, ESTADOS_CLIENTE, fichaMd, historialMd, listarClientes, PAQUETES, PERMISOS, slug, validarCliente } from './clientes.mjs'
 import { decidir, listarPropuestas, proponer, registrar } from './propuestas.mjs'
 import http from 'node:http'
 import fs from 'node:fs/promises'
@@ -107,9 +107,13 @@ const hoyPR = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Puerto
 
 // Lo que hace cada propuesta cuando Jesel la aprueba.
 registrar('crear-cliente', async (d) => {
-  const r = await escribirCerebro([{ ruta: `Clientes/${d.id}/ficha.md`, contenido: fichaMd(d, hoyPR()), soloSiNoExiste: true }], `Cliente nuevo: ${d.nombre} (aprobado en el Centro de mando)`)
+  const r = await escribirCerebro([
+    { ruta: `Clientes/${d.id}/ficha.md`, contenido: fichaMd(d, hoyPR()), soloSiNoExiste: true },
+    { ruta: `Clientes/${d.id}/contrato.md`, contenido: contratoMd(d, hoyPR()), soloSiNoExiste: true },
+    { ruta: `Clientes/${d.id}/historial.md`, contenido: historialMd(d, hoyPR()), soloSiNoExiste: true },
+  ], `Cliente nuevo: ${d.nombre} (aprobado en el Centro de mando)`)
   cache.en = 0
-  return { texto: `Ficha creada en Clientes/${d.id}/ficha.md${r.commit ? ` (commit ${r.commit})` : ''}.` }
+  return { texto: `Ficha, contrato e historial creados en Clientes/${d.id}/${r.commit ? ` (commit ${r.commit})` : ''}.` }
 })
 registrar('tarea-hermes', async (d) => {
   if (!chatConfigurado()) throw new Error('El chat con Hermes no está conectado.')
