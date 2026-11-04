@@ -13,6 +13,8 @@ const ESTADO: Record<string, { nombre: string; color: string }> = {
 }
 const PERMISO: Record<string, string> = { si: 'Portafolio: sí', capturas: 'Portafolio: solo capturas', no: 'Portafolio: no', 'por-preguntar': 'Portafolio: por preguntar' }
 
+const CONTRATO: Record<string, string> = { 'sin-contrato': 'Sin contrato', pendiente: 'Contrato pendiente', enviado: 'Contrato enviado', firmado: 'Contrato firmado' }
+
 /** Datos que la Bandeja deja para empezar la ficha desde una solicitud. */
 export const PREFILL = 'cdm:prefill-cliente'
 
@@ -128,7 +130,7 @@ function Detalle({ c, datos, abrir, volver, alSinSesion }: { c: Cliente; datos: 
         <h1 className="text-5xl">{c.nombre}</h1>
         <Chip estado={c.estado} />
       </div>
-      <p className="mt-2 text-sm text-white/60">{[c.paquete, PERMISO[c.portafolio], c.contacto].filter(Boolean).join(' · ')}</p>
+      <p className="mt-2 text-sm text-white/60">{[c.paquete, CONTRATO[c.contrato], PERMISO[c.portafolio], c.contacto].filter(Boolean).join(' · ')}</p>
       <Aprobaciones alSinSesion={alSinSesion} vista="clientes" cliente={c.nombre} />
 
       <div className="mt-6 grid gap-4 xl:grid-cols-[1.4fr_1fr]">
@@ -195,6 +197,7 @@ export function Clientes({ alSinSesion, sub, abrir }: { alSinSesion: () => void;
                 <span className="mt-3 font-display text-3xl leading-tight">{x.nombre}</span>
                 <span className="mt-1 text-sm text-white/60">{x.paquete || 'Paquete por decidir'}</span>
                 <span className="mt-auto flex flex-wrap gap-x-3 gap-y-1 pt-4 font-mono text-[11px] text-white/50">
+                  <span className={x.contrato === 'firmado' ? 'text-emerald-300/80' : 'text-amber-200/80'}>{CONTRATO[x.contrato]}</span>
                   <span>{PERMISO[x.portafolio]}</span>
                   {x.sitios.length > 0 && <span>{x.sitios.length} sitio{x.sitios.length > 1 ? 's' : ''}</span>}
                   {x.pendientes > 0 && <span className="text-amber-200/80">{x.pendientes} pendiente{x.pendientes > 1 ? 's' : ''}</span>}
