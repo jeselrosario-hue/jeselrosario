@@ -54,6 +54,7 @@ Incluye la tabla con tu nota y la prueba de cada punto en `informe.md`. Si no pu
 
 ## 6. Qué cargar y en qué orden
 1. `maestro-web-creativo` (esta) → concepto.  2. `sitio-web-premium` → flujo y entrega.  3. `design-taste-frontend` y `emil-design-eng` → gusto y detalles de animación.  4. `ui-ux-pro-max` → paletas y fuentes.  5. `herramientas-diseno-ascent` → qué librerías sí.  6. `gsap-scrolltrigger` si usas GSAP.  7. `references/patrones-movimiento.md` → recetas probadas.  8. `fixing-motion-performance` al final.
+Para variar el estilo: `web-design-engineer/references/style-recipes/INDEX.md` (25 direcciones de estilo; elige 3 distintas y decide). Para ideas de scroll cinematográfico o partículas: `recetas-creativas-externas`. Para la crítica final: `web-design-engineer/references/critique-guide.md` y `recetas-creativas-externas/recetas/audit-ai-design-slop`.
 Para una página de un solo archivo (como la v6) no hace falta React: HTML + CSS + JS propio bastan y pesan menos. Para sitios grandes de cliente, Vite + React + TS.
 
 ## 7. Límites que nunca se rompen
